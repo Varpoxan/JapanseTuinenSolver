@@ -172,21 +172,26 @@ namespace JapanseTuinen.Services
         public List<string> ValidatePuzzle(PuzzleViewModel puzzleVM)
         {
             var returnValue = new List<string>();
+            var totalPuzzleConditions = puzzleVM.PuzzleTileList.SelectMany(s => s.SimpleTileIndexList);
 
-            if (puzzleVM.PuzzleTileList.Count(s => s.SimpleTileIndexList.Any(t =>
-                t.SpecialCondition.Condition == Condition.Flower ||
-                t.SpecialCondition.Condition == Condition.Gate ||
-                t.SpecialCondition.Condition == Condition.Butterfly ||
-                t.SpecialCondition.Condition == Condition.Tree)) % 2 == 1)
+            var IconConditions = new HashSet<Condition>() { Condition.Butterfly, Condition.Flower, Condition.Gate, Condition.Tree };
+
+            foreach (var icon in IconConditions)
             {
-                returnValue.Add(String.Format("Één van de volgende symbolen komt een oneven aantal voor: Flower, Tower, Butterfly, Tree"));
+                if (totalPuzzleConditions.Count(s => s.SpecialCondition.Condition == icon) >= 3)
+                {
+                    returnValue.Add(String.Format("Het volgende symbool komt een te vaak voor: {0}", icon));
+                }
+                else if (totalPuzzleConditions.Count(s => s.SpecialCondition.Condition == icon) % 2 != 0)
+                {
+                    returnValue.Add(String.Format("Het volgende symbool komt een oneven aantal voor: {0}", icon));
+                }
             }
 
-            if (puzzleVM.PuzzleTileList.Count(s => s.SimpleTileIndexList.Any(t =>
-                t.SpecialCondition.Condition == Condition.YinYang ||
-                t.SpecialCondition.Condition == Condition.Pagoda)) > 1)
+            if (totalPuzzleConditions.Count(t =>
+                t.SpecialCondition.Condition == Condition.YinYang) > 1)
             {
-                returnValue.Add(String.Format("Één van de volgende symbolen komt meer dan één keer voor: YinYang, Pagoda"));
+                returnValue.Add(String.Format("Één van de volgende symbolen komt meer dan één keer voor: YinYang"));
             }
 
             return returnValue;

@@ -39,3 +39,4 @@ C:\Users\Richard\source\repos\JapanseTuinen\JapanseTuinen\bin\Microsoft.AI.Web.x
 C:\Users\Richard\source\repos\JapanseTuinen\JapanseTuinen\obj\Debug\JapanseTuinen.csproj.CoreCompileInputs.cache
 C:\Users\Richard\source\repos\JapanseTuinen\JapanseTuinen\obj\Debug\JapanseTuinen.dll
 C:\Users\Richard\source\repos\JapanseTuinen\JapanseTuinen\obj\Debug\JapanseTuinen.pdb
+C:\Users\Richard\source\repos\JapanseTuinen\JapanseTuinen\obj\Debug\JapanseTuinen.csprojResolveAssemblyReference.cache
