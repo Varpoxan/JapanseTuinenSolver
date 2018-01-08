@@ -1,0 +1,512 @@
+﻿@model JapanseTuinen.Models.PuzzleViewModel
+@{
+    ViewBag.Title = "Puzzles";
+}
+
+<h2>Nieuwe Puzzel</h2>
+
+<div class="solve-wrapper">
+    <div class="solve-button btn btn-default">Solve!</div>
+</div>
+<div class="total-puzzle">
+
+    @for (int i = 1; i <= 6; i++)
+    {
+        {
+            <div class="puzzle-field-wrapper">
+                <div id="@i" class="outer-puzzle-field hoverable @Model.GetRowClass(i) @Model.GetColumnClass(i)" data-row="@Model.GetRowNumberByIndex(i)" data-column="@Model.GetColumnNumberByIndex(i)">
+                    <div class="inner-puzzle-field">
+                        <div class="add-puzzle-field fa fa-plus fa-4x"></div>
+                        <div class="hidden condition-choices">
+                            <div class="condition-choice bridge-icon">1</div>
+                            <div class="condition-choice tile-icon">3</div>
+                            <img class="condition-choice svg-icon gate-icon" data-icon="gate" src="/Content/Icons/gate.svg" />
+                            <img class="condition-choice svg-icon tree-icon" data-icon="tree" src="/Content/Icons/tree.svg" />
+                            <img class="condition-choice svg-icon butterfly-icon" data-icon="butterfly" src="/Content/Icons/butterfly.svg" />
+                            <img class="condition-choice svg-icon flower-icon" data-icon="flower" src="/Content/Icons/flower.svg" />
+                            <img class="condition-choice svg-icon yinyang-icon" data-icon="yinyang" src="/Content/Icons/yinyang.svg" />
+                            <img class="condition-choice svg-icon pagoda-icon" data-icon="pagoda" src="/Content/Icons/pagoda.svg" />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        }
+    }
+</div>
+
+<div class="solved-puzzle-wrapper">
+
+</div>
+
+<script type="text/javascript">
+
+    $(document).off('click', '.solve-button').on('click', '.solve-button', function () {
+
+        var PuzzleVM = {
+            PuzzleTileList: {
+                TileIndexList: {}
+            }
+
+        };
+
+        $('.shown-puzzle-field').each(function (i, e) {
+            //debugger;
+            var currentItem = $(e);
+            var currentId = parseInt(currentItem.attr('id'));
+
+            var newTile = {
+                Index: (currentId),
+                TileIndexList: {}
+            }
+
+            $(currentItem).children('.confirmed-condition').each(function (i, e) {
+                //debugger;
+                var position = $(e).data('position');
+                var orientation = $(e).data('orientation');
+                var condition = $(e).data('condition')
+
+                var dingen = {
+                    Position: position,
+                    TileInfoList: {
+                        Orientation: orientation,
+                        SpecialCondition: {
+                            Amount: 0,
+                            Condition: condition
+                        }
+                    }
+                }
+                var tileInfo = {
+                    Orientation: orientation,
+                    SpecialCondition: {
+                        Amount: 1,
+                        Condition: condition
+                    }
+                }
+                dingen.TileInfoList[0] = tileInfo;
+                newTile.TileIndexList[i] = dingen;
+            });
+
+            //var dingen = {
+            //    Position: 0,
+            //    TileInfoList: {
+            //        Orientation: 0,
+            //        SpecialCondition: {
+            //            Amount: 0,
+            //            Condition: 0
+            //        }
+            //    }
+            //}
+
+            //var tileInfo = {
+            //    Orientation: 'Right',
+            //    SpecialCondition: {
+            //        Amount: 1, Condition: 'Flower'
+            //    }
+            //}
+
+            //dingen.TileInfoList[0] = tileInfo;
+
+            //newTile.TileIndexList[0] = dingen;
+
+            PuzzleVM.PuzzleTileList[i] = newTile;
+        });
+
+        console.log(PuzzleVM);
+
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: '/Home/SolvePuzzle',
+            data: PuzzleVM,
+        }).always(function (result) {
+            //console.log('puzzle solved!');
+            $('.solved-puzzle-wrapper').html(result.responseText);
+        });
+
+    });
+
+    var currentRoadEndPosition;
+    var currentRoadEndOrientation;
+
+    $(document).off('click', '.road-end').on('click', '.road-end', function () {
+        //debugger;
+        var roadEnd = $(this);
+        var conditionChoices = roadEnd.parent().find('.condition-choices');
+
+        conditionChoices.removeClass('hidden');
+        $(conditionChoices).data('road-end-position', roadEnd.data('position'));
+        $(conditionChoices).data('road-end-orientation', roadEnd.data('orientation'));
+        
+    });
+
+    $(document).off('click', '.condition-choice').on('click', '.condition-choice', function () {
+
+        var conditionChoices = $(this).parent('.condition-choices');
+        var outerPuzzleField = $(this).closest('.outer-puzzle-field');
+        var choice = $(this);
+
+        var position = $(conditionChoices).data('road-end-position');
+        var orientation = $(conditionChoices).data('road-end-orientation');
+        //debugger;
+        outerPuzzleField.children('.road-end').each(function (i, e) {
+            if ($(e).data('position') == position && $(e).data('orientation') == orientation) {
+                var addedClass = 'road-end-' + position + orientation.charAt(0).toUpperCase();
+                if (choice.hasClass('svg-icon')) {
+                    var iconClass = choice.data('icon');
+                    $(e).replaceWith('<img class="' + addedClass + ' confirmed-condition condition-choice svg-icon ' + iconClass +
+                        '-icon" src="/Content/Icons/' + iconClass +
+                        '.svg" data-position="' + position +
+                        '" data-orientation="' + orientation +
+                        '" data-condition="' + iconClass + '" />');
+                }
+            }
+
+        });
+
+        conditionChoices.addClass('hidden');
+
+    });
+
+    var allShownIds = [];
+    $(document).off('click', '.hoverable').on('click', '.hoverable', function () {
+        var clickedElement = $(this);
+        var clickedId = $(clickedElement).attr('id')
+
+        //debugger;
+        //$('.shown-puzzle-field').each(function (i, e) {
+            //var currentId = parseInt($(e).attr('id'));
+            //console.log($.inArray(currentId, allShownIds));
+        
+        //});
+        if ($.inArray(clickedId, allShownIds) == -1) {
+            allShownIds.push(parseInt(clickedId));
+        }
+
+        console.log(allShownIds);
+        var continueClick = false;
+        $(allShownIds).each(function (i, e) {
+            if (parseInt(clickedId) - 1 == parseInt(e) || parseInt(clickedId) - 3 == parseInt(e) || parseInt(clickedId) + 3 == parseInt(e) || parseInt(clickedId) + 1 == parseInt(e)) {
+                continueClick = true;
+            }
+        });
+
+        
+
+        if (continueClick || allShownIds.length == 1) {
+            $(clickedElement).removeClass('hidden');
+            $(clickedElement).removeClass('hoverable');
+            $(clickedElement).addClass('shown-puzzle-field');
+            $(clickedElement).find('.add-puzzle-field').remove();
+            $(document).off('mouseleave', '.hoverable');
+
+            addRoadsToElement(clickedElement);
+            removeRoadsBasedOnLastUpdate(clickedId);
+        }
+    });
+
+    function addRoadsToElement(puzzleField) {
+        $(puzzleField).append('<div class="road-end road-end-top road-end-vertical road-end-0T" data-position="0" data-orientation="top"></div>');
+        $(puzzleField).append('<div class="road-end road-end-top road-end-vertical road-end-1T" data-position="1" data-orientation="top"></div>');
+        $(puzzleField).append('<div class="road-end road-end-right road-end-horizontal road-end-1R" data-position="1" data-orientation="right"></div>');
+        $(puzzleField).append('<div class="road-end road-end-right road-end-horizontal road-end-3R" data-position="3" data-orientation="right"></div>');
+        $(puzzleField).append('<div class="road-end road-end-bottom road-end-vertical road-end-3B" data-position="3" data-orientation="bottom"></div>');
+        $(puzzleField).append('<div class="road-end road-end-bottom road-end-vertical road-end-2B" data-position="2" data-orientation="bottom"></div>');
+        $(puzzleField).append('<div class="road-end road-end-left road-end-horizontal road-end-2L" data-position="2" data-orientation="left"></div>');
+        $(puzzleField).append('<div class="road-end road-end-left road-end-horizontal road-end-0L" data-position="0" data-orientation="left"></div>');
+    };
+
+    function RemoveRoadsSideFromClickedElement(clickedElement, loopElement, side) {
+
+        var oppositeSide = "";
+        if (side == "left") {
+            oppositeSide = "right";
+        }
+        if (side == "right") {
+            oppositeSide = "left";
+        }
+        if (side == "top") {
+            oppositeSide = "bottom";
+        }
+        if (side == "bottom") {
+            oppositeSide = "top";
+        }
+
+        $(clickedElement).children('.road-end-' + side).each(function (i, e) {
+            $(e).remove();
+        });
+
+        $(loopElement).children('.road-end-' + oppositeSide).each(function (i, e) {
+            $(e).remove();
+        });
+        var calcWidth = 220;
+        if ($(clickedElement).find('.road-end-left').length !== 2) {
+            calcWidth -= 20;
+        }
+        if ($(clickedElement).find('.road-end-right').length !== 2) {
+            calcWidth -= 20;
+        }
+
+        var calcHeight = 220;
+        if ($(clickedElement).find('.road-end-top').length !== 2) {
+            calcHeight -= 20;
+        }
+        if ($(clickedElement).find('.road-end-bottom').length !== 2) {
+            calcHeight -= 20;
+        }
+
+        $(clickedElement).css('width', calcWidth);
+        $(clickedElement).css('height', calcHeight);
+        $(clickedElement).find('.inner-puzzle-field').css('margin-' + side, '0');
+
+        var calcLoopWidth = 220;
+        if ($(loopElement).find('.road-end-left').length !== 2) {
+            calcLoopWidth -= 20;
+        }
+        if ($(loopElement).find('.road-end-right').length !== 2) {
+            calcLoopWidth -= 20;
+        }
+
+        var calcLoopHeight = 220;
+        if ($(loopElement).find('.road-end-top').length !== 2) {
+            calcLoopHeight -= 20;
+        }
+        if ($(loopElement).find('.road-end-bottom').length !== 2) {
+            calcLoopHeight -= 20;
+        }
+
+        $(loopElement).css('width', calcLoopWidth);
+        $(loopElement).css('height', calcLoopHeight);
+        $(loopElement).find('.inner-puzzle-field').css('margin-' + oppositeSide, '0');
+    }
+
+    function removeRoadsBasedOnLastUpdate(clickedId) {
+        var clickedElement = $('#' + clickedId);
+        var clickedRow = $(clickedElement).data('row');
+        var clickedCol = $(clickedElement).data('column');
+
+        //if ($.inArray(1, allShownIds) !== -1 && $.inArray(2, allShownIds) !== -1) {
+        //    $('.column-two').css({
+        //        left: '180px'
+        //    });
+        //}
+
+        //if ($.inArray(2, allShownIds) !== -1 && $.inArray(3, allShownIds) !== -1) {
+        //    $('.column-three').css({
+        //        left: '400px'
+        //    });
+        //}
+
+        //if ($.inArray(5, allShownIds) !== -1 && $.inArray(6, allShownIds) !== -1) {
+        //    $('.column-three').css({
+        //        left: '400px'
+        //    });
+        //}
+
+        //if ($.inArray(1, allShownIds) !== -1 && $.inArray(2, allShownIds) !== -1 && $.inArray(3, allShownIds) !== -1) {
+        //    $('.column-two').css({
+        //        left: '180px'
+        //    });
+        //    $('.column-three').css({
+        //        left: '360px'
+        //    });
+        //}
+        //if ($.inArray(4, allShownIds) !== -1 && $.inArray(5, allShownIds) !== -1 && $.inArray(6, allShownIds) !== -1) {
+        //    $('.column-two').css({
+        //        left: '180px'
+        //    });
+        //    $('.column-three').css({
+        //        left: '360px'
+        //    });
+        //}
+
+        //if ($.inArray(1, allShownIds) !== -1 && $.inArray(4, allShownIds) !== -1) {
+        //    $('.row-two').css({
+        //        top: '180px'
+        //    });
+        //}
+
+        //if ($.inArray(2, allShownIds) !== -1 && $.inArray(5, allShownIds) !== -1) {
+        //    $('.row-two').css({
+        //        top: '180px'
+        //    });
+        //}
+
+        //if ($.inArray(3, allShownIds) !== -1 && $.inArray(6, allShownIds) !== -1) {
+        //    $('.row-two').css({
+        //        top: '180px'
+        //    });
+        //}
+
+
+        if (clickedId == 1) {
+            if ($.inArray(4, allShownIds) !== -1) {
+                RemoveRoadsSideFromClickedElement(clickedElement, $('#4'), "bottom");
+                $('#4').css({
+                    top: '200px'
+                });
+            }
+            if ($.inArray(5, allShownIds) !== -1) {
+                $('#5').css({
+                    top: '200px'
+                });
+            }
+
+            if ($.inArray(6, allShownIds) !== -1) {
+                $('#6').css({
+                    top: '200px'
+                });
+            }
+            if ($.inArray(2, allShownIds) !== -1) {
+                RemoveRoadsSideFromClickedElement(clickedElement, $('#2'), "right");
+                $('#2').css({
+                    left: '200px'
+                });
+            }
+            if ($.inArray(3, allShownIds) !== -1) {
+                $('#3').css({
+                    left: '380px'
+                });
+            }
+        }
+
+        if (clickedId == 2) {
+            if ($.inArray(1, allShownIds) !== -1) {
+                RemoveRoadsSideFromClickedElement(clickedElement, $('#1'), "left");
+                $(clickedElement).css({
+                    left: '200px'
+                });
+
+            }
+            if ($.inArray(3, allShownIds) !== -1) {
+                RemoveRoadsSideFromClickedElement(clickedElement, $('#3'), "right");
+
+            }
+            if ($.inArray(5, allShownIds) !== -1) {
+                RemoveRoadsSideFromClickedElement(clickedElement, $('#5'), "bottom");
+                $('#5').css({
+                    top: '200px'
+                });
+            }
+            if ($.inArray(3, allShownIds) !== -1) {
+                $('#3').css({
+                    left: '420px'
+                });
+            }
+        }
+
+        if (clickedId == 3) {
+            
+            if ($.inArray(2, allShownIds) !== -1) {
+                RemoveRoadsSideFromClickedElement(clickedElement, $('#2'), "left");
+            }
+            if ($.inArray(6, allShownIds) !== -1) {
+                RemoveRoadsSideFromClickedElement(clickedElement, $('#6'), "bottom");
+            }
+            if ($.inArray(5, allShownIds) !== -1 || $.inArray(2, allShownIds) !== -1) {
+                $(clickedElement).css({
+                    left: parseInt($(clickedElement).css('left')) - 20 + 'px'
+                });
+            }
+
+            if ($.inArray(6, allShownIds) !== -1) {
+                $('#6').css({
+                    top: '200px'
+                });
+            }
+
+            if ($.inArray(1, allShownIds) !== -1) {
+                $(clickedElement).css({
+                    left: parseInt($(clickedElement).css('left')) - 20 + 'px'
+                });
+            }
+            if ($.inArray(2, allShownIds) !== -1) {
+                $(clickedElement).css({
+                    //left: parseInt($(clickedElement).css('left')) - 20 + 'px'
+                });
+            }
+        }
+
+        if (clickedId == 4) {
+            if ($.inArray(1, allShownIds) !== -1) {
+                RemoveRoadsSideFromClickedElement(clickedElement, $('#1'), "top");
+                $(clickedElement).css({
+                    top: '200px'
+                });
+            }
+            if ($.inArray(5, allShownIds) !== -1) {
+                RemoveRoadsSideFromClickedElement(clickedElement, $('#5'), "right");
+            }
+            if ($.inArray(5, allShownIds) !== -1) {
+                $('#5').css({
+                    left: '200px',
+                });
+            }
+        }
+        if (clickedId == 5) {
+
+            if ($.inArray(4, allShownIds) !== -1) {
+                RemoveRoadsSideFromClickedElement(clickedElement, $('#4'), "left");
+                $(clickedElement).css({
+                    left: '200px'
+                });
+            }
+            if ($.inArray(6, allShownIds) !== -1) {
+                RemoveRoadsSideFromClickedElement(clickedElement, $('#6'), "right");
+                $('#6').css({
+                    left: '420px'
+                });
+            }
+            if ($.inArray(2, allShownIds) !== -1) {
+                RemoveRoadsSideFromClickedElement(clickedElement, $('#2'), "top");
+                $(clickedElement).css({
+                    top: '200px'
+                });
+            }
+            if ($.inArray(2, allShownIds) !== -1 && $.inArray(4, allShownIds) == -1) {
+                $(clickedElement).css({
+                    left: '180px'
+                });
+            }
+
+            if ($.inArray(4, allShownIds) !== -1 && $.inArray(2, allShownIds) == -1) {
+                $(clickedElement).css({
+                    top: '180px'
+                });
+            }
+        }
+
+        if (clickedId == 6) {
+            if ($.inArray(3, allShownIds) !== -1) {
+                RemoveRoadsSideFromClickedElement(clickedElement, $('#3'), "top");
+                $(clickedElement).css({
+                    top: '200px'
+                });
+            }
+            if ($.inArray(5, allShownIds) !== -1) {
+                RemoveRoadsSideFromClickedElement(clickedElement, $('#5'), "left");
+                $(clickedElement).css({
+                    left: '420px'
+                });
+            }
+            if ($.inArray(2, allShownIds) !== -1 && $.inArray(5, allShownIds) !== -1) {
+                $(clickedElement).css({
+                    top: '180px'
+                });
+            }
+
+            if ($.inArray(5, allShownIds) == -1) {
+                $(clickedElement).css({
+                    left: '400px'
+                });
+            }
+
+            if ($.inArray(1, allShownIds) !== -1 && $.inArray(2, allShownIds) !== -1) {
+                $(clickedElement).css({
+                    left: '360px'
+                });
+            }
+        }
+    }
+
+</script>

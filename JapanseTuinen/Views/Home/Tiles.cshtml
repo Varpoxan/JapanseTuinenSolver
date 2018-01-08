@@ -1,0 +1,20 @@
+﻿@model JapanseTuinen.Models.TileViewModel
+@{
+    ViewBag.Title = "Puzzels";
+}
+
+<h2>Tegels:</h2>
+<div id="moon"></div>
+<div class="tile-list">
+    @foreach (var tile in Model.TileList)
+    {
+        <h3>Tegel @tile.TileNumber</h3>
+
+        <img class="tile" src="@String.Format("/Images/Tile{0}-{1}.jpg", tile.TileNumber, tile.Degrees)"/>
+        
+        foreach (var rotated in tile.TileRotationList)
+        {
+            <img class="tile" src="@String.Format("/Images/Tile{0}-{1}.jpg", tile.TileNumber, rotated.Degrees)" />
+        }
+    }
+</div>

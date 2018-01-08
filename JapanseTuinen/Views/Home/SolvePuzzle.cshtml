@@ -1,0 +1,30 @@
+﻿@model JapanseTuinen.Models.SolvedPuzzleViewModel
+@{
+    ViewBag.Title = "SolvedPuzzle";
+}
+
+
+@if (Model.ErrorList.Any())
+{
+    foreach (var error in Model.ErrorList)
+    {
+        <span class="alert alert-danger">@error</span>
+    }
+}
+
+<span class="alert alert-success">
+    @String.Format("Checked {0} (out of {1}) solutions in: {2} seconds",
+                Model.AmountOfCheckedSolutions, Model.AmountOfTotalSolutions, Math.Round(Model.SolveDuration.TotalSeconds, 2))
+</span>
+
+@foreach (var tile in Model.TileSet)
+{
+    <div class="puzzle-field-wrapper">
+        <div id="@tile.Key" class="outer-puzzle-field @Model.GetRowClass(tile.Key) @Model.GetColumnClass(tile.Key)" data-row="@Model.GetRowNumberByIndex(tile.Key)" data-column="@Model.GetColumnNumberByIndex(tile.Key)">
+            <div class="inner-puzzle-field">
+                <img class="tile" src="@String.Format("/Images/tile{0}-{1}.jpg", tile.Value.TileNumber, tile.Value.Degrees)" />
+            </div>
+
+        </div>
+    </div>
+}

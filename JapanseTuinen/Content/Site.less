@@ -1,0 +1,300 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.tile-list {
+    display: block;
+}
+
+.tile {
+    margin: 0 40px;
+    display: inline-block;
+    position: relative;
+    height: 150px;
+    width: 150px;
+    border: solid 2px black;
+    background-color: lightgreen;
+}
+
+.road, .inner-road {
+    position: absolute;
+}
+
+.road {
+    background-color: bisque;
+}
+
+.road .inner-road {
+    background-color: lightgreen;
+}
+
+.road-border-top {
+    border-top: dashed 1px black;
+}
+
+.road-border-right {
+    border-right: dashed 1px black;
+}
+
+.road-border-left {
+    border-left: dashed 1px black;
+}
+
+.road-border-bottom {
+    border-bottom: dashed 1px black;
+}
+
+.top-zero {
+    top: 0;
+}
+
+.right-zero {
+    right: 0;
+}
+
+.bottom-zero {
+    bottom: 0;
+}
+
+.left-zero {
+    left: 0;
+}
+
+.top-margin {
+    top: 20px;
+}
+
+.right-margin {
+    right: 12%;
+}
+
+.bottom-margin {
+    bottom: 12%;
+}
+
+.left-margin {
+    left: 12%
+}
+
+.full-width {
+    width: 100%;
+    height: 12%;
+}
+
+.full-height {
+    width: 12%;
+    height: 100%;
+}
+
+.short-turn-road {
+    width: 28%;
+    height: 28%;
+}
+
+.inner-short-turn-road {
+    width: 57%;
+    height: 57%;
+}
+
+.wide-turn-road {
+    width: 84%;
+    height: 84%;
+}
+
+.inner-wide-turn-road {
+    width: 86%;
+    height: 86%;
+}
+
+.skew-turn-road-vertical {
+    width: 45px;
+    height: 125px;
+}
+
+.inner-skew-turn-road-vertical {
+    width: 30px;
+    height: 100px;
+}
+
+.skew-turn-road-horizontal {
+    width: 125px;
+    height: 45px;
+}
+
+.inner-skew-turn-road-horizontal {
+    width: 100px;
+    height: 30px;
+}
+
+.returning-road-horizontal {
+    width: 90px;
+    height: 35px;
+    left: 20%;
+}
+
+.inner-returning-road-horizontal {
+    width: 55px;
+    height: 19px;
+    left: 15%;
+}
+
+.returning-road-vertical {
+    width: 35px;
+    height: 90px;
+    top: 20%;
+}
+
+.inner-returning-road-vertical {
+    width: 19px;
+    height: 55px;
+    top: 15%;
+}
+
+.returning-road-right {
+}
+
+.returning-road-bottom {
+}
+
+.returning-road-left {
+}
+
+.bottom-right-full-radius {
+    border-bottom-right-radius: 100%;
+}
+
+.bottom-left-full-radius {
+    border-bottom-left-radius: 100%;
+}
+
+.top-left-full-radius {
+    border-top-left-radius: 100%;
+}
+
+.top-right-full-radius {
+    border-top-right-radius: 100%;
+}
+
+/* region Icons*/
+.gate-icon {
+    height: 30px;
+    width: 30px;
+    background-color: darkblue;
+}
+/* endregion Icons*/
+
+/* region Puzzle */
+
+.puzzle {
+    margin: 0 45%;
+}
+
+.outer-puzzle-field {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    padding: 20px;
+}
+
+.inner-puzzle-field {
+    width: 100%;
+    height: 100%;
+    border: 1px solid black;
+}
+
+.outer-puzzle-field.hoverable:hover {
+    cursor: pointer;
+    border: dashed 1px black;
+}
+
+.outer-puzzle-field .add-puzzle-field {
+}
+
+.condition-choices {
+    margin: 50%;
+}
+
+.road-end {
+    position: absolute;
+    background-color: bisque;
+    width: 20px;
+    height: 20px;
+}
+
+.road-end:hover {
+    background-color: darkgoldenrod;
+    cursor: pointer;
+}
+
+.road-end-horizontal {
+    border-top: 1px dashed black;
+    border-bottom: 1px dashed black;
+}
+
+.road-end-vertical {
+    border-right: 1px dashed black;
+    border-left: 1px dashed black;
+}
+
+.road-end-0T {
+    left: 20%;
+    top: 0;
+}
+
+.road-end-1T {
+    right: 20%;
+    top: 0;
+}
+
+.road-end-1R {
+    top: 20%;
+    right: 0;
+}
+
+.road-end-3R {
+    right: 0;
+    bottom: 20%;
+}
+
+.road-end-3B {
+    right: 20%;
+    bottom: 0;
+}
+
+.road-end-2B {
+    left: 20%;
+    bottom: 0;
+}
+
+.road-end-2L {
+    left: 0;
+    bottom: 20%;
+}
+
+.road-end-0L {
+    left: 0;
+    top: 20%;
+}
+
+/* endregion Puzzle */
