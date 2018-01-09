@@ -34,7 +34,7 @@ namespace JapanseTuinen.Models
         public int Position { get; set; }
         public Orientation Orientation { get; set; }
         public SpecialCondition SpecialCondition { get; set; }
-        
+
         public SimpleTileIndex(int pIndex, int pos, Orientation ori, SpecialCondition spCon)
         {
             this.PuzzleIndex = pIndex;
@@ -102,10 +102,18 @@ namespace JapanseTuinen.Models
             return String.Format("{0}-{1} to {2}-{3}", StartPosition, StartOrientation, EndPosition, EndOrientation);
         }
 
-        //public Road()
-        //{
+        public void SwitchStartToEnd()
+        {
+            var newStartPos = this.EndPosition;
+            var newEndPos = this.StartPosition;
+            this.StartPosition = newStartPos;
+            this.EndPosition = newEndPos;
 
-        //}
+            var newStartOri = this.EndOrientation;
+            var newEndOri = this.StartOrientation;
+            this.StartOrientation = newStartOri;
+            this.EndOrientation = newEndOri;
+        }
 
         public bool StartsOrEndsAt(params Orientation[] orientations)
         {
@@ -271,29 +279,60 @@ namespace JapanseTuinen.Models
 
         public bool DefinitiveEndingRoad(int puzzleIndex)
         {
+            var definitiveEnding = false;
             switch (puzzleIndex)
             {
                 case 1:
-                    return !StartsOrEndsAt(Orientation.Bottom) && !StartsOrEndsAt(Orientation.Right);
+                    if (EndsAt(Orientation.Left, Orientation.Top))
+                    {
+                        this.SwitchStartToEnd();
+                    }
+                    definitiveEnding = !StartsOrEndsAt(Orientation.Bottom) && !StartsOrEndsAt(Orientation.Right);
+                    break;
                 case 2:
-                    return ((EndPosition == 0 && EndOrientation == Orientation.Top) ||
+                    if (EndsAt(Orientation.Top))
+                    {
+                        this.SwitchStartToEnd();
+                    }
+                    definitiveEnding = ((EndPosition == 0 && EndOrientation == Orientation.Top) ||
                             EndPosition == 1 && EndOrientation == Orientation.Top);
+                    break;
                 case 3:
-                    return ((EndPosition == 0 && EndOrientation == Orientation.Top) ||
+                    if (EndsAt(Orientation.Top, Orientation.Right))
+                    {
+                        this.SwitchStartToEnd();
+                    }
+                    definitiveEnding = ((EndPosition == 0 && EndOrientation == Orientation.Top) ||
                             (EndPosition == 3 && EndOrientation == Orientation.Right) ||
                             EndPosition == 1);
+                    break;
                 case 4:
-                    return !StartsOrEndsAt(Orientation.Top) && !StartsOrEndsAt(Orientation.Right);
+                    if (EndsAt(Orientation.Bottom, Orientation.Left))
+                    {
+                        this.SwitchStartToEnd();
+                    }
+                    definitiveEnding = !StartsOrEndsAt(Orientation.Top) && !StartsOrEndsAt(Orientation.Right);
+                    break;
                 case 5:
-                    return ((EndPosition == 2 && EndOrientation == Orientation.Bottom) ||
+                    if (EndsAt(Orientation.Bottom))
+                    {
+                        this.SwitchStartToEnd();
+                    }
+                    definitiveEnding = ((EndPosition == 2 && EndOrientation == Orientation.Bottom) ||
                             EndPosition == 3 && EndOrientation == Orientation.Bottom);
+                    break;
                 case 6:
-                    return ((EndPosition == 1 && EndOrientation == Orientation.Right) ||
+                    if (EndsAt(Orientation.Top) || EndsAt(Orientation.Right))
+                    {
+                        this.SwitchStartToEnd();
+                    }
+                    definitiveEnding = ((EndPosition == 1 && EndOrientation == Orientation.Right) ||
                             (EndPosition == 2 && EndOrientation == Orientation.Bottom) ||
                             EndPosition == 3);
-                default:
-                    return false;
+                    break;
             }
+
+            return definitiveEnding;
         }
     }
 }
