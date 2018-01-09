@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using static JapanseTuinen.Models.PuzzleViewModel;
+//using static JapanseTuinen.Models.PuzzleViewModel;
 
 namespace JapanseTuinen.Services
 {
@@ -230,9 +230,9 @@ namespace JapanseTuinen.Services
             //int? endPuzzleIndex;
             var newPuzzleRoad = new PuzzleRoad(startPuzzleIndex, road);
 
-            var amountOfClosedEnds = AmountOfClosedEnds(newPuzzleRoad);
+            var amountOfClosedEnds = AmountOfOpenRoadEnds(newPuzzleRoad);
 
-            if (amountOfClosedEnds == 2)
+            if (amountOfClosedEnds == 0)
             {
                 DefinitivePuzzleRoads.Add(newPuzzleRoad);
             }
@@ -295,7 +295,7 @@ namespace JapanseTuinen.Services
 
         public void ChangePuzzleRoadListsBasedOnEndings(PuzzleRoad road, PuzzleRoad relevantRoad)
         {
-            var amountOfClosedEnds = AmountOfClosedEnds(relevantRoad);
+            var amountOfClosedEnds = AmountOfOpenRoadEnds(relevantRoad);
             if (amountOfClosedEnds == 2)
             {
                 OpenPuzzleRoads.Remove(road);
@@ -314,9 +314,9 @@ namespace JapanseTuinen.Services
             }
         }
 
-        public int AmountOfClosedEnds(PuzzleRoad puzzleRoad)
+        public int AmountOfOpenRoadEnds(PuzzleRoad puzzleRoad)
         {
-            int amount = 2;
+            int amount = 0;
             //var puzzleIndices = new List<int>() { puzzleRoad.StartPuzzleIndex };
             if (puzzleRoad.EndPuzzleIndex.HasValue)
             {
@@ -327,7 +327,7 @@ namespace JapanseTuinen.Services
             {
                 if (puzzleRoad.DefinitiveEndingRoad(usingPuzzleIndex))
                 {
-                    return 2;
+                    return 0;
                 }
 
                 switch (usingPuzzleIndex)
@@ -335,16 +335,17 @@ namespace JapanseTuinen.Services
                     case 1:
                         if (!UsedPuzzleTilesIndices.Contains(2) && !UsedPuzzleTilesIndices.Contains(4))
                         {
-                            return 2;
+                            return 0;
                         }
                         if (UsedPuzzleTilesIndices.Contains(4) && puzzleRoad.StartsOrEndsAt(Orientation.Bottom))
                         {
+                            //puzzleRoad.Count(s => s.)
                             if (puzzleRoad.StartsAt(Orientation.Bottom))
                             {
                                 puzzleRoad.SwitchStartToEnd();
                             }
                             amount--;
-                            break;
+                            //break;
                         }
                         if (UsedPuzzleTilesIndices.Contains(2) && puzzleRoad.StartsOrEndsAt(Orientation.Right))
                         {
@@ -353,13 +354,13 @@ namespace JapanseTuinen.Services
                                 puzzleRoad.SwitchStartToEnd();
                             }
                             amount--;
-                            break;
+                            //break;
                         }
                         if (!UsedPuzzleTilesIndices.Contains(2))
                         {
                             if (!puzzleRoad.StartsOrEndsAt(Orientation.Bottom))
                             {
-                                return amount;
+                                return 2;
                             }
                         }
 
@@ -367,14 +368,14 @@ namespace JapanseTuinen.Services
                         {
                             if (!puzzleRoad.StartsOrEndsAt(Orientation.Right))
                             {
-                                return amount;
+                                return 2;
                             }
                         }
                         break;
                     case 2:
                         if (!UsedPuzzleTilesIndices.Contains(1) && !UsedPuzzleTilesIndices.Contains(3) && !UsedPuzzleTilesIndices.Contains(5))
                         {
-                            amount--;
+                            return 2;
                         }
                         if (!UsedPuzzleTilesIndices.Contains(1))
                         {
@@ -404,7 +405,7 @@ namespace JapanseTuinen.Services
                     case 3:
                         if (!UsedPuzzleTilesIndices.Contains(2) && !UsedPuzzleTilesIndices.Contains(6))
                         {
-                            amount--;
+                            return 2;
                         }
                         if (!UsedPuzzleTilesIndices.Contains(2))
                         {
@@ -426,7 +427,7 @@ namespace JapanseTuinen.Services
                     case 4:
                         if (!UsedPuzzleTilesIndices.Contains(1) && !UsedPuzzleTilesIndices.Contains(5))
                         {
-                            return amount;
+                            return 2;
                         }
                         if (UsedPuzzleTilesIndices.Contains(1) && puzzleRoad.StartsOrEndsAt(Orientation.Top))
                         {
@@ -462,16 +463,14 @@ namespace JapanseTuinen.Services
                     case 5:
                         if (!UsedPuzzleTilesIndices.Contains(4) && !UsedPuzzleTilesIndices.Contains(6) && !UsedPuzzleTilesIndices.Contains(2))
                         {
-                            amount--;
-                            break;
+                            return 2;
                         }
                         if (!UsedPuzzleTilesIndices.Contains(4))
                         {
                             if ((puzzleRoad.EndPosition == 0 && puzzleRoad.EndOrientation == Orientation.Left) ||
                                 (puzzleRoad.EndPosition == 2 && puzzleRoad.EndOrientation == Orientation.Left))
                             {
-                                amount--;
-                                break;
+                                return 2;
                             }
                         }
                         if (!UsedPuzzleTilesIndices.Contains(6))
@@ -479,8 +478,7 @@ namespace JapanseTuinen.Services
                             if ((puzzleRoad.EndPosition == 1 && puzzleRoad.EndOrientation == Orientation.Right) ||
                                 (puzzleRoad.EndPosition == 3 && puzzleRoad.EndOrientation == Orientation.Right))
                             {
-                                amount--;
-                                break;
+                                return 2;
                             }
                         }
                         if (!UsedPuzzleTilesIndices.Contains(2))
@@ -488,24 +486,21 @@ namespace JapanseTuinen.Services
                             if ((puzzleRoad.EndPosition == 0 && puzzleRoad.EndOrientation == Orientation.Top) ||
                                 (puzzleRoad.EndPosition == 1 && puzzleRoad.EndOrientation == Orientation.Top))
                             {
-                                amount--;
-                                break;
+                                return 2;
                             }
                         }
                         break;
                     case 6:
                         if (!UsedPuzzleTilesIndices.Contains(3) && !UsedPuzzleTilesIndices.Contains(5))
                         {
-                            amount--;
-                            break;
+                            return 2;
                         }
                         if (!UsedPuzzleTilesIndices.Contains(3))
                         {
                             if ((puzzleRoad.EndPosition == 0 && puzzleRoad.EndOrientation == Orientation.Top) ||
                                 (puzzleRoad.EndPosition == 1 && puzzleRoad.EndOrientation == Orientation.Top))
                             {
-                                amount--;
-                                break;
+                                return 2;
                             }
                         }
                         if (!UsedPuzzleTilesIndices.Contains(5))
@@ -513,8 +508,7 @@ namespace JapanseTuinen.Services
                             if ((puzzleRoad.EndPosition == 0 && puzzleRoad.EndOrientation == Orientation.Left) ||
                                 (puzzleRoad.EndPosition == 2 && puzzleRoad.EndOrientation == Orientation.Left))
                             {
-                                amount--;
-                                break;
+                                return 2;
                             }
                         }
                         break;
