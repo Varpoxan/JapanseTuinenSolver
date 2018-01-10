@@ -60,6 +60,11 @@ namespace JapanseTuinen.Services
                 this.EndPosition = puzzleRoad.StartPosition;
                 roadHasUpdated = true;
             }
+            else if (this.EndPosition == puzzleRoad.StartPosition + 2)
+            {
+                this.EndPosition = puzzleRoad.EndPosition;
+                roadHasUpdated = true;
+            }
             else if (this.StartPosition == puzzleRoad.EndPosition - 2)
             {
                 this.EndPosition = puzzleRoad.EndPosition;
@@ -75,6 +80,7 @@ namespace JapanseTuinen.Services
                 this.EndPosition = puzzleRoad.EndPosition;
                 roadHasUpdated = true;
             }
+            
 
             if (this.EndOrientation == Orientation.Bottom && puzzleRoad.EndOrientation == Orientation.Top)
             {
@@ -230,9 +236,9 @@ namespace JapanseTuinen.Services
             //int? endPuzzleIndex;
             var newPuzzleRoad = new PuzzleRoad(startPuzzleIndex, road);
 
-            var amountOfClosedEnds = AmountOfOpenRoadEnds(newPuzzleRoad);
+            var amountOfOpenRoadEnds = AmountOfOpenRoadEnds(newPuzzleRoad);
 
-            if (amountOfClosedEnds == 0)
+            if (amountOfOpenRoadEnds == 0)
             {
                 DefinitivePuzzleRoads.Add(newPuzzleRoad);
             }
@@ -248,7 +254,8 @@ namespace JapanseTuinen.Services
         {
             if (road.StartsOrEndsAt(Orientation.Bottom))
             {
-                var findRpad = OpenPuzzleRoads.Where(s => (road.StartPuzzleIndex == s.StartPuzzleIndex - 3 || road.StartPuzzleIndex == s.StartPuzzleIndex + 3) &&
+                var newPuzzleIndex = road.EndPuzzleIndex.HasValue ? road.EndPuzzleIndex.Value : road.StartPuzzleIndex;
+                var findRpad = OpenPuzzleRoads.Where(s => (newPuzzleIndex == s.StartPuzzleIndex - 3 || newPuzzleIndex == s.StartPuzzleIndex + 3) &&
                                                             ((road.EndPosition == s.EndPosition + 2 && s.EndsAt(Orientation.Top)) ||
                                                             (road.EndPosition == s.StartPosition + 2 && s.StartsAt(Orientation.Top)) ||
                                                             (road.StartPosition == s.StartPosition + 2 && s.StartsAt(Orientation.Top)) ||
@@ -265,12 +272,13 @@ namespace JapanseTuinen.Services
                     road.CombineRoad(relevantRoad);
 
                     ChangePuzzleRoadListsBasedOnEndings(road, relevantRoad);
+                    return road;
                 }
             }
-
             if (road.StartsOrEndsAt(Orientation.Top))
             {
-                var findRpad = OpenPuzzleRoads.Where(s => (road.StartPuzzleIndex == s.StartPuzzleIndex - 3 || road.StartPuzzleIndex == s.StartPuzzleIndex + 3) &&
+                var newPuzzleIndex = road.EndPuzzleIndex.HasValue ? road.EndPuzzleIndex.Value : road.StartPuzzleIndex;
+                var findRpad = OpenPuzzleRoads.Where(s => (newPuzzleIndex == s.StartPuzzleIndex - 3 || newPuzzleIndex == s.StartPuzzleIndex + 3) &&
                                                             ((road.EndPosition == s.EndPosition - 2 && s.EndsAt(Orientation.Bottom)) ||
                                                             (road.EndPosition == s.StartPosition - 2 && s.StartsAt(Orientation.Bottom)) ||
                                                             (road.StartPosition == s.StartPosition - 2 && s.StartsAt(Orientation.Bottom)) ||
@@ -286,6 +294,7 @@ namespace JapanseTuinen.Services
                     var relevantRoad = findRpad.First();
                     road.CombineRoad(relevantRoad);
                     ChangePuzzleRoadListsBasedOnEndings(road, relevantRoad);
+                    return road;
                 }
             }
 
@@ -295,21 +304,23 @@ namespace JapanseTuinen.Services
 
         public void ChangePuzzleRoadListsBasedOnEndings(PuzzleRoad road, PuzzleRoad relevantRoad)
         {
-            var amountOfClosedEnds = AmountOfOpenRoadEnds(relevantRoad);
-            if (amountOfClosedEnds == 2)
+            var amountOfOpenRoadEnds = AmountOfOpenRoadEnds(relevantRoad);
+            if (amountOfOpenRoadEnds == 2)
             {
+                //The relevantroad is still open, we need to further connect roads to the road object.
+                OpenPuzzleRoads.Remove(relevantRoad);
+                //DefinitivePuzzleRoads.Add(road);
+            }
+            else if (amountOfOpenRoadEnds == 1)
+            {
+                //We connected 2 roads which makes 1 definitive road.
                 OpenPuzzleRoads.Remove(road);
                 DefinitivePuzzleRoads.Add(road);
                 OpenPuzzleRoads.Remove(relevantRoad);
             }
-            else if (amountOfClosedEnds == 1)
+            else if (amountOfOpenRoadEnds == 0)
             {
-                OpenPuzzleRoads.Remove(road);
-                DefinitivePuzzleRoads.Add(road);
-                OpenPuzzleRoads.Remove(relevantRoad);
-            }
-            else if (amountOfClosedEnds == 0)
-            {
+                //This shouldn't happen in practice.
                 OpenPuzzleRoads.Remove(relevantRoad);
             }
         }
@@ -337,40 +348,43 @@ namespace JapanseTuinen.Services
                         {
                             return 0;
                         }
-                        if (UsedPuzzleTilesIndices.Contains(4) && puzzleRoad.StartsOrEndsAt(Orientation.Bottom))
+                        if (UsedPuzzleTilesIndices.Contains(4))
                         {
-                            //puzzleRoad.Count(s => s.)
                             if (puzzleRoad.StartsAt(Orientation.Bottom))
                             {
                                 puzzleRoad.SwitchStartToEnd();
+                                //amount++;
                             }
-                            amount--;
-                            //break;
+                            amount += puzzleRoad.StartsOrEndsAtAmount(Orientation.Bottom);
                         }
-                        if (UsedPuzzleTilesIndices.Contains(2) && puzzleRoad.StartsOrEndsAt(Orientation.Right))
+                        if (UsedPuzzleTilesIndices.Contains(2))
                         {
                             if (puzzleRoad.StartsAt(Orientation.Right))
                             {
                                 puzzleRoad.SwitchStartToEnd();
+                                //amount++;
                             }
-                            amount--;
-                            //break;
+                            //if (puzzleRoad.EndsAt(Orientation.Right))
+                            //{
+                                //amount++;
+                            //}
+                            amount += puzzleRoad.StartsOrEndsAtAmount(Orientation.Right);
                         }
-                        if (!UsedPuzzleTilesIndices.Contains(2))
-                        {
-                            if (!puzzleRoad.StartsOrEndsAt(Orientation.Bottom))
-                            {
-                                return 2;
-                            }
-                        }
+                        //if (!UsedPuzzleTilesIndices.Contains(2) && )
+                        //{
+                        //    if (!puzzleRoad.StartsOrEndsAt(Orientation.Right))
+                        //    {
+                        //        return 2;
+                        //    }
+                        //}
 
-                        if (!UsedPuzzleTilesIndices.Contains(4))
-                        {
-                            if (!puzzleRoad.StartsOrEndsAt(Orientation.Right))
-                            {
-                                return 2;
-                            }
-                        }
+                        //if (!UsedPuzzleTilesIndices.Contains(4))
+                        //{
+                        //    if (!puzzleRoad.StartsOrEndsAt(Orientation.Bottom))
+                        //    {
+                        //        return 2;
+                        //    }
+                        //}
                         break;
                     case 2:
                         if (!UsedPuzzleTilesIndices.Contains(1) && !UsedPuzzleTilesIndices.Contains(3) && !UsedPuzzleTilesIndices.Contains(5))
@@ -382,7 +396,7 @@ namespace JapanseTuinen.Services
                             if ((puzzleRoad.EndPosition == 0 && puzzleRoad.EndOrientation == Orientation.Left) ||
                                 (puzzleRoad.EndPosition == 2 && puzzleRoad.EndOrientation == Orientation.Left))
                             {
-                                amount--;
+                                amount++;
                             }
                         }
                         if (!UsedPuzzleTilesIndices.Contains(3))
@@ -390,7 +404,7 @@ namespace JapanseTuinen.Services
                             if ((puzzleRoad.EndPosition == 1 && puzzleRoad.EndOrientation == Orientation.Right) ||
                                 (puzzleRoad.EndPosition == 3 && puzzleRoad.EndOrientation == Orientation.Right))
                             {
-                                amount--;
+                                amount++;
                             }
                         }
                         if (!UsedPuzzleTilesIndices.Contains(5))
@@ -398,7 +412,7 @@ namespace JapanseTuinen.Services
                             if ((puzzleRoad.EndPosition == 2 && puzzleRoad.EndOrientation == Orientation.Bottom) ||
                                 (puzzleRoad.EndPosition == 3 && puzzleRoad.EndOrientation == Orientation.Bottom))
                             {
-                                amount--;
+                                amount++;
                             }
                         }
                         break;
@@ -412,7 +426,7 @@ namespace JapanseTuinen.Services
                             if ((puzzleRoad.EndPosition == 0 && puzzleRoad.EndOrientation == Orientation.Left) ||
                                 (puzzleRoad.EndPosition == 2 && puzzleRoad.EndOrientation == Orientation.Left))
                             {
-                                amount--;
+                                amount++;
                             }
                         }
                         if (!UsedPuzzleTilesIndices.Contains(6))
@@ -420,7 +434,7 @@ namespace JapanseTuinen.Services
                             if ((puzzleRoad.EndPosition == 2 && puzzleRoad.EndOrientation == Orientation.Bottom) ||
                                 (puzzleRoad.EndPosition == 3 && puzzleRoad.EndOrientation == Orientation.Bottom))
                             {
-                                amount--;
+                                amount++;
                             }
                         }
                         break;
@@ -429,36 +443,46 @@ namespace JapanseTuinen.Services
                         {
                             return 2;
                         }
-                        if (UsedPuzzleTilesIndices.Contains(1) && puzzleRoad.StartsOrEndsAt(Orientation.Top))
+                        if (UsedPuzzleTilesIndices.Contains(1))
                         {
                             if (puzzleRoad.StartsAt(Orientation.Top))
                             {
                                 puzzleRoad.SwitchStartToEnd();
+                                //amount++;
                             }
-                            amount--;
+                            //if (puzzleRoad.EndsAt(Orientation.Top))
+                            //{
+                                //amount++;
+                            //}
+                            amount += puzzleRoad.StartsOrEndsAtAmount(Orientation.Top);
                         }
-                        if (UsedPuzzleTilesIndices.Contains(5) && puzzleRoad.StartsOrEndsAt(Orientation.Right))
+                        if (UsedPuzzleTilesIndices.Contains(5))
                         {
                             if (puzzleRoad.StartsAt(Orientation.Right))
                             {
                                 puzzleRoad.SwitchStartToEnd();
+                                //amount++;
                             }
-                            amount--;
+                            //if (puzzleRoad.EndsAt(Orientation.Right))
+                            //{
+                            //amount++;
+                            //}
+                            amount += puzzleRoad.StartsOrEndsAtAmount(Orientation.Right);
                         }
-                        if (!UsedPuzzleTilesIndices.Contains(1))
-                        {
-                            if (puzzleRoad.StartsOrEndsAt(Orientation.Top))
-                            {
-                                amount--;
-                            }
-                        }
-                        if (!UsedPuzzleTilesIndices.Contains(5))
-                        {
-                            if (puzzleRoad.StartsOrEndsAt(Orientation.Right))
-                            {
-                                amount--;
-                            }
-                        }
+                        //if (!UsedPuzzleTilesIndices.Contains(1))
+                        //{
+                        //    if (puzzleRoad.StartsOrEndsAt(Orientation.Top))
+                        //    {
+                        //        amount++;
+                        //    }
+                        //}
+                        //if (!UsedPuzzleTilesIndices.Contains(5))
+                        //{
+                        //    if (puzzleRoad.StartsOrEndsAt(Orientation.Right))
+                        //    {
+                        //        amount++;
+                        //    }
+                        //}
                         break;
                     case 5:
                         if (!UsedPuzzleTilesIndices.Contains(4) && !UsedPuzzleTilesIndices.Contains(6) && !UsedPuzzleTilesIndices.Contains(2))
@@ -621,6 +645,8 @@ namespace JapanseTuinen.Services
             var iconConditionsToSolve = simpleConditionsList.Where(s =>
                     s.SpecialCondition.Condition.IsIconCondition())
                     .GroupBy(s => s.SpecialCondition.Condition);
+
+            //if (!iconConditionsToSolve.Any()) return true;
 
             foreach (var toSolve in iconConditionsToSolve)
             {

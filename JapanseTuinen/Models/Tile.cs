@@ -115,6 +115,16 @@ namespace JapanseTuinen.Models
             this.EndOrientation = newEndOri;
         }
 
+        public int StartsOrEndsAtAmount(Orientation orientation)
+        {
+            var amount = 0;
+
+            if (StartsAt(orientation)) { amount++; }
+            if (EndsAt(orientation)) { amount++; }
+
+            return amount;
+        }
+
         public bool StartsOrEndsAt(params Orientation[] orientations)
         {
             return orientations.Contains(StartOrientation) || orientations.Contains(EndOrientation);
