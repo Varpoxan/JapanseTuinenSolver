@@ -9,7 +9,7 @@ namespace JapanseTuinen.Models
     {
         public int PuzzleIndex { get; set; }
         public int TileNumber { get; set; }
-        public List<Tile> TileRotationList { get; set; }
+        public List<Tile> TotalTileRotationList { get; set; }
         public int Degrees { get; set; }
         public List<Road> RoadList { get; set; }
 
@@ -18,13 +18,13 @@ namespace JapanseTuinen.Models
             this.TileNumber = tileNumber;
             this.PuzzleIndex = -1;
             this.Degrees = degrees;
-            this.TileRotationList = new List<Tile>(3);
+            this.TotalTileRotationList = new List<Tile>(4);
             this.RoadList = new List<Road>();
         }
 
         public Tile GetRotation(int degrees)
         {
-            return this.TileRotationList.FirstOrDefault(s => s.Degrees == degrees);
+            return this.TotalTileRotationList.FirstOrDefault(s => s.Degrees == degrees);
         }
     }
 
@@ -178,6 +178,10 @@ namespace JapanseTuinen.Models
                 var newEndOrientation = GetNewOrientation(this.EndOrientation, degrees);
                 var newRoad = new Road(newStartPos, newStartOrientation, newEndPos, newEndOrientation, this.RoadAttribute);
                 return newRoad;
+            }
+            else
+            {
+                return this;
             }
             return null;
         }

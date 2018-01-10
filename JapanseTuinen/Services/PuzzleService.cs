@@ -80,7 +80,7 @@ namespace JapanseTuinen.Services
                 this.EndPosition = puzzleRoad.EndPosition;
                 roadHasUpdated = true;
             }
-            
+
 
             if (this.EndOrientation == Orientation.Bottom && puzzleRoad.EndOrientation == Orientation.Top)
             {
@@ -155,10 +155,10 @@ namespace JapanseTuinen.Services
             {
                 foreach (var tile in Initiator.TileList)
                 {
-                    var firstTileKey = new UsedTileDictionaryKey(usedPIndex, tile.TileNumber, 0);
-                    CheckedTileDictionary.Add(firstTileKey, 0);
+                    //var firstTileKey = new UsedTileDictionaryKey(usedPIndex, tile.TileNumber, 0);
+                    //CheckedTileDictionary.Add(firstTileKey, 0);
 
-                    foreach (var tileRot in tile.TileRotationList)
+                    foreach (var tileRot in tile.TotalTileRotationList)
                     {
                         var tileKey = new UsedTileDictionaryKey(usedPIndex, tile.TileNumber, tileRot.Degrees);
                         CheckedTileDictionary.Add(tileKey, 0);
@@ -220,12 +220,13 @@ namespace JapanseTuinen.Services
                 }
             }
 
-
-            while (OpenPuzzleRoads.Any())
+            int endWhileCount = 0;
+            while (OpenPuzzleRoads.Any() && endWhileCount <= 10)
             {
                 //foreach (var openRoad in OpenPuzzleRoads)
                 //{
                 var road = FindRoadEndingOnCurrentStart(OpenPuzzleRoads[0]);
+                endWhileCount++;
             }
 
             return DefinitivePuzzleRoads;
@@ -328,215 +329,162 @@ namespace JapanseTuinen.Services
         public int AmountOfOpenRoadEnds(PuzzleRoad puzzleRoad)
         {
             int amount = 0;
-            //var puzzleIndices = new List<int>() { puzzleRoad.StartPuzzleIndex };
-            if (puzzleRoad.EndPuzzleIndex.HasValue)
-            {
-                //puzzleIndices.Add(puzzleRoad.EndPuzzleIndex.Value);
-            }
             var usingPuzzleIndex = puzzleRoad.StartPuzzleIndex;
-            //foreach (var usingPuzzleIndex in puzzleIndices)
+            if (puzzleRoad.DefinitiveEndingRoad(usingPuzzleIndex))
             {
-                if (puzzleRoad.DefinitiveEndingRoad(usingPuzzleIndex))
-                {
-                    return 0;
-                }
+                return 0;
+            }
 
-                switch (usingPuzzleIndex)
-                {
-                    case 1:
-                        if (!UsedPuzzleTilesIndices.Contains(2) && !UsedPuzzleTilesIndices.Contains(4))
+            switch (usingPuzzleIndex)
+            {
+                case 1:
+                    if (!UsedPuzzleTilesIndices.Contains(2) && !UsedPuzzleTilesIndices.Contains(4))
+                    {
+                        return 0;
+                    }
+                    if (UsedPuzzleTilesIndices.Contains(4))
+                    {
+                        if (puzzleRoad.StartsAt(Orientation.Bottom))
                         {
-                            return 0;
+                            puzzleRoad.SwitchStartToEnd();
                         }
-                        if (UsedPuzzleTilesIndices.Contains(4))
+                        amount += puzzleRoad.StartsOrEndsAtAmount(Orientation.Bottom);
+                    }
+                    if (UsedPuzzleTilesIndices.Contains(2))
+                    {
+                        if (puzzleRoad.StartsAt(Orientation.Right))
                         {
-                            if (puzzleRoad.StartsAt(Orientation.Bottom))
-                            {
-                                puzzleRoad.SwitchStartToEnd();
-                                //amount++;
-                            }
-                            amount += puzzleRoad.StartsOrEndsAtAmount(Orientation.Bottom);
+                            puzzleRoad.SwitchStartToEnd();
                         }
-                        if (UsedPuzzleTilesIndices.Contains(2))
+                        amount += puzzleRoad.StartsOrEndsAtAmount(Orientation.Right);
+                    }
+                    break;
+                case 2:
+                    if (!UsedPuzzleTilesIndices.Contains(1) && !UsedPuzzleTilesIndices.Contains(3) && !UsedPuzzleTilesIndices.Contains(5))
+                    {
+                        return 2;
+                    }
+                    if (!UsedPuzzleTilesIndices.Contains(1))
+                    {
+                        if ((puzzleRoad.EndPosition == 0 && puzzleRoad.EndOrientation == Orientation.Left) ||
+                            (puzzleRoad.EndPosition == 2 && puzzleRoad.EndOrientation == Orientation.Left))
                         {
-                            if (puzzleRoad.StartsAt(Orientation.Right))
-                            {
-                                puzzleRoad.SwitchStartToEnd();
-                                //amount++;
-                            }
-                            //if (puzzleRoad.EndsAt(Orientation.Right))
-                            //{
-                                //amount++;
-                            //}
-                            amount += puzzleRoad.StartsOrEndsAtAmount(Orientation.Right);
+                            amount++;
                         }
-                        //if (!UsedPuzzleTilesIndices.Contains(2) && )
-                        //{
-                        //    if (!puzzleRoad.StartsOrEndsAt(Orientation.Right))
-                        //    {
-                        //        return 2;
-                        //    }
-                        //}
-
-                        //if (!UsedPuzzleTilesIndices.Contains(4))
-                        //{
-                        //    if (!puzzleRoad.StartsOrEndsAt(Orientation.Bottom))
-                        //    {
-                        //        return 2;
-                        //    }
-                        //}
-                        break;
-                    case 2:
-                        if (!UsedPuzzleTilesIndices.Contains(1) && !UsedPuzzleTilesIndices.Contains(3) && !UsedPuzzleTilesIndices.Contains(5))
+                    }
+                    if (!UsedPuzzleTilesIndices.Contains(3))
+                    {
+                        if ((puzzleRoad.EndPosition == 1 && puzzleRoad.EndOrientation == Orientation.Right) ||
+                            (puzzleRoad.EndPosition == 3 && puzzleRoad.EndOrientation == Orientation.Right))
                         {
-                            return 2;
+                            amount++;
                         }
-                        if (!UsedPuzzleTilesIndices.Contains(1))
+                    }
+                    if (!UsedPuzzleTilesIndices.Contains(5))
+                    {
+                        if ((puzzleRoad.EndPosition == 2 && puzzleRoad.EndOrientation == Orientation.Bottom) ||
+                            (puzzleRoad.EndPosition == 3 && puzzleRoad.EndOrientation == Orientation.Bottom))
                         {
-                            if ((puzzleRoad.EndPosition == 0 && puzzleRoad.EndOrientation == Orientation.Left) ||
-                                (puzzleRoad.EndPosition == 2 && puzzleRoad.EndOrientation == Orientation.Left))
-                            {
-                                amount++;
-                            }
+                            amount++;
                         }
-                        if (!UsedPuzzleTilesIndices.Contains(3))
+                    }
+                    break;
+                case 3:
+                    if (!UsedPuzzleTilesIndices.Contains(2) && !UsedPuzzleTilesIndices.Contains(6))
+                    {
+                        return 2;
+                    }
+                    if (!UsedPuzzleTilesIndices.Contains(2))
+                    {
+                        if ((puzzleRoad.EndPosition == 0 && puzzleRoad.EndOrientation == Orientation.Left) ||
+                            (puzzleRoad.EndPosition == 2 && puzzleRoad.EndOrientation == Orientation.Left))
                         {
-                            if ((puzzleRoad.EndPosition == 1 && puzzleRoad.EndOrientation == Orientation.Right) ||
-                                (puzzleRoad.EndPosition == 3 && puzzleRoad.EndOrientation == Orientation.Right))
-                            {
-                                amount++;
-                            }
+                            amount++;
                         }
-                        if (!UsedPuzzleTilesIndices.Contains(5))
+                    }
+                    if (!UsedPuzzleTilesIndices.Contains(6))
+                    {
+                        if ((puzzleRoad.EndPosition == 2 && puzzleRoad.EndOrientation == Orientation.Bottom) ||
+                            (puzzleRoad.EndPosition == 3 && puzzleRoad.EndOrientation == Orientation.Bottom))
                         {
-                            if ((puzzleRoad.EndPosition == 2 && puzzleRoad.EndOrientation == Orientation.Bottom) ||
-                                (puzzleRoad.EndPosition == 3 && puzzleRoad.EndOrientation == Orientation.Bottom))
-                            {
-                                amount++;
-                            }
+                            amount++;
                         }
-                        break;
-                    case 3:
-                        if (!UsedPuzzleTilesIndices.Contains(2) && !UsedPuzzleTilesIndices.Contains(6))
+                    }
+                    break;
+                case 4:
+                    if (!UsedPuzzleTilesIndices.Contains(1) && !UsedPuzzleTilesIndices.Contains(5))
+                    {
+                        return 2;
+                    }
+                    if (UsedPuzzleTilesIndices.Contains(1))
+                    {
+                        if (puzzleRoad.StartsAt(Orientation.Top))
                         {
-                            return 2;
+                            puzzleRoad.SwitchStartToEnd();
                         }
-                        if (!UsedPuzzleTilesIndices.Contains(2))
+                        amount += puzzleRoad.StartsOrEndsAtAmount(Orientation.Top);
+                    }
+                    if (UsedPuzzleTilesIndices.Contains(5))
+                    {
+                        if (puzzleRoad.StartsAt(Orientation.Right))
                         {
-                            if ((puzzleRoad.EndPosition == 0 && puzzleRoad.EndOrientation == Orientation.Left) ||
-                                (puzzleRoad.EndPosition == 2 && puzzleRoad.EndOrientation == Orientation.Left))
-                            {
-                                amount++;
-                            }
+                            puzzleRoad.SwitchStartToEnd();
                         }
-                        if (!UsedPuzzleTilesIndices.Contains(6))
-                        {
-                            if ((puzzleRoad.EndPosition == 2 && puzzleRoad.EndOrientation == Orientation.Bottom) ||
-                                (puzzleRoad.EndPosition == 3 && puzzleRoad.EndOrientation == Orientation.Bottom))
-                            {
-                                amount++;
-                            }
-                        }
-                        break;
-                    case 4:
-                        if (!UsedPuzzleTilesIndices.Contains(1) && !UsedPuzzleTilesIndices.Contains(5))
-                        {
-                            return 2;
-                        }
-                        if (UsedPuzzleTilesIndices.Contains(1))
-                        {
-                            if (puzzleRoad.StartsAt(Orientation.Top))
-                            {
-                                puzzleRoad.SwitchStartToEnd();
-                                //amount++;
-                            }
-                            //if (puzzleRoad.EndsAt(Orientation.Top))
-                            //{
-                                //amount++;
-                            //}
-                            amount += puzzleRoad.StartsOrEndsAtAmount(Orientation.Top);
-                        }
-                        if (UsedPuzzleTilesIndices.Contains(5))
-                        {
-                            if (puzzleRoad.StartsAt(Orientation.Right))
-                            {
-                                puzzleRoad.SwitchStartToEnd();
-                                //amount++;
-                            }
-                            //if (puzzleRoad.EndsAt(Orientation.Right))
-                            //{
-                            //amount++;
-                            //}
-                            amount += puzzleRoad.StartsOrEndsAtAmount(Orientation.Right);
-                        }
-                        //if (!UsedPuzzleTilesIndices.Contains(1))
-                        //{
-                        //    if (puzzleRoad.StartsOrEndsAt(Orientation.Top))
-                        //    {
-                        //        amount++;
-                        //    }
-                        //}
-                        //if (!UsedPuzzleTilesIndices.Contains(5))
-                        //{
-                        //    if (puzzleRoad.StartsOrEndsAt(Orientation.Right))
-                        //    {
-                        //        amount++;
-                        //    }
-                        //}
-                        break;
-                    case 5:
-                        if (!UsedPuzzleTilesIndices.Contains(4) && !UsedPuzzleTilesIndices.Contains(6) && !UsedPuzzleTilesIndices.Contains(2))
+                        amount += puzzleRoad.StartsOrEndsAtAmount(Orientation.Right);
+                    }
+                    break;
+                case 5:
+                    if (!UsedPuzzleTilesIndices.Contains(4) && !UsedPuzzleTilesIndices.Contains(6) && !UsedPuzzleTilesIndices.Contains(2))
+                    {
+                        return 2;
+                    }
+                    if (!UsedPuzzleTilesIndices.Contains(4))
+                    {
+                        if ((puzzleRoad.EndPosition == 0 && puzzleRoad.EndOrientation == Orientation.Left) ||
+                            (puzzleRoad.EndPosition == 2 && puzzleRoad.EndOrientation == Orientation.Left))
                         {
                             return 2;
                         }
-                        if (!UsedPuzzleTilesIndices.Contains(4))
-                        {
-                            if ((puzzleRoad.EndPosition == 0 && puzzleRoad.EndOrientation == Orientation.Left) ||
-                                (puzzleRoad.EndPosition == 2 && puzzleRoad.EndOrientation == Orientation.Left))
-                            {
-                                return 2;
-                            }
-                        }
-                        if (!UsedPuzzleTilesIndices.Contains(6))
-                        {
-                            if ((puzzleRoad.EndPosition == 1 && puzzleRoad.EndOrientation == Orientation.Right) ||
-                                (puzzleRoad.EndPosition == 3 && puzzleRoad.EndOrientation == Orientation.Right))
-                            {
-                                return 2;
-                            }
-                        }
-                        if (!UsedPuzzleTilesIndices.Contains(2))
-                        {
-                            if ((puzzleRoad.EndPosition == 0 && puzzleRoad.EndOrientation == Orientation.Top) ||
-                                (puzzleRoad.EndPosition == 1 && puzzleRoad.EndOrientation == Orientation.Top))
-                            {
-                                return 2;
-                            }
-                        }
-                        break;
-                    case 6:
-                        if (!UsedPuzzleTilesIndices.Contains(3) && !UsedPuzzleTilesIndices.Contains(5))
+                    }
+                    if (!UsedPuzzleTilesIndices.Contains(6))
+                    {
+                        if ((puzzleRoad.EndPosition == 1 && puzzleRoad.EndOrientation == Orientation.Right) ||
+                            (puzzleRoad.EndPosition == 3 && puzzleRoad.EndOrientation == Orientation.Right))
                         {
                             return 2;
                         }
-                        if (!UsedPuzzleTilesIndices.Contains(3))
+                    }
+                    if (!UsedPuzzleTilesIndices.Contains(2))
+                    {
+                        if ((puzzleRoad.EndPosition == 0 && puzzleRoad.EndOrientation == Orientation.Top) ||
+                            (puzzleRoad.EndPosition == 1 && puzzleRoad.EndOrientation == Orientation.Top))
                         {
-                            if ((puzzleRoad.EndPosition == 0 && puzzleRoad.EndOrientation == Orientation.Top) ||
-                                (puzzleRoad.EndPosition == 1 && puzzleRoad.EndOrientation == Orientation.Top))
-                            {
-                                return 2;
-                            }
+                            return 2;
                         }
-                        if (!UsedPuzzleTilesIndices.Contains(5))
+                    }
+                    break;
+                case 6:
+                    if (!UsedPuzzleTilesIndices.Contains(3) && !UsedPuzzleTilesIndices.Contains(5))
+                    {
+                        return 2;
+                    }
+                    if (!UsedPuzzleTilesIndices.Contains(3))
+                    {
+                        if ((puzzleRoad.EndPosition == 0 && puzzleRoad.EndOrientation == Orientation.Top) ||
+                            (puzzleRoad.EndPosition == 1 && puzzleRoad.EndOrientation == Orientation.Top))
                         {
-                            if ((puzzleRoad.EndPosition == 0 && puzzleRoad.EndOrientation == Orientation.Left) ||
-                                (puzzleRoad.EndPosition == 2 && puzzleRoad.EndOrientation == Orientation.Left))
-                            {
-                                return 2;
-                            }
+                            return 2;
                         }
-                        break;
-                }
+                    }
+                    if (!UsedPuzzleTilesIndices.Contains(5))
+                    {
+                        if ((puzzleRoad.EndPosition == 0 && puzzleRoad.EndOrientation == Orientation.Left) ||
+                            (puzzleRoad.EndPosition == 2 && puzzleRoad.EndOrientation == Orientation.Left))
+                        {
+                            return 2;
+                        }
+                    }
+                    break;
             }
 
             return amount;
@@ -555,13 +503,20 @@ namespace JapanseTuinen.Services
             var simpleConditionsList = puzzleVM.PuzzleTileList.SelectMany(s => s.SimpleTileIndexList).ToList();
             FillCheckedTileDictionary();
             FillTotalAmountOfSolutions();
-            //usedTileList = new List<Tile>();
+
+            var totalRotationTileList = Initiator.TileList.SelectMany(s => s.TotalTileRotationList);
+            var usedTileDictionary = Initiator.TileList.ToDictionary(s => s.TileNumber, s => false);
 
             var start = DateTime.Now;
             while (!solvedPuzzleVM.Solved && AmountOfCheckedSolutions <= AmountOfTotalSolutions)
             {
-                foreach (var tile in Initiator.TileList)
+                foreach (var tile in totalRotationTileList)
                 {
+                    if (usedTileDictionary[tile.TileNumber])
+                    {
+                        continue;
+                    }
+
                     if (UsedTileList.Count == puzzleVM.PuzzleTileList.Count)
                     {
                         AmountOfCheckedSolutions++;
@@ -574,17 +529,38 @@ namespace JapanseTuinen.Services
                         else
                         {
                             UsedTileList.Clear();
+                            usedTileDictionary = usedTileDictionary.ToDictionary(p => p.Key, p => false);
                         }
-                        //break;
                     }
 
-                    var tileIsUsed = false;
-
-                    var tempTileRotationList = new List<Tile> { tile };
-                    tempTileRotationList.AddRange(tile.TileRotationList);
-
-                    foreach (var rotatedTile in tempTileRotationList)
+                    if (UsedTileList.Count == puzzleVM.PuzzleTileList.Count)
                     {
+                        FillPuzzleRoads(UsedTileList);
+                        if (DoesDefinitiveRoadListSolvePuzzle(simpleConditionsList))
+                        {
+                            solvedPuzzleVM.Solved = true;
+                            break;
+                        }
+                    }
+
+                    //Loop through amount of puzzleindices
+                    foreach (var puzzleTile in puzzleVM.PuzzleTileList)
+                    {
+                        var tileKey = new UsedTileDictionaryKey(puzzleTile.Index, tile.TileNumber, tile.Degrees);
+
+                        if (CheckedTileDictionary[tileKey] >= 28)
+                        {
+                            continue;
+                        }
+
+                        if (usedTileDictionary[tile.TileNumber])
+                        {
+                            break;
+                        }
+                        if (UsedTileList.Any(s => s.PuzzleIndex == puzzleTile.Index))
+                        {
+                            continue;
+                        }
                         if (UsedTileList.Count == puzzleVM.PuzzleTileList.Count)
                         {
                             FillPuzzleRoads(UsedTileList);
@@ -595,38 +571,10 @@ namespace JapanseTuinen.Services
                             }
                         }
 
-                        foreach (var puzzleTile in puzzleVM.PuzzleTileList)
-                        {
-                            if (UsedTileList.Any(s => s.PuzzleIndex == puzzleTile.Index))
-                            {
-                                continue;
-                            }
-                            if (UsedTileList.Count == puzzleVM.PuzzleTileList.Count)
-                            {
-                                FillPuzzleRoads(UsedTileList);
-                                if (DoesDefinitiveRoadListSolvePuzzle(simpleConditionsList))
-                                {
-                                    solvedPuzzleVM.Solved = true;
-                                    break;
-                                }
-                            }
-
-                            rotatedTile.PuzzleIndex = puzzleTile.Index;
-                            UsedTileList.Add(rotatedTile);
-                            var tileKey = new UsedTileDictionaryKey(puzzleTile.Index, rotatedTile.TileNumber, rotatedTile.Degrees);
-                            CheckedTileDictionary[tileKey]++;
-                            tileIsUsed = true;
-                            break;
-                        }
-                        if (tileIsUsed)
-                        {
-                            break;
-                        }
-                    }
-
-                    if (tileIsUsed)
-                    {
-                        continue;
+                        tile.PuzzleIndex = puzzleTile.Index;
+                        UsedTileList.Add(tile);
+                        CheckedTileDictionary[tileKey]++;
+                        usedTileDictionary[tile.TileNumber] = true;
                     }
                 }
             }
@@ -660,11 +608,6 @@ namespace JapanseTuinen.Services
                 if (findRoad != null)
                 {
                     return true;
-                }
-
-                foreach (var road in DefinitivePuzzleRoads)
-                {
-                    //if (conditionOne.po)
                 }
             }
 

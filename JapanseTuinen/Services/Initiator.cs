@@ -55,7 +55,7 @@ namespace JapanseTuinen.Services
             };
 
             var allOtherRotations = GetAllRotations(tile);
-            tile.TileRotationList.AddRange(allOtherRotations);
+            tile.TotalTileRotationList.AddRange(allOtherRotations);
 
             return tile;
         }
@@ -73,7 +73,7 @@ namespace JapanseTuinen.Services
             };
 
             var allOtherRotations = GetAllRotations(tile);
-            tile.TileRotationList.AddRange(allOtherRotations);
+            tile.TotalTileRotationList.AddRange(allOtherRotations);
 
             return tile;
         }
@@ -92,7 +92,7 @@ namespace JapanseTuinen.Services
             };
 
             var allOtherRotations = GetAllRotations(tile);
-            tile.TileRotationList.AddRange(allOtherRotations);
+            tile.TotalTileRotationList.AddRange(allOtherRotations);
 
             return tile;
         }
@@ -110,7 +110,7 @@ namespace JapanseTuinen.Services
             };
 
             var allOtherRotations = GetAllRotations(tile);
-            tile.TileRotationList.AddRange(allOtherRotations);
+            tile.TotalTileRotationList.AddRange(allOtherRotations);
 
             return tile;
         }
@@ -128,7 +128,7 @@ namespace JapanseTuinen.Services
             };
 
             var allOtherRotations = GetAllRotations(tile);
-            tile.TileRotationList.AddRange(allOtherRotations);
+            tile.TotalTileRotationList.AddRange(allOtherRotations);
 
             return tile;
         }
@@ -146,7 +146,7 @@ namespace JapanseTuinen.Services
             };
 
             var allOtherRotations = GetAllRotations(tile);
-            tile.TileRotationList.AddRange(allOtherRotations);
+            tile.TotalTileRotationList.AddRange(allOtherRotations);
 
             return tile;
         }
@@ -163,8 +163,8 @@ namespace JapanseTuinen.Services
             }
             };
 
-            var allOtherRotations = GetAllRotations(tile);
-            tile.TileRotationList.AddRange(allOtherRotations);
+            var allRotations = GetAllRotations(tile);
+            tile.TotalTileRotationList.AddRange(allRotations);
 
             return tile;
         }
@@ -172,7 +172,7 @@ namespace JapanseTuinen.Services
         private List<Tile> GetAllRotations(Tile initialRotation)
         {
             var returnList = new List<Tile>();
-            var degreeList = new List<int> { 90, 180, 270 };
+            var degreeList = new List<int> { 0, 90, 180, 270 };
 
             foreach (var rot in degreeList)
             {
