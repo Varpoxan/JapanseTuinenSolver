@@ -567,8 +567,9 @@ namespace JapanseTuinen.Services
                         else
                         {
                             //UsedTileList.Clear();
+                            var removingTile = UsedTileList.Last();
                             UsedTileList.RemoveAt(1);
-                            usedTileDictionary = usedTileDictionary.ToDictionary(p => p.Key, p => false);
+                            usedTileDictionary[removingTile.TileNumber] = false;
                         }
                     }
 
@@ -589,6 +590,8 @@ namespace JapanseTuinen.Services
 
                         if (CheckedTileDictionary[tileKey] >= AmountOfMaximumTriesPerTile)
                         {
+                            UsedTileList.Clear();
+                            usedTileDictionary = usedTileDictionary.ToDictionary(p => p.Key, p => false);
                             continue;
                         }
 
