@@ -26,6 +26,11 @@ namespace JapanseTuinen.Models
         {
             return this.TotalTileRotationList.FirstOrDefault(s => s.Degrees == degrees);
         }
+
+        public override string ToString()
+        {
+            return String.Format("{0} - {1} - {2}°", this.PuzzleIndex, this.TileNumber, this.Degrees);
+        }
     }
 
     public class SimpleTileIndex

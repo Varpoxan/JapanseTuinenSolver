@@ -9,29 +9,29 @@ namespace JapanseTuinen.Models
     {
         public int PuzzleIndex { get; set; }
         public int TileNumber { get; set; }
-        public int TileRotation { get; set; }
+        public int Degrees { get; set; }
 
-        public UsedTileDictionaryKey(int pIndex, int tNumber, int tRotation)
+        public UsedTileDictionaryKey(int pIndex, int tNumber, int degrees)
         {
             this.PuzzleIndex = pIndex;
             this.TileNumber = tNumber;
-            this.TileRotation = tRotation;
+            this.Degrees = degrees;
         }
 
         public override bool Equals(object UTDK)
         {
             var newObj = (UsedTileDictionaryKey)UTDK;
-            return this.PuzzleIndex == newObj.PuzzleIndex && this.TileNumber == newObj.TileNumber && this.TileRotation == newObj.TileRotation;
+            return this.PuzzleIndex == newObj.PuzzleIndex && this.TileNumber == newObj.TileNumber && this.Degrees == newObj.Degrees;
         }
 
         public override int GetHashCode()
         {
-            return this.PuzzleIndex.GetHashCode() + this.TileNumber.GetHashCode() + this.TileRotation.GetHashCode();
+            return this.PuzzleIndex.GetHashCode() + this.TileNumber.GetHashCode() + this.Degrees.GetHashCode();
         }
 
         public override string ToString()
         {
-            return String.Format("PI: {0} - TNumber: {1} - TRotation: {2}", this.PuzzleIndex, this.TileNumber, this.TileRotation);
+            return String.Format("PI: {0} - TNumber: {1} - TRotation: {2}", this.PuzzleIndex, this.TileNumber, this.Degrees);
         }
     }
 

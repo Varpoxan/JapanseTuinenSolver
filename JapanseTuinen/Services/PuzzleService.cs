@@ -550,15 +550,25 @@ namespace JapanseTuinen.Services
             {
                 foreach (var tile in totalRotationTileList)
                 {
-                    if (usedTileDictionary[tile.TileNumber])
+                    if (tile.PuzzleIndex >= 0)
                     {
-                        continue;
+                        var tileKey = new UsedTileDictionaryKey(tile.PuzzleIndex, tile.TileNumber, tile.Degrees);
+                        if (CheckedTileDictionary[tileKey] >= AmountOfMaximumTriesPerTile)
+                        {
+                            UsedTileList.Remove(tile);
+                            usedTileDictionary[tile.TileNumber] = false;
+                        }
                     }
 
                     if (UsedTileList.Count == puzzleVM.PuzzleTileList.Count)
                     {
                         AmountOfCheckedSolutions++;
                         FillPuzzleRoads(UsedTileList);
+                        if (tile.PuzzleIndex >= 0)
+                        {
+                            var tileKey = new UsedTileDictionaryKey(tile.PuzzleIndex, tile.TileNumber, tile.Degrees);
+                            CheckedTileDictionary[tileKey]++;
+                        }
                         if (DoesDefinitiveRoadListSolvePuzzle(simpleConditionsList))
                         {
                             solvedPuzzleVM.Solved = true;
@@ -566,21 +576,15 @@ namespace JapanseTuinen.Services
                         }
                         else
                         {
-                            //UsedTileList.Clear();
                             var removingTile = UsedTileList.Last();
                             UsedTileList.RemoveAt(1);
                             usedTileDictionary[removingTile.TileNumber] = false;
                         }
                     }
 
-                    if (UsedTileList.Count == puzzleVM.PuzzleTileList.Count)
+                    if (usedTileDictionary[tile.TileNumber])
                     {
-                        FillPuzzleRoads(UsedTileList);
-                        if (DoesDefinitiveRoadListSolvePuzzle(simpleConditionsList))
-                        {
-                            solvedPuzzleVM.Solved = true;
-                            break;
-                        }
+                        continue;
                     }
 
                     //Loop through amount of puzzleindices
@@ -603,20 +607,37 @@ namespace JapanseTuinen.Services
                         {
                             continue;
                         }
-                        if (UsedTileList.Count == puzzleVM.PuzzleTileList.Count)
-                        {
-                            FillPuzzleRoads(UsedTileList);
-                            if (DoesDefinitiveRoadListSolvePuzzle(simpleConditionsList))
-                            {
-                                solvedPuzzleVM.Solved = true;
-                                break;
-                            }
-                        }
+                        //if (UsedTileList.Count == puzzleVM.PuzzleTileList.Count)
+                        //{
+                        //    FillPuzzleRoads(UsedTileList);
+                        //    if (DoesDefinitiveRoadListSolvePuzzle(simpleConditionsList))
+                        //    {
+                        //        solvedPuzzleVM.Solved = true;
+                        //        break;
+                        //    }
+                        //    else
+                        //    {
+                        //        //UsedTileList.Clear();
+                        //        var removingTile = UsedTileList.Last();
+                        //        UsedTileList.RemoveAt(1);
+                        //        usedTileDictionary[removingTile.TileNumber] = false;
+                        //    }
+                        //    var otherTile = UsedTileList.FirstOrDefault(s => s.TileNumber != tile.TileNumber);
+                        //    var tileKey2 = new UsedTileDictionaryKey(otherTile.PuzzleIndex, otherTile.TileNumber, otherTile.Degrees);
+                        //    CheckedTileDictionary[tileKey]++;
+                        //}
 
                         tile.PuzzleIndex = puzzleTile.Index;
                         UsedTileList.Add(tile);
                         CheckedTileDictionary[tileKey]++;
                         usedTileDictionary[tile.TileNumber] = true;
+
+                        if (UsedTileList.Count == puzzleVM.PuzzleTileList.Count)
+                        {
+                            var otherTile = UsedTileList.FirstOrDefault(s => s.TileNumber != tile.TileNumber);
+                            var tileKey2 = new UsedTileDictionaryKey(otherTile.PuzzleIndex, otherTile.TileNumber, otherTile.Degrees);
+                            CheckedTileDictionary[tileKey]++;
+                        }
                     }
                 }
             }
@@ -678,14 +699,14 @@ namespace JapanseTuinen.Services
             foreach (var toSolve in conditionsToSolve)
             {
                 var findRoad = DefinitivePuzzleRoads.FirstOrDefault(s =>
-                                s.StartsOrEndsAt(toSolve.PuzzleIndex, toSolve.Position, toSolve.Orientation) && 
+                                s.StartsOrEndsAt(toSolve.PuzzleIndex, toSolve.Position, toSolve.Orientation) &&
                                 s.SpecialConditions.Any(sc => sc.Condition == Condition.Pagoda));
 
                 returnValues.Add(findRoad != null);
                 //returnValue &= findRoad != null;
                 //if (findRoad != null)
                 //{
-                    //returnValue &= true;
+                //returnValue &= true;
                 //}
             }
 
