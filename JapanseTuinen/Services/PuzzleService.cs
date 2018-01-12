@@ -99,6 +99,11 @@ namespace JapanseTuinen.Services
                 this.EndPosition = puzzleRoad.StartPosition;
                 roadHasUpdated = true;
             }
+            else if (this.EndPosition + 2 == puzzleRoad.StartPosition)
+            {
+                this.EndPosition = puzzleRoad.EndPosition;
+                roadHasUpdated = true;
+            }
 
             if (this.EndOrientation == Orientation.Bottom && puzzleRoad.EndOrientation == Orientation.Top)
             {
@@ -550,97 +555,81 @@ namespace JapanseTuinen.Services
             {
                 foreach (var tile in totalRotationTileList)
                 {
-                    if (tile.PuzzleIndex >= 0)
-                    {
-                        var tileKey = new UsedTileDictionaryKey(tile.PuzzleIndex, tile.TileNumber, tile.Degrees);
-                        if (CheckedTileDictionary[tileKey] >= AmountOfMaximumTriesPerTile)
-                        {
-                            UsedTileList.Remove(tile);
-                            usedTileDictionary[tile.TileNumber] = false;
-                        }
-                    }
-
-                    if (UsedTileList.Count == puzzleVM.PuzzleTileList.Count)
-                    {
-                        AmountOfCheckedSolutions++;
-                        FillPuzzleRoads(UsedTileList);
-                        if (tile.PuzzleIndex >= 0)
-                        {
-                            var tileKey = new UsedTileDictionaryKey(tile.PuzzleIndex, tile.TileNumber, tile.Degrees);
-                            CheckedTileDictionary[tileKey]++;
-                        }
-                        if (DoesDefinitiveRoadListSolvePuzzle(simpleConditionsList))
-                        {
-                            solvedPuzzleVM.Solved = true;
-                            break;
-                        }
-                        else
-                        {
-                            var removingTile = UsedTileList.Last();
-                            UsedTileList.RemoveAt(1);
-                            usedTileDictionary[removingTile.TileNumber] = false;
-                        }
-                    }
-
-                    if (usedTileDictionary[tile.TileNumber])
-                    {
-                        continue;
-                    }
-
-                    //Loop through amount of puzzleindices
                     foreach (var puzzleTile in puzzleVM.PuzzleTileList)
                     {
-                        var tileKey = new UsedTileDictionaryKey(puzzleTile.Index, tile.TileNumber, tile.Degrees);
 
-                        if (CheckedTileDictionary[tileKey] >= AmountOfMaximumTriesPerTile)
-                        {
-                            UsedTileList.Clear();
-                            usedTileDictionary = usedTileDictionary.ToDictionary(p => p.Key, p => false);
-                            continue;
-                        }
 
-                        if (usedTileDictionary[tile.TileNumber])
-                        {
-                            break;
-                        }
-                        if (UsedTileList.Any(s => s.PuzzleIndex == puzzleTile.Index))
-                        {
-                            continue;
-                        }
-                        //if (UsedTileList.Count == puzzleVM.PuzzleTileList.Count)
-                        //{
-                        //    FillPuzzleRoads(UsedTileList);
-                        //    if (DoesDefinitiveRoadListSolvePuzzle(simpleConditionsList))
-                        //    {
-                        //        solvedPuzzleVM.Solved = true;
-                        //        break;
-                        //    }
-                        //    else
-                        //    {
-                        //        //UsedTileList.Clear();
-                        //        var removingTile = UsedTileList.Last();
-                        //        UsedTileList.RemoveAt(1);
-                        //        usedTileDictionary[removingTile.TileNumber] = false;
-                        //    }
-                        //    var otherTile = UsedTileList.FirstOrDefault(s => s.TileNumber != tile.TileNumber);
-                        //    var tileKey2 = new UsedTileDictionaryKey(otherTile.PuzzleIndex, otherTile.TileNumber, otherTile.Degrees);
-                        //    CheckedTileDictionary[tileKey]++;
-                        //}
-
-                        tile.PuzzleIndex = puzzleTile.Index;
-                        UsedTileList.Add(tile);
-                        CheckedTileDictionary[tileKey]++;
-                        usedTileDictionary[tile.TileNumber] = true;
-
-                        if (UsedTileList.Count == puzzleVM.PuzzleTileList.Count)
-                        {
-                            var otherTile = UsedTileList.FirstOrDefault(s => s.TileNumber != tile.TileNumber);
-                            var tileKey2 = new UsedTileDictionaryKey(otherTile.PuzzleIndex, otherTile.TileNumber, otherTile.Degrees);
-                            CheckedTileDictionary[tileKey]++;
-                        }
                     }
                 }
             }
+
+            //if (tile.PuzzleIndex >= 0)
+            //{
+            //    var tileKey = new UsedTileDictionaryKey(tile.PuzzleIndex, tile.TileNumber, tile.Degrees);
+            //    if (CheckedTileDictionary[tileKey] >= AmountOfMaximumTriesPerTile)
+            //    {
+            //        UsedTileList.Remove(tile);
+            //        usedTileDictionary[tile.TileNumber] = false;
+            //    }
+            //}
+
+            //if (UsedTileList.Count == puzzleVM.PuzzleTileList.Count)
+            //{
+            //    AmountOfCheckedSolutions++;
+            //    FillPuzzleRoads(UsedTileList);
+            //    if (tile.PuzzleIndex >= 0)
+            //    {
+            //        var tileKey = new UsedTileDictionaryKey(tile.PuzzleIndex, tile.TileNumber, tile.Degrees);
+            //        CheckedTileDictionary[tileKey]++;
+            //        var otherTile = UsedTileList.FirstOrDefault(s => s.TileNumber != tile.TileNumber);
+            //        var tileKey2 = new UsedTileDictionaryKey(otherTile.PuzzleIndex, otherTile.TileNumber, otherTile.Degrees);
+            //        CheckedTileDictionary[tileKey]++;
+            //    }
+            //    if (DoesDefinitiveRoadListSolvePuzzle(simpleConditionsList))
+            //    {
+            //        solvedPuzzleVM.Solved = true;
+            //        break;
+            //    }
+            //    else
+            //    {
+            //        var removingTile = UsedTileList.Last();
+            //        UsedTileList.RemoveAt(1);
+            //        usedTileDictionary[removingTile.TileNumber] = false;
+            //    }
+            //}
+
+            //if (usedTileDictionary[tile.TileNumber])
+            //{
+            //    continue;
+            //}
+
+            ////Loop through amount of puzzleindices
+            //foreach (var puzzleTile in puzzleVM.PuzzleTileList)
+            //{
+            //    var tileKey = new UsedTileDictionaryKey(puzzleTile.Index, tile.TileNumber, tile.Degrees);
+
+            //    if (CheckedTileDictionary[tileKey] >= AmountOfMaximumTriesPerTile)
+            //    {
+            //        UsedTileList.Clear();
+            //        usedTileDictionary = usedTileDictionary.ToDictionary(p => p.Key, p => false);
+            //        continue;
+            //    }
+
+            //    if (usedTileDictionary[tile.TileNumber])
+            //    {
+            //        break;
+            //    }
+            //    if (UsedTileList.Any(s => s.PuzzleIndex == puzzleTile.Index))
+            //    {
+            //        continue;
+            //    }
+
+            //    tile.PuzzleIndex = puzzleTile.Index;
+            //    UsedTileList.Add(tile);
+            //    usedTileDictionary[tile.TileNumber] = true;
+            //}
+            //}
+            //}
 
             var end = DateTime.Now;
             solvedPuzzleVM.SolveDuration = (end - start);
