@@ -555,9 +555,46 @@ namespace JapanseTuinen.Services
             {
                 foreach (var tile in totalRotationTileList)
                 {
+                    if (usedTileDictionary.ContainsKey(tile.TileNumber))
+                    {
+                        continue;
+                    }
+
+                    usedTileDictionary[tile.TileNumber] = true;
+
                     foreach (var puzzleTile in puzzleVM.PuzzleTileList)
                     {
+                        tile.PuzzleIndex = puzzleTile.Index;
+                        if (UsedPuzzleTilesIndices.Contains(puzzleTile.Index))
+                        {
+                            continue;
+                        }
 
+                        if (UsedTileList.Count == 2)
+                        {
+                            FillPuzzleRoads(UsedTileList);
+                            if (DoesDefinitiveRoadListSolvePuzzle(simpleConditionsList))
+                            {
+                                //solvedPuzzleVM.Solved = true;
+                            }
+                            
+                            var tileKey = new UsedTileDictionaryKey(puzzleTile.Index, tile.TileNumber, tile.Degrees);
+                            CheckedTileDictionary[tileKey]++;
+                            var otherTile = UsedTileList.FirstOrDefault(s => s.TileNumber != tile.TileNumber);
+                            var otherTileKey = new UsedTileDictionaryKey(otherTile.PuzzleIndex, otherTile.TileNumber, otherTile.Degrees);
+
+                            //There are still other tile combinations to be checked
+                            if (CheckedTileDictionary[tileKey] < AmountOfMaximumTriesPerTile)
+                            {
+                                UsedTileList.Remove(otherTile);
+                            }
+                            else
+                            {
+                                UsedTileList.Clear();
+                            }
+
+                            AmountOfCheckedSolutions++;
+                        }
 
                     }
                 }

@@ -188,7 +188,6 @@ namespace JapanseTuinen.Models
             {
                 return this;
             }
-            return null;
         }
 
         public string HtmlClass
