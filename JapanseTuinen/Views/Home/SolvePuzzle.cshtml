@@ -19,18 +19,24 @@ else
 
     <span class="alert alert-success">
         @String.Format("Checked {0} (out of {1}) solutions in: {2} seconds",
-                            Model.AmountOfCheckedSolutions, Model.AmountOfTotalSolutions, Math.Round(Model.SolveDuration.TotalSeconds, 2))
+                                 Model.AmountOfCheckedSolutions, Model.AmountOfTotalSolutions, Math.Round(Model.SolveDuration.TotalSeconds, 2))
     </span>
 
     foreach (var tile in Model.TileSet)
     {
         <div class="puzzle-field-wrapper">
-            <div id="@tile.Key" class="outer-puzzle-field @Model.GetRowClass(tile.Key) @Model.GetColumnClass(tile.Key)" data-row="@Model.GetRowNumberByIndex(tile.Key)" data-column="@Model.GetColumnNumberByIndex(tile.Key)">
+            <div id="@tile.PuzzleIndex" class="outer-puzzle-field @Model.GetRowClass(tile.PuzzleIndex) @Model.GetColumnClass(tile.PuzzleIndex)" data-row="@Model.GetRowNumberByIndex(tile.PuzzleIndex)" data-column="@Model.GetColumnNumberByIndex(tile.PuzzleIndex)">
                 <div class="inner-puzzle-field">
-                    <img class="tile" src="@String.Format("/Images/tile{0}-{1}.jpg", tile.Value.TileNumber, tile.Value.Degrees)" />
+                    <img class="tile" src="@String.Format("/Images/tile{0}-{1}.jpg", tile.TileNumber, tile.Degrees)" />
                 </div>
 
             </div>
         </div>
+    }
+
+    <h2>Geprobeerde combinaties (Totaal: @Model.TriedSolutions.Count):</h2>
+    foreach (var tried in Model.TriedSolutions)
+    {
+        <p>@tried</p>
     }
 }

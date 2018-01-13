@@ -269,6 +269,10 @@ namespace JapanseTuinen.Services
                         FindRoadEndingOnCurrentStart(OpenPuzzleRoads[1]);
                 };
                 endWhileCount++;
+                if (endWhileCount >= 29)
+                {
+                    //Dit is niet goed...
+                }
             }
 
             return DefinitivePuzzleRoads;
@@ -558,11 +562,14 @@ namespace JapanseTuinen.Services
             var tries = new List<String>();
 
             var start = DateTime.Now;
-            while (!solvedPuzzleVM.Solved && AmountOfCheckedSolutions < AmountOfTotalSolutions || breakCount >= amountOfTriesBeforeBreaking)
+            while (!solvedPuzzleVM.Solved && AmountOfCheckedSolutions < AmountOfTotalSolutions && breakCount <= amountOfTriesBeforeBreaking)
             {
                 foreach (var tile in totalRotationTileList)
                 {
-                    amountOfTriesBeforeBreaking++;
+                    if (solvedPuzzleVM.Solved)
+                    {
+                        break;
+                    }
                     if (usedTileDictionary[tile.TileNumber])
                     {
                         continue;
@@ -600,19 +607,19 @@ namespace JapanseTuinen.Services
                         tile.PuzzleIndex = puzzleTile.Index;
                         UsedPuzzleTilesIndices.Add(puzzleTile.Index);
 
-
                         if (UsedTileList.Count == submittedPuzzleTileCount)
                         {
-                            Debug.WriteLine(String.Format("Trying to solve with: {0}", String.Join(" AND ", UsedTileList.Select(s => s.ToString()))));
+                            AmountOfCheckedSolutions++;
+                            //Debug.WriteLine(String.Format("Trying to solve with: {0}", String.Join(" AND ", UsedTileList.Select(s => s.ToString()))));
                             tries.Add(String.Format("Trying to solve with: {0}", String.Join(" AND ", UsedTileList.Select(s => s.ToString()))));
                             FillPuzzleRoads(UsedTileList);
                             if (DoesDefinitiveRoadListSolvePuzzle(simpleConditionsList))
                             {
-                                //solvedPuzzleVM.Solved = true;
+                                solvedPuzzleVM.Solved = true;
+                                solvedPuzzleVM.TileSet = UsedTileList;
+                                break;
                             }
 
-                           
-                            //CheckedTileDictionary[tileKey]++;
                             var allKeys = UsedTileList
                                 .Select(s => new UsedTileDictionaryKey(s.PuzzleIndex, s.TileNumber, s.Degrees)).ToList();
 
@@ -621,38 +628,35 @@ namespace JapanseTuinen.Services
                                 CheckedTileDictionary[key]++;
                             }
 
-                            //var otherTileKey = new UsedTileDictionaryKey(otherTile.PuzzleIndex, otherTile.TileNumber, otherTile.Degrees);
-
                             //There are still other tile combinations to be checked
-                            //if (CheckedTileDictionary[tileKey] < AmountOfMaximumTriesPerTile)
+                            foreach (var key in allKeys)
                             {
-                                foreach (var key in allKeys)
+                                if (CheckedTileDictionary[key] >= AmountOfMaximumTriesPerTile)
                                 {
-                                    if (CheckedTileDictionary[key] >= AmountOfMaximumTriesPerTile)
-                                    {
-                                        UsedPuzzleTilesIndices.Remove(key.PuzzleIndex);
-                                        var relevantTile = UsedTileList.FirstOrDefault(s =>
-                                            s.TileNumber == key.TileNumber && s.Degrees == key.Degrees);
-                                        UsedTileList.Remove(relevantTile);
-                                        usedTileDictionary[key.TileNumber] = false;
-                                        relevantTile.PuzzleIndex = -1;
-                                    }
+                                    UsedPuzzleTilesIndices.Remove(key.PuzzleIndex);
+                                    var relevantTile = UsedTileList.FirstOrDefault(s =>
+                                        s.TileNumber == key.TileNumber && s.Degrees == key.Degrees);
+                                    UsedTileList.Remove(relevantTile);
+                                    usedTileDictionary[key.TileNumber] = false;
+                                    relevantTile.PuzzleIndex = -1;
                                 }
-                                var lastTile = UsedTileList.Last();
-                                UsedPuzzleTilesIndices.Remove(lastTile.PuzzleIndex);
-                                UsedTileList.Remove(lastTile);
-                                usedTileDictionary[lastTile.TileNumber] = false;
-                                lastTile.PuzzleIndex = -1;
-                            }
-                            //else
-                            {
-                                //UsedPuzzleTilesIndices.Remove(tile.PuzzleIndex);
-                                //UsedTileList.Remove(tile);
-                                //usedTileDictionary[tile.TileNumber] = false;
-                                //tile.PuzzleIndex = -1;
                             }
 
-                            AmountOfCheckedSolutions++;
+                            //Only remove the last tile if there is more than one, otherwise the list gets cleared 
+                            //While we are still checking combinations
+                            if (UsedTileList.Any())
+                            {
+                                var firstTile = UsedTileList.First();
+                                if (CheckedTileDictionary[new UsedTileDictionaryKey(firstTile.PuzzleIndex, firstTile.TileNumber, firstTile.Degrees)] < AmountOfMaximumTriesPerTile &&
+                                    UsedTileList.Count > 1)
+                                {
+                                    var lastTile = UsedTileList.Last();
+                                    UsedPuzzleTilesIndices.Remove(lastTile.PuzzleIndex);
+                                    UsedTileList.Remove(lastTile);
+                                    usedTileDictionary[lastTile.TileNumber] = false;
+                                    lastTile.PuzzleIndex = -1;
+                                }
+                            }
                         }
                     }
                 }
@@ -730,7 +734,8 @@ namespace JapanseTuinen.Services
             solvedPuzzleVM.SolveDuration = (end - start);
             solvedPuzzleVM.AmountOfCheckedSolutions = AmountOfCheckedSolutions;
             solvedPuzzleVM.AmountOfTotalSolutions = AmountOfTotalSolutions;
-            solvedPuzzleVM.TileSet = UsedTileList.ToDictionary(s => s.PuzzleIndex);
+            solvedPuzzleVM.TileSet = UsedTileList;
+            solvedPuzzleVM.TriedSolutions = tries;
 
             return solvedPuzzleVM;
         }
@@ -739,8 +744,9 @@ namespace JapanseTuinen.Services
         {
             var icons = DoesDefinitiveRoadListSolveIcons(simpleConditionsList);
             var pagoda = DoesDefinitiveRoadListSolvePagoda(simpleConditionsList);
+            var yinYang = DoesDefinitiveRoadListSolveYinYang(simpleConditionsList);
 
-            return icons && pagoda;
+            return icons && pagoda && yinYang;
         }
 
         public bool DoesDefinitiveRoadListSolveIcons(List<SimpleTileIndex> simpleConditionsList)
@@ -762,10 +768,6 @@ namespace JapanseTuinen.Services
                                 s.StartsOrEndsAt(conditionTwo.PuzzleIndex, conditionTwo.Position, conditionTwo.Orientation));
 
                 returnValues.Add(findRoad != null);
-                //if (findRoad != null)
-                //{
-                //return true;
-                //}
             }
 
             return returnValues.All(s => s);
@@ -787,11 +789,27 @@ namespace JapanseTuinen.Services
                                 s.SpecialConditions.Any(sc => sc.Condition == Condition.Pagoda));
 
                 returnValues.Add(findRoad != null);
-                //returnValue &= findRoad != null;
-                //if (findRoad != null)
-                //{
-                //returnValue &= true;
-                //}
+            }
+
+            return returnValues.All(s => s);
+        }
+
+        public bool DoesDefinitiveRoadListSolveYinYang(List<SimpleTileIndex> simpleConditionsList)
+        {
+            var returnValues = new HashSet<bool>();
+
+            var conditionsToSolve = simpleConditionsList.Where(s =>
+                    s.SpecialCondition.Condition == Condition.YinYang);
+
+            if (!conditionsToSolve.Any()) return true;
+
+            foreach (var toSolve in conditionsToSolve)
+            {
+                var findRoad = DefinitivePuzzleRoads.FirstOrDefault(s =>
+                                s.StartsOrEndsAt(toSolve.PuzzleIndex, toSolve.Position, toSolve.Orientation) &&
+                                s.SpecialConditions.Any(sc => sc.Condition == Condition.Pagoda));
+
+                returnValues.Add(findRoad != null);
             }
 
             return returnValues.All(s => s);
