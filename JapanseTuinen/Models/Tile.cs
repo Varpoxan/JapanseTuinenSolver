@@ -150,6 +150,17 @@ namespace JapanseTuinen.Models
             return StartOrientation == orientation || EndOrientation == orientation;
         }
 
+        public bool StartsAndEndsAtSameOrientation
+        {
+            get
+            {
+                return (StartsAt(Orientation.Top) && EndsAt(Orientation.Top)) ||
+                    (StartsAt(Orientation.Right) && EndsAt(Orientation.Right)) ||
+                    (StartsAt(Orientation.Bottom) && EndsAt(Orientation.Bottom)) ||
+                    (StartsAt(Orientation.Left) && EndsAt(Orientation.Left));
+            }
+        }
+
         public bool StartsOrEndsAt(int position)
         {
             return StartPosition == position || EndPosition == position;
