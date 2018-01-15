@@ -162,16 +162,14 @@
     });
 
     $(document).on('focusout', '.road-text-input', function () {
-
-        var position = $(this).data('position');
-        var outerPuzzleField = $(this).closest('.outer-puzzle-field');
-        var roadEnd = outerPuzzleField.find('.road-end-' + position);
-        roadEnd.data('amount', $(this).val());
-        //console.log('searching ' + 'road-end-' + position);
-        //console.log(roadEnd);
-        roadEnd.append($(this).val());
-
-        $(this).remove('.road-text-input');
+        if ($(this).val() !== "") {
+            var position = $(this).data('position');
+            var outerPuzzleField = $(this).closest('.outer-puzzle-field');
+            var roadEnd = outerPuzzleField.find('.road-end-' + position);
+            roadEnd.data('amount', $(this).val());
+            roadEnd.append($(this).val());
+            $(this).remove('.road-text-input');
+        }
     });
 
     var allShownIds = [];
@@ -181,9 +179,9 @@
 
         //debugger;
         //$('.shown-puzzle-field').each(function (i, e) {
-            //var currentId = parseInt($(e).attr('id'));
-            //console.log($.inArray(currentId, allShownIds));
-        
+        //var currentId = parseInt($(e).attr('id'));
+        //console.log($.inArray(currentId, allShownIds));
+
         //});
         if ($.inArray(clickedId, allShownIds) == -1) {
             allShownIds.push(parseInt(clickedId));
@@ -197,7 +195,7 @@
             }
         });
 
-        
+
 
         if (continueClick || allShownIds.length == 1) {
             $(clickedElement).removeClass('hidden');
@@ -402,7 +400,7 @@
         }
 
         if (clickedId == 3) {
-            
+
             if ($.inArray(2, allShownIds) !== -1) {
                 RemoveRoadsSideFromClickedElement(clickedElement, $('#2'), "left");
             }
