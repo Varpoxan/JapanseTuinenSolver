@@ -720,22 +720,13 @@ namespace JapanseTuinen.Services
             var breakCount = 0;
             var tries = new List<String>();
 
-            var poxan = new HashSet<string>();
-            foreach (var tile in totalRotationTileList)
-            {
-                var current = new HashSet<string>();
-                current.Add(tile.ToSimpleString());
-                foreach (var pi in puzzleVM.PuzzleTileList)
-                {
-                    if (current.Count == puzzleVM.PuzzleTileList.Count)
-                    {
-                        poxan.Add(String.Join("", current));
-                        poxan.Clear();
-                    }
-                }
-            }
-
             var start = DateTime.Now;
+            var depthCounter = puzzleVM.PuzzleTileList.ToDictionary(s => s.Index, s => 0);
+            var tileDepthDictionary = Initiator.TileList.ToDictionary(s => s.TileNumber, s => 0);
+
+
+
+
             while (!solvedPuzzleVM.Solved && AmountOfCheckedSolutions < AmountOfTotalSolutions && breakCount <= amountOfTriesBeforeBreaking)
             {
                 foreach (var tile in totalRotationTileList)
@@ -769,6 +760,7 @@ namespace JapanseTuinen.Services
                             break;
                         }
                         var tileKey = new UsedTileDictionaryKey(puzzleTile.Index, tile.TileNumber, tile.Degrees);
+                        depthCounter[puzzleTile.Index]++;
 
                         if (CheckedTileDictionary[tileKey] >= AmountOfMaximumTriesPerTile)
                         {
@@ -809,6 +801,8 @@ namespace JapanseTuinen.Services
                             foreach (var key in allKeys)
                             {
                                 CheckedTileDictionary[key]++;
+                                tileDepthDictionary[key.TileNumber] = key.PuzzleIndex;
+                                //depthCounter[key.PuzzleIndex] = CheckedTileDictionary[key];
                             }
 
                             if (AmountOfCheckedSolutions % 24 == 0)
@@ -818,6 +812,11 @@ namespace JapanseTuinen.Services
                             //There are still other tile combinations to be checked
                             foreach (var key in allKeys)
                             {
+                                if (CheckedTileDictionary[new UsedTileDictionaryKey(2, 2, 0)] % 20 == 0)
+                                {
+
+                                }
+
                                 if (CheckedTileDictionary[key] >= AmountOfMaximumTriesPerTile)
                                 {
                                     UsedPuzzleTilesIndices.Remove(key.PuzzleIndex);
@@ -825,6 +824,7 @@ namespace JapanseTuinen.Services
                                         s.TileNumber == key.TileNumber && s.Degrees == key.Degrees);
                                     UsedTileList.Remove(relevantTile);
                                     usedTileDictionary[key.TileNumber] = false;
+                                    tileDepthDictionary[key.TileNumber] = 0;
                                     relevantTile.PuzzleIndex = -1;
                                 }
                             }
@@ -841,6 +841,12 @@ namespace JapanseTuinen.Services
                                     UsedPuzzleTilesIndices.Remove(lastTile.PuzzleIndex);
                                     UsedTileList.Remove(lastTile);
                                     usedTileDictionary[lastTile.TileNumber] = false;
+                                    tileDepthDictionary[lastTile.TileNumber] = 0;
+                                    //if (depthCounter[lastTile.PuzzleIndex] - 1 == 20)
+                                    {
+                                        //UsedTileList.FirstOrDefault(s =>  == lastTile.PuzzleIndex -1 )
+                                    }
+
                                     lastTile.PuzzleIndex = -1;
                                 }
                             }

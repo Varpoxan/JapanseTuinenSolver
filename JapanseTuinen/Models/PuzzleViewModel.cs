@@ -47,6 +47,7 @@ namespace JapanseTuinen.Models
         public class PuzzleTile
         {
             public int Index { get; set; }
+            public int PuzzleTileCounter { get; set; }
             public List<TileIndex> TileIndexList { get; set; }
 
             public PuzzleTile()

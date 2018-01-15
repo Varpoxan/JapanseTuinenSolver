@@ -319,6 +319,31 @@ textarea {
 
 /* endregion Puzzle */
 
+/* region Choices */
+
+.road-text-input {
+    height: 40px;
+    margin: 20px;
+    width: 40px;
+    font-size: 24px;
+}
+
+.tile-road-end {
+    background-color: forestgreen;
+    text-align: center;
+    font-weight: bold;
+    color: white;
+}
+
+.bridge-road-end {
+    background-color: saddlebrown;
+    text-align: center;
+    font-weight: bold;
+    color: white;
+}
+
+/* endregion Choices*/
+
 /* region Icons*/
 .condition-choices {
     display: flex;
@@ -378,6 +403,7 @@ textarea {
     width: 20px;
     height: 20px;
     margin: 0;
+    font-size: 18px;
 }
 
 .confirmed-condition-1top {

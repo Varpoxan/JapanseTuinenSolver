@@ -61,9 +61,8 @@
             }
 
             $(currentItem).children('.confirmed-condition').each(function (i, e) {
-                //debugger;
+                debugger;
                 var position = $(e).data('position');
-                //var orientation = $(e).data('orientation');
                 var condition = $(e).data('condition');
 
                 var dingen = {
@@ -112,29 +111,47 @@
 
         conditionChoices.removeClass('hidden');
         $(conditionChoices).data('road-end-position', roadEnd.data('position'));
-        //$(conditionChoices).data('road-end-orientation', roadEnd.data('orientation'));
-        
     });
 
     $(document).off('click', '.condition-choice').on('click', '.condition-choice', function () {
 
         var conditionChoices = $(this).parent('.condition-choices');
         var outerPuzzleField = $(this).closest('.outer-puzzle-field');
+        var innerPuzzleField = $(this).closest('.inner-puzzle-field');
         var choice = $(this);
 
         var position = $(conditionChoices).data('road-end-position');
-        //var orientation = $(conditionChoices).data('road-end-orientation');
         //debugger;
         outerPuzzleField.children('.road-end').each(function (i, e) {
-            if ($(e).data('position') == position /*&& $(e).data('orientation') == orientation*/) {
-                var addedClass = 'road-end-' + position; /* + orientation.charAt(0).toUpperCase();*/
+            if ($(e).data('position') == position) {
+                //debugger;
+                var addedClass = 'road-end-' + position;
                 if (choice.hasClass('svg-icon')) {
                     var iconClass = choice.data('icon');
-                    $(e).replaceWith('<img class="' + addedClass + ' confirmed-condition condition-choice svg-icon ' + iconClass +
+                    $(e).replaceWith('<img class="' + addedClass +
+                        ' confirmed-condition condition-choice svg-icon ' +
+                        iconClass +
                         '-icon" src="/Content/Icons/' + iconClass +
                         '.svg" data-position="' + position +
-                        //'" data-orientation="' + orientation +
                         '" data-condition="' + iconClass + '" />');
+                }
+                if (choice.hasClass('bridge-icon')) {
+                    $(e).replaceWith('<div class="' + addedClass +
+                        ' confirmed-condition condition-choice bridge-road-end' +
+                        '" data-position="' + position +
+                        '" data-condition=bridge />');
+
+                    $(innerPuzzleField).append('<input type=text class=road-text-input data-position=' + position + ' autofocus=true />');
+                    $('.road-text').focus();
+                }
+                if (choice.hasClass('tile-icon')) {
+                    $(e).replaceWith('<div class="' + addedClass +
+                        ' confirmed-condition condition-choice tile-road-end' +
+                        '" data-position="' + position +
+                        '" data-condition=tile />');
+
+                    $(innerPuzzleField).append('<input type=text class=road-text-input data-position=' + position + ' autofocus=true />');
+                    $('.road-text').focus();
                 }
             }
 
@@ -142,6 +159,19 @@
 
         conditionChoices.addClass('hidden');
 
+    });
+
+    $(document).on('focusout', '.road-text-input', function () {
+
+        var position = $(this).data('position');
+        var outerPuzzleField = $(this).closest('.outer-puzzle-field');
+        var roadEnd = outerPuzzleField.find('.road-end-' + position);
+        roadEnd.data('amount', $(this).val());
+        //console.log('searching ' + 'road-end-' + position);
+        //console.log(roadEnd);
+        roadEnd.append($(this).val());
+
+        $(this).remove('.road-text-input');
     });
 
     var allShownIds = [];
