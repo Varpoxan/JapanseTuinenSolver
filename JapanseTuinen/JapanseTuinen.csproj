@@ -150,6 +150,7 @@
     <Compile Include="Models\Orientation.cs" />
     <Compile Include="Models\Playfield.cs" />
     <Compile Include="Models\PuzzleViewModel.cs" />
+    <Compile Include="Models\Road.cs" />
     <Compile Include="Models\SolvedPuzzleViewModel.cs" />
     <Compile Include="Models\TileViewModel.cs" />
     <Compile Include="Models\SpecialCondition.cs" />

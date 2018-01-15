@@ -65,7 +65,7 @@ namespace JapanseTuinen.Models
 
                         foreach (var tileInfo in tileIndex.TileInfoList)
                         {
-                            returnList.Add(new SimpleTileIndex(this.Index, tileIndex.Position, tileInfo.Orientation, tileInfo.SpecialCondition));
+                            returnList.Add(new SimpleTileIndex(this.Index, tileIndex.Position, tileInfo.SpecialCondition));
                         }
                     }
 

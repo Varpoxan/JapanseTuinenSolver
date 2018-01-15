@@ -47,10 +47,10 @@ namespace JapanseTuinen.Services
             var tile = new Tile(1, 0)
             {
                 RoadList = {
-                    new Road(0, Orientation.Top, 3, Orientation.Right),
-                    new Road(0, Orientation.Left, 1, Orientation.Right, Condition.Bridge),
-                    new Road(1, Orientation.Top, 3, Orientation.Bottom, Condition.Bridge),
-                    new Road(2, Orientation.Left, 2, Orientation.Bottom)
+                    new Road(1, 4),
+                    new Road(8, 3, Condition.Bridge),
+                    new Road(2, 5, Condition.Bridge),
+                    new Road(7, 6)
                 }
             };
 
@@ -65,10 +65,10 @@ namespace JapanseTuinen.Services
             var tile = new Tile(2, 0)
             {
                 RoadList = {
-                new Road(0, Orientation.Top, 2, Orientation.Left),
-                new Road(0, Orientation.Left, 1, Orientation.Top),
-                new Road(1, Orientation.Right, 2, Orientation.Bottom, Condition.Pagoda),
-                new Road(3, Orientation.Right, 3, Orientation.Bottom)
+                new Road(1, 7),
+                new Road(8, 2),
+                new Road(3, 6, Condition.Pagoda),
+                new Road(4, 5)
             }
             };
 
@@ -83,11 +83,11 @@ namespace JapanseTuinen.Services
             var tile = new Tile(3, 0)
             {
                 RoadList = {
-                new Road(0, Orientation.Top, 1, Orientation.Top),
-                new Road(1, Orientation.Right, 1, Orientation.None, Condition.YinYang),
-                new Road(2, Orientation.Left, 2, Orientation.None, Condition.YinYang),
-                new Road(3, Orientation.Right, 3, Orientation.Bottom),
-                new Road(2, Orientation.Bottom, 0, Orientation.Left)
+                new Road(1, 2),
+                new Road(3, 9, Condition.YinYang),
+                new Road(7, 9, Condition.YinYang),
+                new Road(4, 5),
+                new Road(6, 8)
             }
             };
 
@@ -102,10 +102,10 @@ namespace JapanseTuinen.Services
             var tile = new Tile(4, 0)
             {
                 RoadList = {
-                new Road(0, Orientation.Top, 1, Orientation.Right),
-                new Road(1, Orientation.Top, 3, Orientation.Bottom, Condition.Bridge),
-                new Road(3, Orientation.Right, 2, Orientation.Bottom),
-                new Road(2, Orientation.Left, 0, Orientation.Left)
+                new Road(1, 3),
+                new Road(2, 5, Condition.Bridge),
+                new Road(4, 6),
+                new Road(7, 8)
             }
             };
 
@@ -120,10 +120,10 @@ namespace JapanseTuinen.Services
             var tile = new Tile(5, 0)
             {
                 RoadList = {
-                new Road(0, Orientation.Top, 1, Orientation.Top),
-                new Road(1, Orientation.Right, 0, Orientation.Left, Condition.Bridge),
-                new Road(3, Orientation.Right, 3, Orientation.Bottom),
-                new Road(2, Orientation.Bottom, 2, Orientation.Left)
+                new Road(1, 2),
+                new Road(3, 8, Condition.Bridge),
+                new Road(4, 5),
+                new Road(6, 7)
             }
             };
 
@@ -138,10 +138,10 @@ namespace JapanseTuinen.Services
             var tile = new Tile(6, 0)
             {
                 RoadList = {
-                new Road(0, Orientation.Top, 2, Orientation.Left),
-                new Road(1, Orientation.Top, 3, Orientation.Right),
-                new Road(3, Orientation.Bottom, 0, Orientation.Left),
-                new Road(2, Orientation.Bottom, 1, Orientation.Right)
+                new Road(1, 7),
+                new Road(2, 4),
+                new Road(5, 8),
+                new Road(6, 3)
             }
             };
 
@@ -156,10 +156,10 @@ namespace JapanseTuinen.Services
             var tile = new Tile(7, 0)
             {
                 RoadList = {
-                new Road(0, Orientation.Top, 2, Orientation.Bottom, Condition.Bridge),
-                new Road(1, Orientation.Top, 2, Orientation.Left),
-                new Road(1, Orientation.Right, 3, Orientation.Right),
-                new Road(3, Orientation.Bottom, 0, Orientation.Left)
+                new Road(1, 6, Condition.Bridge),
+                new Road(2, 7),
+                new Road(3, 4),
+                new Road(5, 8)
             }
             };
 

@@ -63,13 +63,12 @@
             $(currentItem).children('.confirmed-condition').each(function (i, e) {
                 //debugger;
                 var position = $(e).data('position');
-                var orientation = $(e).data('orientation');
-                var condition = $(e).data('condition')
+                //var orientation = $(e).data('orientation');
+                var condition = $(e).data('condition');
 
                 var dingen = {
                     Position: position,
                     TileInfoList: {
-                        Orientation: orientation,
                         SpecialCondition: {
                             Amount: 0,
                             Condition: condition
@@ -77,7 +76,6 @@
                     }
                 }
                 var tileInfo = {
-                    Orientation: orientation,
                     SpecialCondition: {
                         Amount: 1,
                         Condition: condition
@@ -86,28 +84,6 @@
                 dingen.TileInfoList[0] = tileInfo;
                 newTile.TileIndexList[i] = dingen;
             });
-
-            //var dingen = {
-            //    Position: 0,
-            //    TileInfoList: {
-            //        Orientation: 0,
-            //        SpecialCondition: {
-            //            Amount: 0,
-            //            Condition: 0
-            //        }
-            //    }
-            //}
-
-            //var tileInfo = {
-            //    Orientation: 'Right',
-            //    SpecialCondition: {
-            //        Amount: 1, Condition: 'Flower'
-            //    }
-            //}
-
-            //dingen.TileInfoList[0] = tileInfo;
-
-            //newTile.TileIndexList[0] = dingen;
 
             PuzzleVM.PuzzleTileList[i] = newTile;
         });
@@ -136,7 +112,7 @@
 
         conditionChoices.removeClass('hidden');
         $(conditionChoices).data('road-end-position', roadEnd.data('position'));
-        $(conditionChoices).data('road-end-orientation', roadEnd.data('orientation'));
+        //$(conditionChoices).data('road-end-orientation', roadEnd.data('orientation'));
         
     });
 
@@ -147,17 +123,17 @@
         var choice = $(this);
 
         var position = $(conditionChoices).data('road-end-position');
-        var orientation = $(conditionChoices).data('road-end-orientation');
+        //var orientation = $(conditionChoices).data('road-end-orientation');
         //debugger;
         outerPuzzleField.children('.road-end').each(function (i, e) {
-            if ($(e).data('position') == position && $(e).data('orientation') == orientation) {
-                var addedClass = 'road-end-' + position + orientation.charAt(0).toUpperCase();
+            if ($(e).data('position') == position /*&& $(e).data('orientation') == orientation*/) {
+                var addedClass = 'road-end-' + position; /* + orientation.charAt(0).toUpperCase();*/
                 if (choice.hasClass('svg-icon')) {
                     var iconClass = choice.data('icon');
                     $(e).replaceWith('<img class="' + addedClass + ' confirmed-condition condition-choice svg-icon ' + iconClass +
                         '-icon" src="/Content/Icons/' + iconClass +
                         '.svg" data-position="' + position +
-                        '" data-orientation="' + orientation +
+                        //'" data-orientation="' + orientation +
                         '" data-condition="' + iconClass + '" />');
                 }
             }
@@ -206,14 +182,14 @@
     });
 
     function addRoadsToElement(puzzleField) {
-        $(puzzleField).append('<div class="road-end road-end-top road-end-vertical road-end-0T" data-position="0" data-orientation="top"></div>');
-        $(puzzleField).append('<div class="road-end road-end-top road-end-vertical road-end-1T" data-position="1" data-orientation="top"></div>');
-        $(puzzleField).append('<div class="road-end road-end-right road-end-horizontal road-end-1R" data-position="1" data-orientation="right"></div>');
-        $(puzzleField).append('<div class="road-end road-end-right road-end-horizontal road-end-3R" data-position="3" data-orientation="right"></div>');
-        $(puzzleField).append('<div class="road-end road-end-bottom road-end-vertical road-end-3B" data-position="3" data-orientation="bottom"></div>');
-        $(puzzleField).append('<div class="road-end road-end-bottom road-end-vertical road-end-2B" data-position="2" data-orientation="bottom"></div>');
-        $(puzzleField).append('<div class="road-end road-end-left road-end-horizontal road-end-2L" data-position="2" data-orientation="left"></div>');
-        $(puzzleField).append('<div class="road-end road-end-left road-end-horizontal road-end-0L" data-position="0" data-orientation="left"></div>');
+        $(puzzleField).append('<div class="road-end road-end-top road-end-vertical road-end-1" data-position="1"></div>');
+        $(puzzleField).append('<div class="road-end road-end-top road-end-vertical road-end-2" data-position="2"></div>');
+        $(puzzleField).append('<div class="road-end road-end-right road-end-horizontal road-end-3" data-position="3"></div>');
+        $(puzzleField).append('<div class="road-end road-end-right road-end-horizontal road-end-4" data-position="4""></div>');
+        $(puzzleField).append('<div class="road-end road-end-bottom road-end-vertical road-end-5" data-position="5"></div>');
+        $(puzzleField).append('<div class="road-end road-end-bottom road-end-vertical road-end-6" data-position="6"></div>');
+        $(puzzleField).append('<div class="road-end road-end-left road-end-horizontal road-end-7" data-position="7"></div>');
+        $(puzzleField).append('<div class="road-end road-end-left road-end-horizontal road-end-8" data-position="8"></div>');
     };
 
     function RemoveRoadsSideFromClickedElement(clickedElement, loopElement, side) {

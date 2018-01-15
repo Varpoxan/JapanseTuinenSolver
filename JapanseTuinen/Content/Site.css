@@ -277,42 +277,42 @@ textarea {
     border-left: 1px dashed black;
 }
 
-.road-end-0T {
+.road-end-1 {
     left: 20%;
     top: 0;
 }
 
-.road-end-1T {
+.road-end-2 {
     right: 20%;
     top: 0;
 }
 
-.road-end-1R {
+.road-end-3 {
     top: 20%;
     right: 0;
 }
 
-.road-end-3R {
+.road-end-4 {
     right: 0;
     bottom: 20%;
 }
 
-.road-end-3B {
+.road-end-5 {
     right: 20%;
     bottom: 0;
 }
 
-.road-end-2B {
+.road-end-6 {
     left: 20%;
     bottom: 0;
 }
 
-.road-end-2L {
+.road-end-7 {
     left: 0;
     bottom: 20%;
 }
 
-.road-end-0L {
+.road-end-8 {
     left: 0;
     top: 20%;
 }

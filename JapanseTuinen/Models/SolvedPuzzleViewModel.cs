@@ -14,12 +14,13 @@ namespace JapanseTuinen.Models
         public int AmountOfTotalSolutions { get; set; }
         public int AmountOfFoundSolutions { get; set; }
         public TimeSpan SolveDuration { get; set; }
-        public List<String> TriedSolutions { get; set; }
+        public List<string> TriedSolutions { get; set; }
 
         public SolvedPuzzleViewModel()
         {
             this.ErrorList = new List<string>();
             this.TileSet = new List<List<Tile>>();
+            this.TriedSolutions = new List<string>();
         }
     }
 }
