@@ -47,11 +47,9 @@
             PuzzleTileList: {
                 TileIndexList: {}
             }
-
         };
 
         $('.shown-puzzle-field').each(function (i, e) {
-            //debugger;
             var currentItem = $(e);
             var currentId = parseInt(currentItem.attr('id'));
 
@@ -95,7 +93,6 @@
             url: '/Home/SolvePuzzle',
             data: PuzzleVM,
         }).always(function (result) {
-            //console.log('puzzle solved!');
             $('.solved-puzzle-wrapper').html(result.responseText);
         });
 
@@ -105,7 +102,6 @@
     var currentRoadEndOrientation;
 
     $(document).off('click', '.road-end').on('click', '.road-end', function () {
-        //debugger;
         var roadEnd = $(this);
         var conditionChoices = roadEnd.parent().find('.condition-choices');
 
@@ -121,10 +117,8 @@
         var choice = $(this);
 
         var position = $(conditionChoices).data('road-end-position');
-        //debugger;
         outerPuzzleField.children('.road-end').each(function (i, e) {
             if ($(e).data('position') == position) {
-                //debugger;
                 var addedClass = 'road-end-' + position;
                 if (choice.hasClass('svg-icon')) {
                     var iconClass = choice.data('icon');
@@ -177,12 +171,6 @@
         var clickedElement = $(this);
         var clickedId = $(clickedElement).attr('id')
 
-        //debugger;
-        //$('.shown-puzzle-field').each(function (i, e) {
-        //var currentId = parseInt($(e).attr('id'));
-        //console.log($.inArray(currentId, allShownIds));
-
-        //});
         if ($.inArray(clickedId, allShownIds) == -1) {
             allShownIds.push(parseInt(clickedId));
         }
@@ -194,8 +182,6 @@
                 continueClick = true;
             }
         });
-
-
 
         if (continueClick || allShownIds.length == 1) {
             $(clickedElement).removeClass('hidden');
@@ -288,60 +274,6 @@
         var clickedElement = $('#' + clickedId);
         var clickedRow = $(clickedElement).data('row');
         var clickedCol = $(clickedElement).data('column');
-
-        //if ($.inArray(1, allShownIds) !== -1 && $.inArray(2, allShownIds) !== -1) {
-        //    $('.column-two').css({
-        //        left: '180px'
-        //    });
-        //}
-
-        //if ($.inArray(2, allShownIds) !== -1 && $.inArray(3, allShownIds) !== -1) {
-        //    $('.column-three').css({
-        //        left: '400px'
-        //    });
-        //}
-
-        //if ($.inArray(5, allShownIds) !== -1 && $.inArray(6, allShownIds) !== -1) {
-        //    $('.column-three').css({
-        //        left: '400px'
-        //    });
-        //}
-
-        //if ($.inArray(1, allShownIds) !== -1 && $.inArray(2, allShownIds) !== -1 && $.inArray(3, allShownIds) !== -1) {
-        //    $('.column-two').css({
-        //        left: '180px'
-        //    });
-        //    $('.column-three').css({
-        //        left: '360px'
-        //    });
-        //}
-        //if ($.inArray(4, allShownIds) !== -1 && $.inArray(5, allShownIds) !== -1 && $.inArray(6, allShownIds) !== -1) {
-        //    $('.column-two').css({
-        //        left: '180px'
-        //    });
-        //    $('.column-three').css({
-        //        left: '360px'
-        //    });
-        //}
-
-        //if ($.inArray(1, allShownIds) !== -1 && $.inArray(4, allShownIds) !== -1) {
-        //    $('.row-two').css({
-        //        top: '180px'
-        //    });
-        //}
-
-        //if ($.inArray(2, allShownIds) !== -1 && $.inArray(5, allShownIds) !== -1) {
-        //    $('.row-two').css({
-        //        top: '180px'
-        //    });
-        //}
-
-        //if ($.inArray(3, allShownIds) !== -1 && $.inArray(6, allShownIds) !== -1) {
-        //    $('.row-two').css({
-        //        top: '180px'
-        //    });
-        //}
-
 
         if (clickedId == 1) {
             if ($.inArray(4, allShownIds) !== -1) {

@@ -12,7 +12,6 @@ namespace JapanseTuinen.Services
     {
         public int StartPuzzleIndex { get; set; }
         public int? EndPuzzleIndex { get; set; }
-        //public int TileIndex { get; set; }
         public bool DefinitiveRoad { get { return EndPuzzleIndex.HasValue; } }
         public List<int> PuzzleIndexArray { get; set; }
         public bool RoadStartsOrEndsAtPuzzleEdge { get; set; }
@@ -120,92 +119,6 @@ namespace JapanseTuinen.Services
                 roadHasUpdated = true;
             }
 
-            if (!roadHasUpdated)
-            {
-
-            }
-
-            //if (this.EndPosition == 5 && puzzleRoad.EndPosition == 2)
-            //{
-            //    this.EndPosition = puzzleRoad.StartPosition;
-            //    roadHasUpdated = true;
-            //}
-            //else if (this.EndPosition == 6 && puzzleRoad.StartPosition == 1)
-            //{
-            //    this.EndPosition = puzzleRoad.EndPosition;
-            //    roadHasUpdated = true;
-            //}
-            //else if (this.EndPosition == 5 && puzzleRoad.StartPosition == 2)
-            //{
-            //    this.EndPosition = puzzleRoad.EndPosition;
-            //    roadHasUpdated = true;
-            //}
-            //else if (this.EndPosition == 6 && puzzleRoad.EndPosition == 1)
-            //{
-            //    this.EndPosition = puzzleRoad.StartPosition;
-            //    roadHasUpdated = true;
-            //}
-            //else if (this.EndPosition == 1 && puzzleRoad.EndPosition == 6)
-            //{
-            //    this.EndPosition = puzzleRoad.StartPosition;
-            //    roadHasUpdated = true;
-            //}
-            //else if (this.EndPosition == 2 && puzzleRoad.EndPosition == 5)
-            //{
-            //    this.EndPosition = puzzleRoad.StartPosition;
-            //    roadHasUpdated = true;
-            //}
-            //else if (this.StartPosition == 5 && puzzleRoad.EndPosition == 2)
-            //{
-            //    this.EndPosition = puzzleRoad.StartPosition;
-            //    roadHasUpdated = true;
-            //}
-            //else if (this.EndPosition == 1 && puzzleRoad.StartPosition == 6)
-            //{
-            //    this.EndPosition = puzzleRoad.EndPosition;
-            //    roadHasUpdated = true;
-            //}
-            //else if (this.StartPosition == 6 && puzzleRoad.StartPosition == 1)
-            //{
-            //    this.EndPosition = puzzleRoad.EndPosition;
-            //    roadHasUpdated = true;
-            //}
-            //else if (this.EndPosition == 2 && puzzleRoad.StartPosition == 5)
-            //{
-            //    this.EndPosition = puzzleRoad.EndPosition;
-            //    roadHasUpdated = true;
-            //}
-            //else if (this.StartPosition == 1 && puzzleRoad.StartPosition == 6)
-            //{
-            //    this.EndPosition = puzzleRoad.StartPosition;
-            //    roadHasUpdated = true;
-            //}
-            //else if (this.StartPosition == 2 && puzzleRoad.StartPosition == 5)
-            //{
-            //    this.EndPosition = puzzleRoad.EndPosition;
-            //    roadHasUpdated = true;
-            //}
-            //else if (this.StartPosition == 1 && puzzleRoad.EndPosition == 6)
-            //{
-            //    this.EndPosition = puzzleRoad.StartPosition;
-            //    roadHasUpdated = true;
-            //}
-            //else if (this.StartPosition == 2 && puzzleRoad.EndPosition == 5)
-            //{
-            //    this.EndPosition = puzzleRoad.StartPosition;
-            //    roadHasUpdated = true;
-            //}
-            //else if (this.StartPosition == 6 && puzzleRoad.EndPosition == 1)
-            //{
-            //    this.EndPosition = puzzleRoad.StartPosition;
-            //    roadHasUpdated = true;
-            //}
-            //else if (this.StartPosition == 5 && puzzleRoad.StartPosition == 2)
-            //{
-            //    this.EndPosition = puzzleRoad.EndPosition;
-            //    roadHasUpdated = true;
-            //}
-
             if (!roadHasUpdated) //Road is NOT updated! We need to review our method!
             {
 
@@ -220,22 +133,6 @@ namespace JapanseTuinen.Services
             return (this.StartPuzzleIndex == puzzleIndex && this.StartPosition == position) ||
                 (this.EndPuzzleIndex == puzzleIndex && this.EndPosition == position);
         }
-
-        //public bool DoesRoadConnectOnOrientation(PuzzleRoad road1, PuzzleRoad road2, params Orientation[] orientations)
-        //{
-        //    var returnValue = false;
-        //    if (road1.EndPosition == road2.StartPosition - 2 && road1.EndOrientation == Orientation.Bottom &&
-        //        road == 0 && road2.StartOrientation == Orientation.Top)
-        //    {
-        //        return true;
-        //    }
-        //    if (road1.EndPosition == 2 && road1.EndOrientation == Orientation.Bottom &&
-        //        road2.EndPosition == 0 && road2.EndOrientation == Orientation.Top)
-        //    {
-        //        return true;
-        //    }
-        //    if (road1.StartPosition == 2 &&)
-        //}
     }
 
     public class PuzzleService
