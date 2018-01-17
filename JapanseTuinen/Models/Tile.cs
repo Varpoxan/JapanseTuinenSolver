@@ -8,6 +8,7 @@ namespace JapanseTuinen.Models
     public class Tile
     {
         public int PuzzleIndex { get; set; }
+        public int PuzzleDepthCounter { get; set; }
         public int TileNumber { get; set; }
         public List<Tile> TotalTileRotationList { get; set; }
         public int Degrees { get; set; }

@@ -69,50 +69,50 @@ namespace JapanseTuinen.Services
                 }
             }
             var roadHasUpdated = false;
-            
-            if (Math.Abs(this.StartPosition - puzzleRoad.StartPosition) == 5 && 
+
+            if (Math.Abs(this.StartPosition - puzzleRoad.StartPosition) == 5 &&
                 (this.StartPosition + puzzleRoad.StartPosition == 7 || this.StartPosition + puzzleRoad.StartPosition == 11))
             {
                 this.EndPosition = puzzleRoad.EndPosition;
                 roadHasUpdated = true;
             }
-            else if (Math.Abs(this.StartPosition - puzzleRoad.EndPosition) == 5 && 
+            else if (Math.Abs(this.StartPosition - puzzleRoad.EndPosition) == 5 &&
                 (this.StartPosition + puzzleRoad.EndPosition == 7 || this.StartPosition + puzzleRoad.EndPosition == 11))
             {
                 this.EndPosition = puzzleRoad.StartPosition;
                 roadHasUpdated = true;
             }
-            else if (Math.Abs(this.EndPosition - puzzleRoad.EndPosition) == 5 && 
+            else if (Math.Abs(this.EndPosition - puzzleRoad.EndPosition) == 5 &&
                 (this.EndPosition + puzzleRoad.EndPosition == 7 || this.EndPosition + puzzleRoad.EndPosition == 11))
             {
                 this.EndPosition = puzzleRoad.StartPosition;
                 roadHasUpdated = true;
             }
-            else if (Math.Abs(this.EndPosition - puzzleRoad.StartPosition) == 5 && 
+            else if (Math.Abs(this.EndPosition - puzzleRoad.StartPosition) == 5 &&
                 (this.EndPosition + puzzleRoad.StartPosition == 7 || this.EndPosition + puzzleRoad.StartPosition == 11))
             {
                 this.EndPosition = puzzleRoad.EndPosition;
                 roadHasUpdated = true;
             }
-            else if (Math.Abs(this.StartPosition - puzzleRoad.StartPosition) == 3 && 
+            else if (Math.Abs(this.StartPosition - puzzleRoad.StartPosition) == 3 &&
                 (this.StartPosition + puzzleRoad.StartPosition == 7 || this.StartPosition + puzzleRoad.StartPosition == 11))
             {
                 this.EndPosition = puzzleRoad.EndPosition;
                 roadHasUpdated = true;
             }
-            else if (Math.Abs(this.StartPosition - puzzleRoad.EndPosition) == 3 && 
+            else if (Math.Abs(this.StartPosition - puzzleRoad.EndPosition) == 3 &&
                 (this.StartPosition + puzzleRoad.EndPosition == 7 || this.StartPosition + puzzleRoad.EndPosition == 11))
             {
                 this.EndPosition = puzzleRoad.StartPosition;
                 roadHasUpdated = true;
             }
-            else if (Math.Abs(this.EndPosition - puzzleRoad.EndPosition) == 3 && 
+            else if (Math.Abs(this.EndPosition - puzzleRoad.EndPosition) == 3 &&
                 (this.EndPosition + puzzleRoad.EndPosition == 7 || this.EndPosition + puzzleRoad.EndPosition == 11))
             {
                 this.EndPosition = puzzleRoad.StartPosition;
                 roadHasUpdated = true;
             }
-            else if (Math.Abs(this.EndPosition - puzzleRoad.StartPosition) == 3 && 
+            else if (Math.Abs(this.EndPosition - puzzleRoad.StartPosition) == 3 &&
                 (this.EndPosition + puzzleRoad.StartPosition == 7 || this.EndPosition + puzzleRoad.StartPosition == 11))
             {
                 this.EndPosition = puzzleRoad.EndPosition;
@@ -152,6 +152,8 @@ namespace JapanseTuinen.Services
         public int AmountOfTotalSolutions = 1;
         public int AmountOfMaximumTriesPerTile { get; set; }
         public Dictionary<UsedTileDictionaryKey, int> CheckedTileDictionary = new Dictionary<UsedTileDictionaryKey, int>();
+        private Dictionary<int, int> DepthCounter = new Dictionary<int, int>();
+        private Dictionary<int, int> PuzzleIndexCounter = new Dictionary<int, int>();
 
         public PuzzleViewModel GetPuzzleVM()
         {
@@ -184,6 +186,45 @@ namespace JapanseTuinen.Services
             {
                 AmountOfTotalSolutions *= (Initiator.TileList.Count - i) * 4;
             }
+
+            var pzCount = 1;
+            foreach (var pz in SubmittedPuzzleTilesIndices)
+            {
+                PuzzleIndexCounter.Add(pz, pzCount);
+                pzCount++;
+            }
+
+            //Ok, so this should probably be calculated soon. But i need more time.
+            if (SubmittedPuzzleTilesIndices.Count == 1)
+            {
+                DepthCounter.Add(1, 1);
+            }
+            if (SubmittedPuzzleTilesIndices.Count == 2)
+            {
+                DepthCounter.Add(1, 24);
+                DepthCounter.Add(2, 1);
+            }
+            if (SubmittedPuzzleTilesIndices.Count == 3)
+            {
+                DepthCounter.Add(1, 480);
+                DepthCounter.Add(2, 20);
+                DepthCounter.Add(3, 1);
+            }
+
+            //var dicCounter = 1;
+            //for (int i = SubmittedPuzzleTilesIndices.Count; i >= 0; i--)
+            //{
+            //    var depthCount = 1;
+            //    for (int j = 0; i < SubmittedPuzzleTilesIndices.Count; j++)
+            //    {
+            //        depthCount *= i 
+            //    }
+
+
+            //    DepthCounter.Add(dicCounter, )
+            //    dicCounter++;
+            //}
+
 
             AmountOfMaximumTriesPerTile = AmountOfTotalSolutions / (Initiator.TileList.Count * 4);
         }
@@ -264,6 +305,7 @@ namespace JapanseTuinen.Services
             if (amountOfOpenRoadEnds == 0)
             {
                 newPuzzleRoad.EndPuzzleIndex = newPuzzleRoad.StartPuzzleIndex;
+                newPuzzleRoad.SpecialConditions.Add(new SpecialCondition(newPuzzleRoad.RoadAttribute));
                 DefinitivePuzzleRoads.Add(newPuzzleRoad);
             }
             else
@@ -618,11 +660,7 @@ namespace JapanseTuinen.Services
             var tries = new List<String>();
 
             var start = DateTime.Now;
-            var depthCounter = puzzleVM.PuzzleTileList.ToDictionary(s => s.Index, s => 0);
             var tileDepthDictionary = Initiator.TileList.ToDictionary(s => s.TileNumber, s => 0);
-
-
-
 
             while (!solvedPuzzleVM.Solved && AmountOfCheckedSolutions < AmountOfTotalSolutions && breakCount <= amountOfTriesBeforeBreaking)
             {
@@ -644,8 +682,11 @@ namespace JapanseTuinen.Services
                         usedTileDictionary[tile.TileNumber] = true;
                     }
 
+                    //var puzzleFieldCount = 0;
                     foreach (var puzzleTile in puzzleVM.PuzzleTileList.Where(s => !UsedPuzzleTilesIndices.Contains(s.Index)))
                     {
+                        //puzzleFieldCount++;
+
                         //There already is a tile on this puzzlefield
                         if (UsedPuzzleTilesIndices.Contains(puzzleTile.Index))
                         {
@@ -657,14 +698,15 @@ namespace JapanseTuinen.Services
                             break;
                         }
                         var tileKey = new UsedTileDictionaryKey(puzzleTile.Index, tile.TileNumber, tile.Degrees);
-                        depthCounter[puzzleTile.Index]++;
+                        tile.PuzzleDepthCounter = PuzzleIndexCounter[puzzleTile.Index];
 
-                        if (CheckedTileDictionary[tileKey] >= AmountOfMaximumTriesPerTile)
+                        if (CheckedTileDictionary[tileKey] >= DepthCounter[tile.PuzzleDepthCounter])// AmountOfMaximumTriesPerTile)
                         {
                             UsedPuzzleTilesIndices.Remove(tile.PuzzleIndex);
                             UsedTileList.Remove(tile);
                             usedTileDictionary[tile.TileNumber] = false;
                             tile.PuzzleIndex = -1;
+                            tile.PuzzleDepthCounter = 0;
                             break;
                         }
 
@@ -674,7 +716,7 @@ namespace JapanseTuinen.Services
                         if (UsedTileList.Count == submittedPuzzleTileCount)
                         {
                             AmountOfCheckedSolutions++;
-                            
+
                             Debug.WriteLine(String.Format("Trying to solve with: {0}", String.Join(" AND ", UsedTileList.Select(s => s.ToString()))));
                             tries.Add(String.Format("Trying to solve with: {0}", String.Join(" AND ", UsedTileList.Select(s => s.ToString()))));
                             FillPuzzleRoads(UsedTileList);
@@ -709,19 +751,20 @@ namespace JapanseTuinen.Services
                             //There are still other tile combinations to be checked
                             foreach (var key in allKeys)
                             {
-                                if (CheckedTileDictionary[new UsedTileDictionaryKey(2, 2, 0)] % 20 == 0)
+                                //if (CheckedTileDictionary[new UsedTileDictionaryKey(2, 2, 0)] % 20 == 0)
                                 {
 
                                 }
+                                var relevantTile = UsedTileList.FirstOrDefault(s =>
+                                        s.TileNumber == key.TileNumber && s.Degrees == key.Degrees);
 
-                                if (CheckedTileDictionary[key] >= AmountOfMaximumTriesPerTile)
+                                if (CheckedTileDictionary[key] >= DepthCounter[relevantTile.PuzzleDepthCounter])// AmountOfMaximumTriesPerTile)
                                 {
                                     UsedPuzzleTilesIndices.Remove(key.PuzzleIndex);
-                                    var relevantTile = UsedTileList.FirstOrDefault(s =>
-                                        s.TileNumber == key.TileNumber && s.Degrees == key.Degrees);
                                     UsedTileList.Remove(relevantTile);
                                     usedTileDictionary[key.TileNumber] = false;
                                     tileDepthDictionary[key.TileNumber] = 0;
+                                    relevantTile.PuzzleDepthCounter = 0;
                                     relevantTile.PuzzleIndex = -1;
                                 }
                             }
@@ -731,8 +774,9 @@ namespace JapanseTuinen.Services
                             if (UsedTileList.Any())
                             {
                                 var firstTile = UsedTileList.First();
-                                if (CheckedTileDictionary[new UsedTileDictionaryKey(firstTile.PuzzleIndex, firstTile.TileNumber, firstTile.Degrees)] < AmountOfMaximumTriesPerTile &&
-                                    UsedTileList.Count > 1)
+                                var usedKey = new UsedTileDictionaryKey(firstTile.PuzzleIndex, firstTile.TileNumber, firstTile.Degrees);
+                                if (CheckedTileDictionary[usedKey] < DepthCounter[firstTile.PuzzleDepthCounter]// AmountOfMaximumTriesPerTile 
+                                    && UsedTileList.Count > 1)
                                 {
                                     var lastTile = UsedTileList.Last();
                                     UsedPuzzleTilesIndices.Remove(lastTile.PuzzleIndex);
@@ -745,10 +789,13 @@ namespace JapanseTuinen.Services
                                     }
 
                                     lastTile.PuzzleIndex = -1;
+                                    lastTile.PuzzleDepthCounter = 0;
                                 }
                             }
                         }
                     }
+
+                    //puzzleFieldCount = 0;
                 }
             }
 
