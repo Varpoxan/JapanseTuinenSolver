@@ -84,8 +84,8 @@ namespace JapanseTuinen.Services
             {
                 RoadList = {
                 new Road(1, 2),
-                new Road(3, 9, Condition.YinYang),
-                new Road(7, 9, Condition.YinYang),
+                new Road(9, 3, Condition.YinYang),
+                new Road(9, 7, Condition.YinYang),
                 new Road(4, 5),
                 new Road(6, 8)
             }

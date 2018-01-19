@@ -73,13 +73,13 @@ namespace JapanseTuinen.Services
             if (Math.Abs(this.StartPosition - puzzleRoad.StartPosition) == 5 &&
                 (this.StartPosition + puzzleRoad.StartPosition == 7 || this.StartPosition + puzzleRoad.StartPosition == 11))
             {
-                this.EndPosition = puzzleRoad.EndPosition;
+                this.EndPosition = puzzleRoad.EndPosition != this.StartPosition ? puzzleRoad.EndPosition : puzzleRoad.StartPosition;
                 roadHasUpdated = true;
             }
             else if (Math.Abs(this.StartPosition - puzzleRoad.EndPosition) == 5 &&
                 (this.StartPosition + puzzleRoad.EndPosition == 7 || this.StartPosition + puzzleRoad.EndPosition == 11))
             {
-                this.EndPosition = puzzleRoad.StartPosition;
+                this.EndPosition = puzzleRoad.StartPosition != this.StartPosition ? puzzleRoad.StartPosition : puzzleRoad.EndPosition;
                 roadHasUpdated = true;
             }
             else if (Math.Abs(this.EndPosition - puzzleRoad.EndPosition) == 5 &&
@@ -91,7 +91,7 @@ namespace JapanseTuinen.Services
             else if (Math.Abs(this.EndPosition - puzzleRoad.StartPosition) == 5 &&
                 (this.EndPosition + puzzleRoad.StartPosition == 7 || this.EndPosition + puzzleRoad.StartPosition == 11))
             {
-                this.EndPosition = puzzleRoad.EndPosition;
+                this.EndPosition = puzzleRoad.EndPosition != this.StartPosition ? puzzleRoad.EndPosition : puzzleRoad.StartPosition;
                 roadHasUpdated = true;
             }
             else if (Math.Abs(this.StartPosition - puzzleRoad.StartPosition) == 3 &&
@@ -332,17 +332,20 @@ namespace JapanseTuinen.Services
 
             var tileString = String.Join(" + ", UsedTileList.Select(s => s.ToString()));
             var breakieBreakie = String.Format("{0} - {1} - {2}° + {3} - {4} - {5}° + {6} - {7} - {8}°"
-                , 1, 1, 0
-                , 2, 2, 0
-                , 3, 3, 270);
+                , 1, 3, 0
+                , 3, 5, 270
+                , 2, 7, 270);
 
             var breakieBreakie2 = String.Format("{0} - {1} - {2}° + {3} - {4} - {5}°"
                 , 1, 4, 270
                 , 4, 5, 90);
 
-            if (tileString == breakieBreakie2)
+            if (tileString == breakieBreakie)
             {
+                if (road.StartPuzzleIndex == 1 && road.StartPosition == 8)
+                {
 
+                }
             }
 
             if (road.StartsOrEndsAt(5))
@@ -539,18 +542,16 @@ namespace JapanseTuinen.Services
                     }
                     if (SubmittedPuzzleTilesIndices.Contains(4))
                     {
-                        //if (puzzleRoad.StartsAt(Orientation.Bottom))
-                        {
-                            //puzzleRoad.SwitchStartToEnd();
-                        }
+                        if (puzzleRoad.StartsAt(Orientation.Bottom))
+                            puzzleRoad.SwitchStartToEnd();
+
                         amount += puzzleRoad.StartsOrEndsAtAmount(Orientation.Bottom);
                     }
                     if (SubmittedPuzzleTilesIndices.Contains(2))
                     {
-                        //if (puzzleRoad.StartsAt(Orientation.Right))
-                        {
-                            //puzzleRoad.SwitchStartToEnd();
-                        }
+                        if (puzzleRoad.StartsAt(Orientation.Right))
+                            puzzleRoad.SwitchStartToEnd();
+
                         amount += puzzleRoad.StartsOrEndsAtAmount(Orientation.Right);
                     }
                     break;
@@ -561,14 +562,23 @@ namespace JapanseTuinen.Services
                     }
                     if (SubmittedPuzzleTilesIndices.Contains(1))
                     {
+                        if (puzzleRoad.StartsAt(Orientation.Left))
+                            puzzleRoad.SwitchStartToEnd();
+
                         amount += puzzleRoad.StartsOrEndsAtAmount(Orientation.Left);
                     }
                     if (SubmittedPuzzleTilesIndices.Contains(3))
                     {
+                        if (puzzleRoad.StartsAt(Orientation.Right))
+                            puzzleRoad.SwitchStartToEnd();
+
                         amount += puzzleRoad.StartsOrEndsAtAmount(Orientation.Right);
                     }
                     if (SubmittedPuzzleTilesIndices.Contains(5))
                     {
+                        if (puzzleRoad.StartsAt(Orientation.Bottom))
+                            puzzleRoad.SwitchStartToEnd();
+
                         amount += puzzleRoad.StartsOrEndsAtAmount(Orientation.Bottom);
                     }
                     break;
@@ -579,10 +589,16 @@ namespace JapanseTuinen.Services
                     }
                     if (SubmittedPuzzleTilesIndices.Contains(2))
                     {
+                        if (puzzleRoad.StartsAt(Orientation.Left))
+                            puzzleRoad.SwitchStartToEnd();
+
                         amount += puzzleRoad.StartsOrEndsAtAmount(Orientation.Left);
                     }
                     if (SubmittedPuzzleTilesIndices.Contains(6))
                     {
+                        if (puzzleRoad.StartsAt(Orientation.Bottom))
+                            puzzleRoad.SwitchStartToEnd();
+
                         amount += puzzleRoad.StartsOrEndsAtAmount(Orientation.Bottom);
                     }
                     break;
@@ -593,18 +609,16 @@ namespace JapanseTuinen.Services
                     }
                     if (SubmittedPuzzleTilesIndices.Contains(1))
                     {
-                        //if (puzzleRoad.StartsAt(Orientation.Top))
-                        {
-                            //puzzleRoad.SwitchStartToEnd();
-                        }
+                        if (puzzleRoad.StartsAt(Orientation.Top))
+                            puzzleRoad.SwitchStartToEnd();
+
                         amount += puzzleRoad.StartsOrEndsAtAmount(Orientation.Top);
                     }
                     if (SubmittedPuzzleTilesIndices.Contains(5))
                     {
-                        //if (puzzleRoad.StartsAt(Orientation.Right))
-                        {
-                            //puzzleRoad.SwitchStartToEnd();
-                        }
+                        if (puzzleRoad.StartsAt(Orientation.Right))
+                            puzzleRoad.SwitchStartToEnd();
+
                         amount += puzzleRoad.StartsOrEndsAtAmount(Orientation.Right);
                     }
                     break;
@@ -615,14 +629,23 @@ namespace JapanseTuinen.Services
                     }
                     if (SubmittedPuzzleTilesIndices.Contains(4))
                     {
+                        if (puzzleRoad.StartsAt(Orientation.Left))
+                            puzzleRoad.SwitchStartToEnd();
+
                         amount += puzzleRoad.StartsOrEndsAtAmount(Orientation.Left);
                     }
                     if (SubmittedPuzzleTilesIndices.Contains(6))
                     {
+                        if (puzzleRoad.StartsAt(Orientation.Right))
+                            puzzleRoad.SwitchStartToEnd();
+
                         amount += puzzleRoad.StartsOrEndsAtAmount(Orientation.Right);
                     }
                     if (SubmittedPuzzleTilesIndices.Contains(2))
                     {
+                        if (puzzleRoad.StartsAt(Orientation.Top))
+                            puzzleRoad.SwitchStartToEnd();
+
                         amount += puzzleRoad.StartsOrEndsAtAmount(Orientation.Top);
                     }
                     break;
@@ -633,10 +656,16 @@ namespace JapanseTuinen.Services
                     }
                     if (SubmittedPuzzleTilesIndices.Contains(3))
                     {
+                        if (puzzleRoad.StartsAt(Orientation.Top))
+                            puzzleRoad.SwitchStartToEnd();
+
                         amount += puzzleRoad.StartsOrEndsAtAmount(Orientation.Top);
                     }
                     if (SubmittedPuzzleTilesIndices.Contains(5))
                     {
+                        if (puzzleRoad.StartsAt(Orientation.Left))
+                            puzzleRoad.SwitchStartToEnd();
+
                         amount += puzzleRoad.StartsOrEndsAtAmount(Orientation.Left);
                     }
                     break;
@@ -664,7 +693,6 @@ namespace JapanseTuinen.Services
             var totalRotationTileList = Initiator.TileList.SelectMany(s => s.TotalTileRotationList);
             var usedTileDictionary = Initiator.TileList.ToDictionary(s => s.TileNumber, s => false);
             var UsedPuzzleTilesIndices = new HashSet<int>();
-            var amountOfTriesBeforeBreaking = AmountOfTotalSolutions * AmountOfTotalSolutions;
             var breakCount = 0;
             var tries = new List<String>();
 
@@ -709,11 +737,11 @@ namespace JapanseTuinen.Services
             UsedTileDictionaryKey nextTileKey = null;
             
             //After the first run, the DepthCounter dictionary should probably be updated to be * 2?
-            while (!solvedPuzzleVM.Solved && AmountOfCheckedSolutions < AmountOfTotalSolutions && breakCount <= amountOfTriesBeforeBreaking)
+            while (!solvedPuzzleVM.Solved && AmountOfCheckedSolutions < AmountOfTotalSolutions && breakCount <= AmountOfTotalSolutions)
             {
+                breakCount++;
                 foreach (var tile in totalRotationTileList)
                 {
-                    breakCount++;
                     if (solvedPuzzleVM.Solved)
                     {
                         break;
@@ -803,7 +831,7 @@ namespace JapanseTuinen.Services
 
                             }
                             //There are still other tile combinations to be checked
-                            foreach (var key in allKeys)
+                            foreach (var key in allKeys.OrderByDescending(s => s.PuzzleIndex))
                             {
                                 var relevantTile = UsedTileList.FirstOrDefault(s =>
                                         s.TileNumber == key.TileNumber && s.Degrees == key.Degrees);
@@ -815,21 +843,37 @@ namespace JapanseTuinen.Services
                                     usedTileDictionary[key.TileNumber] = false;
                                     tileDepthDictionary[key.TileNumber] = 0;
                                     //DynamicDepthCounter[relevantTile.PuzzleDepthCounter] += OriginalDepthCounter[relevantTile.PuzzleDepthCounter];
-                                    Debug.WriteLine(String.Format("Amount of tiles with depth {0} is count {1}", 
-                                        relevantTile.PuzzleDepthCounter, CheckedTileDictionary.Count(s => s.Value >= DynamicDepthCounter[relevantTile.PuzzleDepthCounter])));
+                                    //Debug.WriteLine(String.Format("Amount of tiles with depth {0} is count {1}", 
+                                    //relevantTile.PuzzleDepthCounter, CheckedTileDictionary.Count(s => s.Value >= DynamicDepthCounter[relevantTile.PuzzleDepthCounter])));
+                                    //We should only += the DynamicDepthCounter in the above layers.
+                                    var aboveLayers = DynamicDepthCounter.Where(s => s.Key > relevantTile.PuzzleDepthCounter).ToList();
+                                    foreach (var ddc in aboveLayers)
+                                    {
+                                        DynamicDepthCounter[ddc.Key] += OriginalDepthCounter[ddc.Key];
+                                    }
                                     relevantTile.PuzzleDepthCounter = 0;
                                     relevantTile.PuzzleIndex = -1;
                                 }
                             }
 
-                            
+                            if (UsedTileList.Count == submittedPuzzleTileCount)
+                            {
+                                //This means none of the tiles were removed, so we need an extra incentive to do just that.
+                                var lastTile = UsedTileList.Last();
+                                UsedPuzzleTilesIndices.Remove(lastTile.PuzzleIndex);
+                                UsedTileList.Remove(lastTile);
+                                usedTileDictionary[lastTile.TileNumber] = false;
+                                tileDepthDictionary[lastTile.TileNumber] = 0;
+                                lastTile.PuzzleIndex = -1;
+                                lastTile.PuzzleDepthCounter = 0;
+                            }
 
                             //if ( == totalRotationTileList.Count() / ()
-                            {
-                                //var relevantKey = CheckedTileDictionary.FirstOrDefault(s => s.Value >= DynamicDepthCounter[s.Key.TileNumber]);
-                                //var relevantTile = totalRotationTileList.FirstOrDefault(s => s.TileNumber == relevantKey.Key.TileNumber && s.Degrees == relevantKey.Key.Degrees);
-                                //DynamicDepthCounter[relevantTile.PuzzleDepthCounter] += OriginalDepthCounter[relevantTile.PuzzleDepthCounter];
-                            }
+                            //{
+                            //var relevantKey = CheckedTileDictionary.FirstOrDefault(s => s.Value >= DynamicDepthCounter[s.Key.TileNumber]);
+                            //var relevantTile = totalRotationTileList.FirstOrDefault(s => s.TileNumber == relevantKey.Key.TileNumber && s.Degrees == relevantKey.Key.Degrees);
+                            //DynamicDepthCounter[relevantTile.PuzzleDepthCounter] += OriginalDepthCounter[relevantTile.PuzzleDepthCounter];
+                            //}
 
                             //Only remove the last tile if there is more than one, otherwise the list gets cleared 
                             //While we are still checking combinations
@@ -851,6 +895,16 @@ namespace JapanseTuinen.Services
                             //}
                         }
                     }
+
+                    //foreach (var ddc in DynamicDepthCounter)
+                    //{
+                        //var items = CheckedTileDictionary.Where(s => s.Key.PuzzleIndex == ddc.Key);
+
+                        //if (items.Count(c => c.Value >= DynamicDepthCounter[ddc.Key]) >= 20)
+                        //{
+                            //Does this mean all tiles have more thean the Dynamic Depth Counter?
+                        //}
+                    //}
 
                     //puzzleFieldCount = 0;
                 }
