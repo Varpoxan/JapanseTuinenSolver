@@ -19,7 +19,7 @@ else
 
     <span class="alert alert-success">
         @String.Format("Checked {0} (out of {1}) solutions in: {2} seconds",
-                                           Model.AmountOfCheckedSolutions, Model.AmountOfTotalSolutions, Math.Round(Model.SolveDuration.TotalSeconds, 2))
+                                             Model.AmountOfCheckedSolutions, Model.AmountOfTotalSolutions, Math.Round(Model.SolveDuration.TotalSeconds, 2))
     </span>
 
     <span class="alert alert-warning">@String.Format("Found {0} solutions!", Model.AmountOfFoundSolutions)</span>
@@ -42,8 +42,14 @@ else
     }
 
     <h2>Geprobeerde combinaties (Totaal: @Model.TriedSolutions.Count):</h2>
+    int counter = 0;
     foreach (var tried in Model.TriedSolutions)
     {
+        counter++;
         <p>@tried</p>
+        if (counter % 480 == 0 || counter % 20 == 0)
+        {
+            <p class="road-border-top"></p>
+        }
     }
 }

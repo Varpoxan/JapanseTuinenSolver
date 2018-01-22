@@ -8,14 +8,34 @@ namespace JapanseTuinen.Services
 {
     public class Initiator
     {
-        private List<Tile> _tileList { get; set; }
+        public PuzzleViewModel PuzzleVM { get; set; }
+        public List<Tile> TileList { get; set; }
+        public Dictionary<UsedTileDictionaryKey, int> CheckedTileDictionary { get; set; }
+        public Dictionary<UsedTileDictionaryKey, int> DynamicCheckedTileDictionary { get; set; }
+        public HashSet<int> SubmittedPuzzleTilesIndices { get; set; }
+        public int SubmittedPuzzleTileCount { get; set; }
+        public int AmountOfTotalSolutions { get; set; }
+        public int AmountOfCheckedSolutions { get; set; }
+        public int AmountOfMaximumTriesPerTile { get; set; }
+        public Dictionary<int, int> PuzzleIndexCounter { get; set; }
+        public Dictionary<int, int> DepthToIndex { get; set; }
+        public Dictionary<int, int> OriginalDepthCounter { get; set; }
+        public List<SimpleTileIndex> SimpleConditionsList { get; set; }
 
-        public List<Tile> TileList
+        public void Initialize(PuzzleViewModel puzzleVM)
         {
-            get
-            {
-                return _tileList ?? GetTiles();
-            }
+            this.PuzzleVM = puzzleVM;
+            TileList = GetTiles();
+            SubmittedPuzzleTilesIndices = GetSubmittedPuzzleTilesIndices();
+            SubmittedPuzzleTileCount = SubmittedPuzzleTilesIndices.Count;
+            PuzzleIndexCounter = GetPuzzleIndexCounter();
+            DepthToIndex = GetDepthToIndexDictionary();
+            CheckedTileDictionary = GetCheckedTileDictionary();
+            DynamicCheckedTileDictionary = GetDynamicCheckedTileDictionary();
+            AmountOfTotalSolutions = GetTotalAmountOfSolutions();
+            AmountOfMaximumTriesPerTile = GetAmountOfMaximumTriesPerTile();
+            OriginalDepthCounter = GetOriginalDepthCounter();
+            SimpleConditionsList = GetSimpleConditionsList();
         }
 
         public TileViewModel GetTileVM()
@@ -24,6 +44,11 @@ namespace JapanseTuinen.Services
             tileVM.TileList = TileList;
 
             return tileVM;
+        }
+
+        private List<SimpleTileIndex> GetSimpleConditionsList()
+        {
+            return PuzzleVM.PuzzleTileList.SelectMany(s => s.SimpleTileIndexList).ToList();
         }
 
         private List<Tile> GetTiles()
@@ -190,5 +215,171 @@ namespace JapanseTuinen.Services
             return returnList;
         }
 
+        private Dictionary<UsedTileDictionaryKey, int> GetCheckedTileDictionary()
+        {
+            var returnDictionary = new Dictionary<UsedTileDictionaryKey, int>();
+            foreach (var depthCounter in SubmittedPuzzleTilesIndices)
+            {
+                foreach (var tile in TileList)
+                {
+                    //var firstTileKey = new UsedTileDictionaryKey(usedPIndex, tile.TileNumber, 0);
+                    //CheckedTileDictionary.Add(firstTileKey, 0);
+
+                    foreach (var tileRot in tile.TotalTileRotationList)
+                    {
+                        var tileKey = new UsedTileDictionaryKey(depthCounter, tile.TileNumber, tileRot.Degrees);
+                        returnDictionary.Add(tileKey, 0);
+                    }
+                }
+            }
+
+            return returnDictionary;
+        }
+
+        private Dictionary<UsedTileDictionaryKey, int> GetDynamicCheckedTileDictionary()
+        {
+            var returnDictionary = new Dictionary<UsedTileDictionaryKey, int>();
+            int pIndexCounter = 0;
+            foreach (var depthCounter in SubmittedPuzzleTilesIndices)
+            {
+                pIndexCounter++;
+                foreach (var tile in TileList)
+                {
+                    foreach (var tileRot in tile.TotalTileRotationList)
+                    {
+                        var tileKey = new UsedTileDictionaryKey(depthCounter, tile.TileNumber, tileRot.Degrees);
+                        //Ok, so this should probably be calculated soon. But i need more time.
+                        if (SubmittedPuzzleTileCount == 3)
+                        {
+                            if (pIndexCounter == 1)
+                            {
+                                returnDictionary.Add(tileKey, 480);
+                            }
+                            else if (pIndexCounter == 2)
+                            {
+                                returnDictionary.Add(tileKey, 20);
+                            }
+                            else if (pIndexCounter == 3)
+                            {
+                                returnDictionary.Add(tileKey, 1);
+                            }
+                        }
+                        //Ok, so this should probably be calculated soon. But i need more time.
+                        if (SubmittedPuzzleTileCount == 2)
+                        {
+                            if (pIndexCounter == 1)
+                            {
+                                returnDictionary.Add(tileKey, 24);
+                            }
+                            else if (pIndexCounter == 2)
+                            {
+                                returnDictionary.Add(tileKey, 1);
+                            }
+                        }
+                        //Ok, so this should probably be calculated soon. But i need more time.
+                        if (SubmittedPuzzleTileCount == 4)
+                        {
+                            if (pIndexCounter == 1)
+                            {
+                                returnDictionary.Add(tileKey, 7680);
+                            }
+                            if (pIndexCounter == 2)
+                            {
+                                returnDictionary.Add(tileKey, 320);
+                            }
+                            if (pIndexCounter == 3)
+                            {
+                                returnDictionary.Add(tileKey, 16);
+                            }
+                            if (pIndexCounter == 4)
+                            {
+                                returnDictionary.Add(tileKey, 1);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return returnDictionary;
+        }
+
+        private int GetTotalAmountOfSolutions()
+        {
+            var relevantCount = 1;
+            for (int i = 0; i < SubmittedPuzzleTilesIndices.Count; i++)
+            {
+                relevantCount *= (TileList.Count - i) * 4;
+            }
+
+            return relevantCount;
+        }
+
+        private int GetAmountOfMaximumTriesPerTile()
+        {
+            var returnInt = AmountOfTotalSolutions / (TileList.Count * 4);
+            return returnInt;
+        }
+
+        private Dictionary<int, int> GetPuzzleIndexCounter()
+        {
+            var returnDictionary = new Dictionary<int, int>();
+            var pzCount = 1;
+            foreach (var pz in SubmittedPuzzleTilesIndices)
+            {
+                returnDictionary.Add(pz, pzCount);
+                pzCount++;
+            }
+
+            return returnDictionary;
+        }
+
+        private Dictionary<int, int> GetDepthToIndexDictionary()
+        {
+            var returnDictionary = new Dictionary<int, int>();
+            var pzCount = 1;
+            foreach (var pz in SubmittedPuzzleTilesIndices)
+            {
+                returnDictionary.Add(pzCount, pz);
+                pzCount++;
+            }
+
+            return returnDictionary;
+        }
+
+        private Dictionary<int, int> GetOriginalDepthCounter()
+        {
+            var returnDictionary = new Dictionary<int, int>();
+            //Ok, so this should probably be calculated soon. But i need more time.
+            if (SubmittedPuzzleTilesIndices.Count == 1)
+            {
+                returnDictionary.Add(1, 1);
+            }
+            if (SubmittedPuzzleTilesIndices.Count == 2)
+            {
+                returnDictionary.Add(1, 24);
+                returnDictionary.Add(2, 1);
+            }
+            if (SubmittedPuzzleTilesIndices.Count == 3)
+            {
+                returnDictionary.Add(1, 480);
+                returnDictionary.Add(2, 20);
+                returnDictionary.Add(3, 1);
+            }
+            if (SubmittedPuzzleTilesIndices.Count == 4)
+            {
+                returnDictionary.Add(1, 7680);
+                returnDictionary.Add(2, 320);
+                returnDictionary.Add(3, 16);
+                returnDictionary.Add(4, 1);
+            }
+
+            return returnDictionary;
+        }
+
+        private HashSet<int> GetSubmittedPuzzleTilesIndices()
+        {
+            var returnList = new HashSet<int>(PuzzleVM.PuzzleTileList.Select(s => s.Index));
+            return returnList;
+        }
     }
 }

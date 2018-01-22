@@ -132,104 +132,10 @@ namespace JapanseTuinen.Models
             var newPos = position + ((degrees / 90) * 2);
             if (newPos > 8)
             {
-                newPos = newPos - 8;
+                newPos -= 8;
             }
             return newPos;
-
-            if (degrees == 90)
-            {
-
-                switch (position)
-                {
-                    case 0:
-                        return 1;
-                    case 1:
-                        return 3;
-                    case 2:
-                        return 0;
-                    case 3:
-                        return 2;
-                }
-            }
-            else if (degrees == 180)
-            {
-                switch (position)
-                {
-                    case 0:
-                        return 3;
-                    case 1:
-                        return 2;
-                    case 2:
-                        return 1;
-                    case 3:
-                        return 0;
-                }
-            }
-            else if (degrees == 270)
-            {
-                switch (position)
-                {
-                    case 0:
-                        return 2;
-                    case 1:
-                        return 0;
-                    case 2:
-                        return 3;
-                    case 3:
-                        return 1;
-                }
-            }
-
-            return 4; //This make sure it crashes.
         }
-
-        //public Orientation GetNewOrientation(Orientation orientation, int degrees)
-        //{
-        //    if (degrees == 90)
-        //    {
-        //        switch (orientation)
-        //        {
-        //            case Orientation.Top:
-        //                return Orientation.Right;
-        //            case Orientation.Right:
-        //                return Orientation.Bottom;
-        //            case Orientation.Bottom:
-        //                return Orientation.Left;
-        //            case Orientation.Left:
-        //                return Orientation.Top;
-        //        }
-        //    }
-        //    else if (degrees == 180)
-        //    {
-        //        switch (orientation)
-        //        {
-        //            case Orientation.Top:
-        //                return Orientation.Bottom;
-        //            case Orientation.Right:
-        //                return Orientation.Left;
-        //            case Orientation.Bottom:
-        //                return Orientation.Top;
-        //            case Orientation.Left:
-        //                return Orientation.Right;
-        //        }
-        //    }
-        //    else if (degrees == 270)
-        //    {
-        //        switch (orientation)
-        //        {
-        //            case Orientation.Top:
-        //                return Orientation.Left;
-        //            case Orientation.Right:
-        //                return Orientation.Top;
-        //            case Orientation.Bottom:
-        //                return Orientation.Right;
-        //            case Orientation.Left:
-        //                return Orientation.Bottom;
-        //        }
-        //    }
-
-        //    return Orientation.None;
-        //}
 
         public bool DefinitiveEndingRoad(int puzzleIndex)
         {

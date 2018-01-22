@@ -15,7 +15,7 @@
         {
             <div class="puzzle-field-wrapper">
                 <div id="@i" class="outer-puzzle-field hoverable @Model.GetRowClass(i) @Model.GetColumnClass(i)" data-row="@Model.GetRowNumberByIndex(i)" data-column="@Model.GetColumnNumberByIndex(i)">
-                    <div class="inner-puzzle-field">
+                    <div id="inner-@i" class="inner-puzzle-field">
                         <div class="add-puzzle-field fa fa-plus fa-4x"></div>
                         <div class="hidden condition-choices">
                             <div class="condition-choice bridge-icon">1</div>
@@ -27,6 +27,7 @@
                             <img class="condition-choice svg-icon yinyang-icon" data-icon="yinyang" src="/Content/Icons/yinyang.svg" />
                             <img class="condition-choice svg-icon pagoda-icon" data-icon="pagoda" src="/Content/Icons/pagoda.svg" />
                         </div>
+                        <input type="text" class="road-text-input input-inner-@i hidden" autofocus />
                     </div>
 
                 </div>
@@ -62,6 +63,12 @@
                 debugger;
                 var position = $(e).data('position');
                 var condition = $(e).data('condition');
+                var value = $(e).data('amount');
+
+                var amount = 0;
+                if (value !== undefined) {
+                    amount = parseInt(value);
+                }
 
                 var dingen = {
                     Position: position,
@@ -74,7 +81,7 @@
                 }
                 var tileInfo = {
                     SpecialCondition: {
-                        Amount: 1,
+                        Amount: amount,
                         Condition: condition
                     }
                 }
@@ -135,8 +142,9 @@
                         '" data-position="' + position +
                         '" data-condition=bridge />');
 
-                    $(innerPuzzleField).append('<input type=text class=road-text-input data-position=' + position + ' autofocus=true />');
-                    $('.road-text').focus();
+                    $('.input-' + innerPuzzleField.attr('id')).removeClass('hidden');
+                    $('.road-text-input').data('position', position);
+                    $('.road-text-input').focus();
                 }
                 if (choice.hasClass('tile-icon')) {
                     $(e).replaceWith('<div class="' + addedClass +
@@ -144,8 +152,9 @@
                         '" data-position="' + position +
                         '" data-condition=tile />');
 
-                    $(innerPuzzleField).append('<input type=text class=road-text-input data-position=' + position + ' autofocus=true />');
-                    $('.road-text').focus();
+                    $('.input-' + innerPuzzleField.attr('id')).removeClass('hidden');
+                    $('.road-text-input').data('position', position);
+                    $('.road-text-input').focus();
                 }
             }
 
@@ -162,7 +171,8 @@
             var roadEnd = outerPuzzleField.find('.road-end-' + position);
             roadEnd.data('amount', $(this).val());
             roadEnd.append($(this).val());
-            $(this).remove('.road-text-input');
+            $(this).val("");
+            $(this).addClass('hidden');
         }
     });
 

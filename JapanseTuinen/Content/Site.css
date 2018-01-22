@@ -416,6 +416,7 @@ textarea {
 /* region Solved Puzzle */
 
 .solved-puzzle-wrapper {
+    margin-top: 30px;
     position: relative;
 }
 

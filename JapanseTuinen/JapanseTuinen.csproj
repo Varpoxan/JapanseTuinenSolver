@@ -149,6 +149,7 @@
     <Compile Include="Models\Condition.cs" />
     <Compile Include="Models\Orientation.cs" />
     <Compile Include="Models\Playfield.cs" />
+    <Compile Include="Models\PuzzleRoad.cs" />
     <Compile Include="Models\PuzzleViewModel.cs" />
     <Compile Include="Models\Road.cs" />
     <Compile Include="Models\SolvedPuzzleViewModel.cs" />
@@ -157,6 +158,7 @@
     <Compile Include="Models\Tile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Initiator.cs" />
+    <Compile Include="Services\PuzzleRoadService.cs" />
     <Compile Include="Services\PuzzleService.cs" />
   </ItemGroup>
   <ItemGroup>
