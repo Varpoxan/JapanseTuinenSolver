@@ -146,7 +146,7 @@ namespace JapanseTuinen.Models
                     definitiveEnding = !StartsOrEndsAt(Orientation.Bottom) && !StartsOrEndsAt(Orientation.Right);
                     break;
                 case 2:
-                    definitiveEnding = (StartPosition == 1 || EndPosition == 1) && (StartPosition == 2 || EndPosition == 2);
+                    definitiveEnding = (StartPosition == 1 && EndPosition == 2) || (StartPosition == 2 && EndPosition == 1);
                     break;
                 case 3:
                     definitiveEnding = !StartsOrEndsAt(Orientation.Bottom) && !StartsOrEndsAt(Orientation.Left);
@@ -155,7 +155,7 @@ namespace JapanseTuinen.Models
                     definitiveEnding = !StartsOrEndsAt(Orientation.Top) && !StartsOrEndsAt(Orientation.Right);
                     break;
                 case 5:
-                    definitiveEnding = (StartPosition == 5 || StartPosition == 6) && (StartPosition == 5 || EndPosition == 6);
+                    definitiveEnding = (StartPosition == 5 && EndPosition == 6) || (StartPosition == 6 && EndPosition == 5);
                     break;
                 case 6:
                     definitiveEnding = !StartsOrEndsAt(Orientation.Top) && !StartsOrEndsAt(Orientation.Left);

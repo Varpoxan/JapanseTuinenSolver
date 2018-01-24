@@ -217,7 +217,7 @@ namespace JapanseTuinen.Services
 
             var end = DateTime.Now;
             solvedPuzzleVM.SolveDuration = (end - start);
-            solvedPuzzleVM.AmountOfCheckedSolutions = tries.Count;
+            solvedPuzzleVM.AmountOfCheckedSolutions = AmountOfCheckedSolutions;
             solvedPuzzleVM.AmountOfTotalSolutions = AmountOfTotalSolutions;
             solvedPuzzleVM.AmountOfFoundSolutions = solvedPuzzleVM.TileSet.Count;
             solvedPuzzleVM.TriedSolutions = tries;

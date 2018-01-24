@@ -67,7 +67,10 @@ namespace JapanseTuinen.Services
 
             //var tileString = String.Join(" + ", UsedTileList.OrderBy(s => s.PuzzleIndex).Select(s => s.ToString()));
             //var test = UsedTileList;
+            //if (tileString == "1 - 1 - 0° + 2 - 2 - 0° + 3 - 3 - 0° + 4 - 4 - 0° + 5 - 5 - 0°")
+            //{
 
+            //}
             if (road.StartsOrEndsAt(1))
             {
                 var findRoad = Enumerable.Empty<PuzzleRoad>();
