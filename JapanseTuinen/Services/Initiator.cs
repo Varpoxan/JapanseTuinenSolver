@@ -10,6 +10,8 @@ namespace JapanseTuinen.Services
     {
         public PuzzleViewModel PuzzleVM { get; set; }
         public List<Tile> TileList { get; set; }
+        public List<Tile> TotalRotationTileList { get; set; }
+
         public Dictionary<UsedTileDictionaryKey, int> CheckedTileDictionary { get; set; }
         public Dictionary<UsedTileDictionaryKey, int> DynamicCheckedTileDictionary { get; set; }
         public HashSet<int> SubmittedPuzzleTilesIndices { get; set; }
@@ -26,6 +28,7 @@ namespace JapanseTuinen.Services
         {
             this.PuzzleVM = puzzleVM;
             TileList = GetTiles();
+            TotalRotationTileList = GetTotalRotationList();
             SubmittedPuzzleTilesIndices = GetSubmittedPuzzleTilesIndices();
             SubmittedPuzzleTileCount = SubmittedPuzzleTilesIndices.Count;
             PuzzleIndexCounter = GetPuzzleIndexCounter();
@@ -194,6 +197,11 @@ namespace JapanseTuinen.Services
             return tile;
         }
 
+        public List<Tile> GetTotalRotationList()
+        {
+            return TileList.SelectMany(s => s.TotalTileRotationList).ToList();
+        }
+
         private List<Tile> GetAllRotations(Tile initialRotation)
         {
             var returnList = new List<Tile>();
@@ -220,16 +228,11 @@ namespace JapanseTuinen.Services
             var returnDictionary = new Dictionary<UsedTileDictionaryKey, int>();
             foreach (var depthCounter in SubmittedPuzzleTilesIndices)
             {
-                foreach (var tile in TileList)
+                foreach (var tile in TotalRotationTileList)
                 {
-                    //var firstTileKey = new UsedTileDictionaryKey(usedPIndex, tile.TileNumber, 0);
-                    //CheckedTileDictionary.Add(firstTileKey, 0);
 
-                    foreach (var tileRot in tile.TotalTileRotationList)
-                    {
-                        var tileKey = new UsedTileDictionaryKey(depthCounter, tile.TileNumber, tileRot.Degrees);
-                        returnDictionary.Add(tileKey, 0);
-                    }
+                    var tileKey = new UsedTileDictionaryKey(depthCounter, tile.TileNumber, tile.Degrees);
+                    returnDictionary.Add(tileKey, 0);
                 }
             }
 
@@ -239,65 +242,31 @@ namespace JapanseTuinen.Services
         private Dictionary<UsedTileDictionaryKey, int> GetDynamicCheckedTileDictionary()
         {
             var returnDictionary = new Dictionary<UsedTileDictionaryKey, int>();
-            int pIndexCounter = 0;
-            foreach (var depthCounter in SubmittedPuzzleTilesIndices)
+            int pIndexCounter = SubmittedPuzzleTileCount;
+            var reverseSubmittedPuzzleTiles = SubmittedPuzzleTilesIndices.OrderByDescending(c => c).ToList();
+            var lastInserted = 4;
+            foreach (var pIndex in reverseSubmittedPuzzleTiles)
             {
-                pIndexCounter++;
-                foreach (var tile in TileList)
+                var leftOver = 7 - pIndexCounter;
+
+                foreach (var tile in TotalRotationTileList)
                 {
-                    foreach (var tileRot in tile.TotalTileRotationList)
+                    var tileKey = new UsedTileDictionaryKey(pIndex, tile.TileNumber, tile.Degrees);
+                    //Ok, so this should probably be calculated soon. But i need more time.
+                    //Hold my beer! It's calculated!
+                    if (SubmittedPuzzleTileCount == pIndexCounter)
                     {
-                        var tileKey = new UsedTileDictionaryKey(depthCounter, tile.TileNumber, tileRot.Degrees);
-                        //Ok, so this should probably be calculated soon. But i need more time.
-                        if (SubmittedPuzzleTileCount == 3)
-                        {
-                            if (pIndexCounter == 1)
-                            {
-                                returnDictionary.Add(tileKey, 480);
-                            }
-                            else if (pIndexCounter == 2)
-                            {
-                                returnDictionary.Add(tileKey, 20);
-                            }
-                            else if (pIndexCounter == 3)
-                            {
-                                returnDictionary.Add(tileKey, 1);
-                            }
-                        }
-                        //Ok, so this should probably be calculated soon. But i need more time.
-                        if (SubmittedPuzzleTileCount == 2)
-                        {
-                            if (pIndexCounter == 1)
-                            {
-                                returnDictionary.Add(tileKey, 24);
-                            }
-                            else if (pIndexCounter == 2)
-                            {
-                                returnDictionary.Add(tileKey, 1);
-                            }
-                        }
-                        //Ok, so this should probably be calculated soon. But i need more time.
-                        if (SubmittedPuzzleTileCount == 4)
-                        {
-                            if (pIndexCounter == 1)
-                            {
-                                returnDictionary.Add(tileKey, 7680);
-                            }
-                            if (pIndexCounter == 2)
-                            {
-                                returnDictionary.Add(tileKey, 320);
-                            }
-                            if (pIndexCounter == 3)
-                            {
-                                returnDictionary.Add(tileKey, 16);
-                            }
-                            if (pIndexCounter == 4)
-                            {
-                                returnDictionary.Add(tileKey, 1);
-                            }
-                        }
+                        returnDictionary.Add(tileKey, 1);
+                        continue;
                     }
+
+                    returnDictionary.Add(tileKey, leftOver * lastInserted);
                 }
+                if (SubmittedPuzzleTileCount != pIndexCounter)
+                {
+                    lastInserted = leftOver * lastInserted * 4;
+                }
+                pIndexCounter--;
             }
 
             return returnDictionary;
@@ -349,31 +318,31 @@ namespace JapanseTuinen.Services
         private Dictionary<int, int> GetOriginalDepthCounter()
         {
             var returnDictionary = new Dictionary<int, int>();
-            //Ok, so this should probably be calculated soon. But i need more time.
-            if (SubmittedPuzzleTilesIndices.Count == 1)
+            int pIndexCounter = SubmittedPuzzleTileCount;
+            var reverseSubmittedPuzzleTiles = SubmittedPuzzleTilesIndices.OrderByDescending(c => c).ToList();
+            var lastInserted = 4;
+            foreach (var pIndex in reverseSubmittedPuzzleTiles)
             {
-                returnDictionary.Add(1, 1);
-            }
-            if (SubmittedPuzzleTilesIndices.Count == 2)
-            {
-                returnDictionary.Add(1, 24);
-                returnDictionary.Add(2, 1);
-            }
-            if (SubmittedPuzzleTilesIndices.Count == 3)
-            {
-                returnDictionary.Add(1, 480);
-                returnDictionary.Add(2, 20);
-                returnDictionary.Add(3, 1);
-            }
-            if (SubmittedPuzzleTilesIndices.Count == 4)
-            {
-                returnDictionary.Add(1, 7680);
-                returnDictionary.Add(2, 320);
-                returnDictionary.Add(3, 16);
-                returnDictionary.Add(4, 1);
+                var leftOver = 7 - pIndexCounter;
+
+                //Ok, so this should probably be calculated soon. But i need more time.
+                //Hold my beer! It's calculated!
+                if (SubmittedPuzzleTileCount == pIndexCounter)
+                {
+                    returnDictionary.Add(pIndexCounter, 1);
+                }
+                else
+                {
+                    returnDictionary.Add(pIndexCounter, leftOver * lastInserted);
+                }
+                if (SubmittedPuzzleTileCount != pIndexCounter)
+                {
+                    lastInserted = leftOver * lastInserted * 4;
+                }
+                pIndexCounter--;
             }
 
-            return returnDictionary;
+            return returnDictionary.OrderBy(s => s.Key).ToDictionary(s => s.Key, s => s.Value);
         }
 
         private HashSet<int> GetSubmittedPuzzleTilesIndices()

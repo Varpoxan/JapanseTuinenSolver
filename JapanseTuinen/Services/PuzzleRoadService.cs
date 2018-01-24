@@ -65,33 +65,131 @@ namespace JapanseTuinen.Services
         {
             var newPuzzleIndex = road.EndPuzzleIndex.HasValue ? road.EndPuzzleIndex.Value : road.StartPuzzleIndex;
 
-            var tileString = String.Join(" + ", UsedTileList.OrderBy(s => s.PuzzleIndex).Select(s => s.ToString()));
-            //1 - 1 - 90° AND 2 - 2 - 180° AND 4 - 3 - 90°
-            var breakieBreakie = String.Format("{0} - {1} - {2}° + {3} - {4} - {5}° + {6} - {7} - {8}°"
-                , 1, 1, 90
-                , 2, 2, 180
-                , 4, 3, 90);
+            //var tileString = String.Join(" + ", UsedTileList.OrderBy(s => s.PuzzleIndex).Select(s => s.ToString()));
+            //var test = UsedTileList;
 
-            var breakieBreakie2 = String.Format("{0} - {1} - {2}° + {3} - {4} - {5}°"
-                , 1, 4, 270
-                , 4, 5, 90);
-
-            if (tileString == breakieBreakie)
+            if (road.StartsOrEndsAt(1))
             {
-                if (road.StartPuzzleIndex == 1 && road.StartPosition == 7)
+                var findRoad = Enumerable.Empty<PuzzleRoad>();
+                if (road.EndPosition == 1)
                 {
-
+                    findRoad = OpenPuzzleRoads.Where(s => newPuzzleIndex == (s.EndPuzzleIndex.HasValue ? s.EndPuzzleIndex.Value : s.StartPuzzleIndex) + 3 &&
+                                                        s.StartsOrEndsAt(6));
+                    
                 }
-            }
-
-            if (road.StartsOrEndsAt(5))
-            {
-                var findRoad = OpenPuzzleRoads.Where(s => newPuzzleIndex == (s.EndPuzzleIndex.HasValue ? s.EndPuzzleIndex.Value : s.StartPuzzleIndex) - 3 &&
-                                                        s.StartsOrEndsAt(2));
+                if (!findRoad.Any() && road.StartPosition == 1)
+                {
+                    findRoad = OpenPuzzleRoads.Where(s => road.StartPuzzleIndex == (s.EndPuzzleIndex.HasValue ? s.EndPuzzleIndex.Value : s.StartPuzzleIndex) + 3 &&
+                                                        s.StartsOrEndsAt(6));
+                }
 
                 if (findRoad.Count() == 1)
                 {
-                    var test = UsedTileList;
+                    
+                    var relevantRoad = findRoad.First();
+                    if (!CheckForRoundabout(road, relevantRoad))
+                    {
+                        road.CombineRoad(relevantRoad);
+                        ChangePuzzleRoadListsBasedOnEndings(road, relevantRoad);
+                    }
+                    return true;
+                }
+            }
+            if (road.StartsOrEndsAt(2))
+            {
+                var findRoad = Enumerable.Empty<PuzzleRoad>();
+                if (road.EndPosition == 2)
+                {
+                    findRoad = OpenPuzzleRoads.Where(s => newPuzzleIndex == (s.EndPuzzleIndex.HasValue ? s.EndPuzzleIndex.Value : s.StartPuzzleIndex) + 3 &&
+                                                        s.StartsOrEndsAt(5));
+                    
+                }
+                if (!findRoad.Any() && road.StartPosition == 2)
+                {
+                    findRoad = OpenPuzzleRoads.Where(s => road.StartPuzzleIndex == (s.EndPuzzleIndex.HasValue ? s.EndPuzzleIndex.Value : s.StartPuzzleIndex) + 3 &&
+                                                        s.StartsOrEndsAt(5));
+                }
+
+                if (findRoad.Count() == 1)
+                {
+                    var relevantRoad = findRoad.First();
+                    if (!CheckForRoundabout(road, relevantRoad))
+                    {
+                        road.CombineRoad(relevantRoad);
+                        ChangePuzzleRoadListsBasedOnEndings(road, relevantRoad);
+                    }
+                    return true;
+                }
+            }
+            if (road.StartsOrEndsAt(3))
+            {
+                var findRoad = Enumerable.Empty<PuzzleRoad>();
+                if (road.EndPosition == 3 && newPuzzleIndex != 3) // Otherwise puzzle index 3 looks to the right (puzzle index 4) for roads
+                {
+                    findRoad = OpenPuzzleRoads.Where(s => newPuzzleIndex == (s.EndPuzzleIndex.HasValue ? s.EndPuzzleIndex.Value : s.StartPuzzleIndex) - 1 &&
+                                                        s.StartsOrEndsAt(8));
+                    
+                }
+                if (!findRoad.Any() && road.StartPosition == 3 && road.StartPuzzleIndex != 3)
+                {
+                    findRoad = OpenPuzzleRoads.Where(s => road.StartPuzzleIndex == (s.EndPuzzleIndex.HasValue ? s.EndPuzzleIndex.Value : s.StartPuzzleIndex) - 1 &&
+                                                        s.StartsOrEndsAt(8));
+                }
+
+                if (findRoad.Count() == 1)
+                {
+                    var relevantRoad = findRoad.First();
+                    if (!CheckForRoundabout(road, relevantRoad))
+                    {
+                        road.CombineRoad(relevantRoad);
+                        ChangePuzzleRoadListsBasedOnEndings(road, relevantRoad);
+                    }
+                    return true;
+                }
+            }
+            if (road.StartsOrEndsAt(4))
+            {
+                var findRoad = Enumerable.Empty<PuzzleRoad>();
+                if (road.EndPosition == 4 && newPuzzleIndex != 3) // Otherwise puzzle index 3 looks to the right (puzzle index 4) for roads
+                {
+                    findRoad = OpenPuzzleRoads.Where(s => newPuzzleIndex == (s.EndPuzzleIndex.HasValue ? s.EndPuzzleIndex.Value : s.StartPuzzleIndex) - 1 &&
+                                                        s.StartsOrEndsAt(7));
+                    
+                }
+                if (!findRoad.Any() && road.StartPosition == 4 && road.StartPuzzleIndex != 3)
+                {
+                    findRoad = OpenPuzzleRoads.Where(s => road.StartPuzzleIndex == (s.EndPuzzleIndex.HasValue ? s.EndPuzzleIndex.Value : s.StartPuzzleIndex) - 1 &&
+                                                        s.StartsOrEndsAt(7));
+                }
+
+                if (findRoad.Count() == 1)
+                {
+                    var relevantRoad = findRoad.First();
+                    if (!CheckForRoundabout(road, relevantRoad))
+                    {
+                        road.CombineRoad(relevantRoad);
+                        ChangePuzzleRoadListsBasedOnEndings(road, relevantRoad);
+                    }
+                    return true;
+                }
+            }
+            if (road.StartsOrEndsAt(5))
+            {
+                var findRoad = Enumerable.Empty<PuzzleRoad>();
+                if (road.EndPosition == 5)
+                {
+                    findRoad = OpenPuzzleRoads.Where(s => newPuzzleIndex == (s.EndPuzzleIndex.HasValue ? s.EndPuzzleIndex.Value : s.StartPuzzleIndex) - 3 &&
+                                                        s.StartsOrEndsAt(2));
+                    
+                }
+                if (!findRoad.Any() && road.StartPosition == 5)
+                {
+                    findRoad = OpenPuzzleRoads.Where(s => road.StartPuzzleIndex == (s.EndPuzzleIndex.HasValue ? s.EndPuzzleIndex.Value : s.StartPuzzleIndex) - 3 &&
+                                                        s.StartsOrEndsAt(2));
+                }
+
+                if (findRoad.Count() == 1)
+                {
                     var relevantRoad = findRoad.First();
                     if (!CheckForRoundabout(road, relevantRoad))
                     {
@@ -104,80 +202,21 @@ namespace JapanseTuinen.Services
             }
             if (road.StartsOrEndsAt(6))
             {
-                var findRoad = OpenPuzzleRoads.Where(s => newPuzzleIndex == (s.EndPuzzleIndex.HasValue ? s.EndPuzzleIndex.Value : s.StartPuzzleIndex) - 3 &&
+                var findRoad = Enumerable.Empty<PuzzleRoad>();
+                if (road.EndPosition == 6)
+                {
+                    findRoad = OpenPuzzleRoads.Where(s => newPuzzleIndex == (s.EndPuzzleIndex.HasValue ? s.EndPuzzleIndex.Value : s.StartPuzzleIndex) - 3 &&
                                                         s.StartsOrEndsAt(1));
-
-                if (findRoad.Count() == 1)
-                {
-                    var test = UsedTileList;
-                    var relevantRoad = findRoad.First();
-                    if (!CheckForRoundabout(road, relevantRoad))
-                    {
-                        road.CombineRoad(relevantRoad);
-                        ChangePuzzleRoadListsBasedOnEndings(road, relevantRoad);
-                    }
-                    return true;
+                    
                 }
-            }
-            if (road.StartsOrEndsAt(1))
-            {
-                var findRoad = OpenPuzzleRoads.Where(s => newPuzzleIndex == (s.EndPuzzleIndex.HasValue ? s.EndPuzzleIndex.Value : s.StartPuzzleIndex) + 3 &&
-                                                        s.StartsOrEndsAt(6));
-
-                if (findRoad.Count() == 1)
+                if (!findRoad.Any() && road.StartPosition == 6)
                 {
-                    var test = UsedTileList;
-                    var relevantRoad = findRoad.First();
-                    if (!CheckForRoundabout(road, relevantRoad))
-                    {
-                        road.CombineRoad(relevantRoad);
-                        ChangePuzzleRoadListsBasedOnEndings(road, relevantRoad);
-                    }
-                    return true;
+                    findRoad = OpenPuzzleRoads.Where(s => road.StartPuzzleIndex == (s.EndPuzzleIndex.HasValue ? s.EndPuzzleIndex.Value : s.StartPuzzleIndex) - 3 &&
+                                                        s.StartsOrEndsAt(1));
                 }
-            }
-            if (road.StartsOrEndsAt(2))
-            {
-                var findRoad = OpenPuzzleRoads.Where(s => newPuzzleIndex == (s.EndPuzzleIndex.HasValue ? s.EndPuzzleIndex.Value : s.StartPuzzleIndex) + 3 &&
-                                                        s.StartsOrEndsAt(5));
 
                 if (findRoad.Count() == 1)
                 {
-                    var test = UsedTileList;
-                    var relevantRoad = findRoad.First();
-                    if (!CheckForRoundabout(road, relevantRoad))
-                    {
-                        road.CombineRoad(relevantRoad);
-                        ChangePuzzleRoadListsBasedOnEndings(road, relevantRoad);
-                    }
-                    return true;
-                }
-            }
-            if (road.StartsOrEndsAt(3))
-            {
-                var findRoad = OpenPuzzleRoads.Where(s => newPuzzleIndex == (s.EndPuzzleIndex.HasValue ? s.EndPuzzleIndex.Value : s.StartPuzzleIndex) - 1 &&
-                                                        s.StartsOrEndsAt(8));
-
-                if (findRoad.Count() == 1)
-                {
-                    var test = UsedTileList;
-                    var relevantRoad = findRoad.First();
-                    if (!CheckForRoundabout(road, relevantRoad))
-                    {
-                        road.CombineRoad(relevantRoad);
-                        ChangePuzzleRoadListsBasedOnEndings(road, relevantRoad);
-                    }
-                    return true;
-                }
-            }
-            if (road.StartsOrEndsAt(4))
-            {
-                var findRoad = OpenPuzzleRoads.Where(s => newPuzzleIndex == (s.EndPuzzleIndex.HasValue ? s.EndPuzzleIndex.Value : s.StartPuzzleIndex) - 1 &&
-                                                        s.StartsOrEndsAt(7));
-
-                if (findRoad.Count() == 1)
-                {
-                    var test = UsedTileList;
                     var relevantRoad = findRoad.First();
                     if (!CheckForRoundabout(road, relevantRoad))
                     {
@@ -189,12 +228,21 @@ namespace JapanseTuinen.Services
             }
             if (road.StartsOrEndsAt(7))
             {
-                var findRoad = OpenPuzzleRoads.Where(s => newPuzzleIndex == (s.EndPuzzleIndex.HasValue ? s.EndPuzzleIndex.Value : s.StartPuzzleIndex) + 1 &&
+                var findRoad = Enumerable.Empty<PuzzleRoad>();
+                if (road.EndPosition == 7 && newPuzzleIndex != 4) // Otherwise puzzle index 4 looks to the left (puzzle index 3) for roads
+                {
+                    findRoad = OpenPuzzleRoads.Where(s => newPuzzleIndex == (s.EndPuzzleIndex.HasValue ? s.EndPuzzleIndex.Value : s.StartPuzzleIndex) + 1 &&
                                                         s.StartsOrEndsAt(4));
+                    
+                }
+                if (!findRoad.Any() && road.StartPosition == 7 && road.StartPuzzleIndex != 4)
+                {
+                    findRoad = OpenPuzzleRoads.Where(s => road.StartPuzzleIndex == (s.EndPuzzleIndex.HasValue ? s.EndPuzzleIndex.Value : s.StartPuzzleIndex) + 1 &&
+                                                        s.StartsOrEndsAt(4));
+                }
 
                 if (findRoad.Count() == 1)
                 {
-                    var test = UsedTileList;
                     var relevantRoad = findRoad.First();
                     if (!CheckForRoundabout(road, relevantRoad))
                     {
@@ -206,12 +254,20 @@ namespace JapanseTuinen.Services
             }
             if (road.StartsOrEndsAt(8))
             {
-                var findRoad = OpenPuzzleRoads.Where(s => newPuzzleIndex == (s.EndPuzzleIndex.HasValue ? s.EndPuzzleIndex.Value : s.StartPuzzleIndex) + 1 &&
+                var findRoad = Enumerable.Empty<PuzzleRoad>();
+                if (road.EndPosition == 8 && newPuzzleIndex != 4) // Otherwise puzzle index 4 looks to the left (puzzle index 3) for roads
+                {
+                    findRoad = OpenPuzzleRoads.Where(s => newPuzzleIndex == (s.EndPuzzleIndex.HasValue ? s.EndPuzzleIndex.Value : s.StartPuzzleIndex) + 1 &&
                                                         s.StartsOrEndsAt(3));
+                }
+                if (!findRoad.Any() && road.StartPosition == 8 && road.StartPuzzleIndex != 4)
+                {
+                    findRoad = OpenPuzzleRoads.Where(s => road.StartPuzzleIndex == (s.EndPuzzleIndex.HasValue ? s.EndPuzzleIndex.Value : s.StartPuzzleIndex) + 1 &&
+                                                        s.StartsOrEndsAt(3));
+                }
 
                 if (findRoad.Count() == 1)
                 {
-                    var test = UsedTileList;
                     var relevantRoad = findRoad.First();
                     if (!CheckForRoundabout(road, relevantRoad))
                     {
@@ -220,6 +276,13 @@ namespace JapanseTuinen.Services
                     }
                     return true;
                 }
+            }
+
+            if (OpenPuzzleRoads.Count == 1)
+            {
+                //Maybe check if this road connects to itself?
+                //Clear it for now, see what happens.
+                OpenPuzzleRoads.Clear();
             }
 
             //Het gaat hier HELEMAAL niet goed. Er is geen weg gevonden!?
@@ -250,7 +313,8 @@ namespace JapanseTuinen.Services
 
         public bool CheckForRoundabout(PuzzleRoad road, PuzzleRoad relevantRoad)
         {
-            if (road.StartsAndEndsAtSameOrientation && relevantRoad.StartsAndEndsAtSameOrientation)
+            if (road.StartsAndEndsAtSameOrientation && !road.EndPuzzleIndex.HasValue &&
+                relevantRoad.StartsAndEndsAtSameOrientation && !relevantRoad.EndPuzzleIndex.HasValue)
             {
                 OpenPuzzleRoads.Remove(road);
                 OpenPuzzleRoads.Remove(relevantRoad);

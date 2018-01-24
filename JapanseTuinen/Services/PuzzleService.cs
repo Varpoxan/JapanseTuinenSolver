@@ -40,7 +40,6 @@ namespace JapanseTuinen.Services
         private Dictionary<int, int> OriginalDepthCounter { get { return Initiator.OriginalDepthCounter; } }
         private Dictionary<UsedTileDictionaryKey, int> CheckedTileDictionary { get { return Initiator.CheckedTileDictionary; } }
         private Dictionary<UsedTileDictionaryKey, int> DynamicCheckedTileDictionary { get { return Initiator.DynamicCheckedTileDictionary; } }
-        //private HashSet<int> SubmittedPuzzleTilesIndices { get { return Initiator.SubmittedPuzzleTilesIndices; } }
         private int SubmittedPuzzleTileCount { get { return Initiator.SubmittedPuzzleTileCount; } }
         private List<Tile> TileList { get { return Initiator.TileList; } }
 
@@ -87,7 +86,6 @@ namespace JapanseTuinen.Services
             }
             Initiator.Initialize(puzzleVM);
             UsedTileList.Clear();
-            var totalRotationTileList = TileList.SelectMany(s => s.TotalTileRotationList);
             var usedTileDictionary = TileList.ToDictionary(s => s.TileNumber, s => false);
             var UsedPuzzleTilesIndices = new HashSet<int>();
 
@@ -100,7 +98,7 @@ namespace JapanseTuinen.Services
             while (!solvedPuzzleVM.Solved && AmountOfCheckedSolutions < AmountOfTotalSolutions && breakCount <= AmountOfTotalSolutions)
             {
                 breakCount++;
-                foreach (var tile in totalRotationTileList)
+                foreach (var tile in Initiator.TotalRotationTileList)
                 {
                     if (solvedPuzzleVM.Solved)
                     {
@@ -149,8 +147,8 @@ namespace JapanseTuinen.Services
                         if (UsedTileList.Count == SubmittedPuzzleTileCount)
                         {
                             AmountOfCheckedSolutions++;
-                            var solveString = String.Format("Trying to solve with: {0}", String.Join(" AND ", UsedTileList.OrderBy(s => s.PuzzleIndex).Select(s => s.ToString())));
-                            tries.Add(solveString);
+                            //var solveString = String.Format("Trying to solve with: {0}", String.Join(" AND ", UsedTileList.OrderBy(s => s.PuzzleIndex).Select(s => s.ToString())));
+                            //tries.Add(solveString);
 
                             FillPuzzleRoads(UsedTileList);
                             if (DoesDefinitiveRoadListSolvePuzzle(Initiator.SimpleConditionsList))

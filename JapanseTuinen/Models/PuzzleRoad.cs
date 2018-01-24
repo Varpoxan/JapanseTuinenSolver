@@ -67,54 +67,110 @@ namespace JapanseTuinen.Models
             }
             var roadHasUpdated = false;
 
-            if (Math.Abs(this.StartPosition - puzzleRoad.StartPosition) == 5 &&
-                (this.StartPosition + puzzleRoad.StartPosition == 7 || this.StartPosition + puzzleRoad.StartPosition == 11))
+            if ((this.EndPosition + puzzleRoad.EndPosition != 7 && this.EndPosition + puzzleRoad.EndPosition != 11 &&
+                this.EndPosition + puzzleRoad.StartPosition != 7 && this.EndPosition + puzzleRoad.StartPosition != 11) &&
+                (this.StartPosition + puzzleRoad.StartPosition == 7 || this.StartPosition + puzzleRoad.StartPosition == 11 ||
+                this.StartPosition + puzzleRoad.EndPosition == 7 || this.StartPosition + puzzleRoad.EndPosition == 11))
             {
-                this.EndPosition = puzzleRoad.EndPosition != this.StartPosition ? puzzleRoad.EndPosition : puzzleRoad.StartPosition;
-                roadHasUpdated = true;
+                //In this scenario, we probably need to update the startposition of 'this' aswell.
+                this.SwitchStartToEnd();
             }
-            else if (Math.Abs(this.StartPosition - puzzleRoad.EndPosition) == 5 &&
-                (this.StartPosition + puzzleRoad.EndPosition == 7 || this.StartPosition + puzzleRoad.EndPosition == 11))
+
+            if (this.EndPosition + puzzleRoad.EndPosition == 7 || this.EndPosition + puzzleRoad.EndPosition == 11 ||
+                this.EndPosition + puzzleRoad.StartPosition == 7 || this.EndPosition + puzzleRoad.StartPosition == 11)
             {
-                this.EndPosition = puzzleRoad.StartPosition != this.StartPosition ? puzzleRoad.StartPosition : puzzleRoad.EndPosition;
-                roadHasUpdated = true;
+                if (this.EndPosition == 1)
+                {
+                    this.EndPosition = puzzleRoad.StartPosition == 6 ? puzzleRoad.EndPosition : puzzleRoad.StartPosition;
+                    roadHasUpdated = true;
+                }
+                else if (this.EndPosition == 2)
+                {
+                    this.EndPosition = puzzleRoad.StartPosition == 5 ? puzzleRoad.EndPosition : puzzleRoad.StartPosition;
+                    roadHasUpdated = true;
+                }
+                else if (this.EndPosition == 3)
+                {
+                    this.EndPosition = puzzleRoad.StartPosition == 8 ? puzzleRoad.EndPosition : puzzleRoad.StartPosition;
+                    roadHasUpdated = true;
+                }
+                else if (this.EndPosition == 4)
+                {
+                    if (puzzleRoad.StartPosition == 7)
+                    {
+                    this.EndPosition = puzzleRoad.EndPosition;
+                    }
+                    else if (puzzleRoad.EndPosition == 7)
+                    {
+                    this.EndPosition = puzzleRoad.StartPosition;
+                    }
+                    //this.EndPosition = puzzleRoad.StartPosition == 7 ? puzzleRoad.EndPosition : puzzleRoad.StartPosition;
+                    roadHasUpdated = true;
+                }
+                else if (this.EndPosition == 5)
+                {
+                    this.EndPosition = puzzleRoad.StartPosition == 2 ? puzzleRoad.EndPosition : puzzleRoad.StartPosition;
+                    roadHasUpdated = true;
+                }
+                else if (this.EndPosition == 6)
+                {
+                    this.EndPosition = puzzleRoad.StartPosition == 1 ? puzzleRoad.EndPosition : puzzleRoad.StartPosition;
+                    roadHasUpdated = true;
+                }
+                else if (this.EndPosition == 7)
+                {
+                    this.EndPosition = puzzleRoad.StartPosition == 4 ? puzzleRoad.EndPosition : puzzleRoad.StartPosition;
+                    roadHasUpdated = true;
+                }
+                else if (this.EndPosition == 8)
+                {
+                    this.EndPosition = puzzleRoad.StartPosition == 3 ? puzzleRoad.EndPosition : puzzleRoad.StartPosition;
+                    roadHasUpdated = true;
+                }
             }
-            else if (Math.Abs(this.EndPosition - puzzleRoad.EndPosition) == 5 &&
-                (this.EndPosition + puzzleRoad.EndPosition == 7 || this.EndPosition + puzzleRoad.EndPosition == 11))
-            {
-                this.EndPosition = puzzleRoad.StartPosition != this.StartPosition ? puzzleRoad.StartPosition : puzzleRoad.EndPosition;
-                roadHasUpdated = true;
-            }
-            else if (Math.Abs(this.EndPosition - puzzleRoad.StartPosition) == 5 &&
-                (this.EndPosition + puzzleRoad.StartPosition == 7 || this.EndPosition + puzzleRoad.StartPosition == 11))
-            {
-                this.EndPosition = puzzleRoad.EndPosition != this.StartPosition ? puzzleRoad.EndPosition : puzzleRoad.StartPosition;
-                roadHasUpdated = true;
-            }
-            else if (Math.Abs(this.StartPosition - puzzleRoad.StartPosition) == 3 &&
-                (this.StartPosition + puzzleRoad.StartPosition == 7 || this.StartPosition + puzzleRoad.StartPosition == 11))
-            {
-                this.EndPosition = puzzleRoad.EndPosition != this.StartPosition ? puzzleRoad.EndPosition : puzzleRoad.StartPosition;
-                roadHasUpdated = true;
-            }
-            else if (Math.Abs(this.StartPosition - puzzleRoad.EndPosition) == 3 &&
-                (this.StartPosition + puzzleRoad.EndPosition == 7 || this.StartPosition + puzzleRoad.EndPosition == 11))
-            {
-                this.EndPosition = puzzleRoad.StartPosition != this.StartPosition ? puzzleRoad.StartPosition : puzzleRoad.EndPosition;
-                roadHasUpdated = true;
-            }
-            else if (Math.Abs(this.EndPosition - puzzleRoad.EndPosition) == 3 &&
-                (this.EndPosition + puzzleRoad.EndPosition == 7 || this.EndPosition + puzzleRoad.EndPosition == 11))
-            {
-                this.EndPosition = puzzleRoad.StartPosition != this.StartPosition ? puzzleRoad.StartPosition : puzzleRoad.EndPosition;
-                roadHasUpdated = true;
-            }
-            else if (Math.Abs(this.EndPosition - puzzleRoad.StartPosition) == 3 &&
-                (this.EndPosition + puzzleRoad.StartPosition == 7 || this.EndPosition + puzzleRoad.StartPosition == 11))
-            {
-                this.EndPosition = puzzleRoad.EndPosition != this.StartPosition ? puzzleRoad.EndPosition : puzzleRoad.StartPosition;
-                roadHasUpdated = true;
-            }
+            
+
+                //if (Math.Abs(this.StartPosition - puzzleRoad.StartPosition) == 5)
+                //{
+                //    this.EndPosition = puzzleRoad.EndPosition != this.StartPosition ? puzzleRoad.EndPosition : puzzleRoad.StartPosition;
+                //    roadHasUpdated = true;
+                //}
+                //else if (Math.Abs(this.StartPosition - puzzleRoad.EndPosition) == 5)
+                //{
+                //    this.EndPosition = puzzleRoad.StartPosition != this.StartPosition ? puzzleRoad.StartPosition : puzzleRoad.EndPosition;
+                //    roadHasUpdated = true;
+                //}
+                //else if (Math.Abs(this.EndPosition - puzzleRoad.EndPosition) == 5)
+                //{
+                //    this.EndPosition = puzzleRoad.StartPosition != this.StartPosition ? puzzleRoad.StartPosition : puzzleRoad.EndPosition;
+                //    roadHasUpdated = true;
+                //}
+                //else if (Math.Abs(this.EndPosition - puzzleRoad.StartPosition) == 5)
+                //{
+                //    this.EndPosition = puzzleRoad.EndPosition != this.StartPosition ? puzzleRoad.EndPosition : puzzleRoad.StartPosition;
+                //    roadHasUpdated = true;
+                //}
+                //else if (Math.Abs(this.StartPosition - puzzleRoad.StartPosition) == 3)
+                //{
+                //    this.EndPosition = puzzleRoad.EndPosition != this.StartPosition ? puzzleRoad.EndPosition : puzzleRoad.StartPosition;
+                //    roadHasUpdated = true;
+                //}
+                //else if (Math.Abs(this.StartPosition - puzzleRoad.EndPosition) == 3)
+                //{
+                //    this.EndPosition = puzzleRoad.StartPosition != this.StartPosition ? puzzleRoad.StartPosition : puzzleRoad.EndPosition;
+                //    roadHasUpdated = true;
+                //}
+                //else if (Math.Abs(this.EndPosition - puzzleRoad.EndPosition) == 3)
+                //{
+                //    this.EndPosition = puzzleRoad.StartPosition != this.StartPosition ? puzzleRoad.StartPosition : puzzleRoad.EndPosition;
+                //    roadHasUpdated = true;
+                //}
+                //else if (Math.Abs(this.EndPosition - puzzleRoad.StartPosition) == 3)
+                //{
+                //    this.EndPosition = puzzleRoad.EndPosition != this.StartPosition ? puzzleRoad.EndPosition : puzzleRoad.StartPosition;
+                //    roadHasUpdated = true;
+                //}
+            
 
             if (!roadHasUpdated) //Road is NOT updated! We need to review our method!
             {
