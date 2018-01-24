@@ -56,7 +56,6 @@ namespace JapanseTuinen.Services
             if (amountOfOpenRoadEnds == 0)
             {
                 newPuzzleRoad.EndPuzzleIndex = newPuzzleRoad.StartPuzzleIndex;
-                //newPuzzleRoad.SpecialConditions.Add(newPuzzleRoad.RoadAttribute, 1);
                 DefinitivePuzzleRoads.Add(newPuzzleRoad);
             }
             else
@@ -72,13 +71,12 @@ namespace JapanseTuinen.Services
         public bool FindRoadEndingOnCurrentStart(PuzzleRoad road)
         {
             var newPuzzleIndex = road.EndPuzzleIndex.HasValue ? road.EndPuzzleIndex.Value : road.StartPuzzleIndex;
-
-            var tileString = String.Join(" + ", UsedTileList.OrderBy(s => s.PuzzleIndex).Select(s => s.ToString()));
+            //var tileString = String.Join(" + ", UsedTileList.OrderBy(s => s.PuzzleIndex).Select(s => s.ToString()));
             //var test = UsedTileList;
-            if (tileString == "2 - 2 - 0° + 4 - 3 - 0° + 5 - 7 - 270°")
-            {
+            //if (tileString == "2 - 2 - 0° + 4 - 3 - 0° + 5 - 7 - 270°")
+            //{
 
-            }
+            //}
             if (road.StartsOrEndsAt(1))
             {
                 var findRoad = Enumerable.Empty<PuzzleRoad>();
