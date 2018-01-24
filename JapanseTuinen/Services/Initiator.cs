@@ -269,7 +269,7 @@ namespace JapanseTuinen.Services
                 pIndexCounter--;
             }
 
-            return returnDictionary;
+            return returnDictionary.OrderBy(s => s.Key.PuzzleIndex).ToDictionary(s => s.Key, s => s.Value);
         }
 
         private int GetTotalAmountOfSolutions()

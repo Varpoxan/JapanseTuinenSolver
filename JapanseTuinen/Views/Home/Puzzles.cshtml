@@ -60,7 +60,7 @@
             }
 
             $(currentItem).children('.confirmed-condition').each(function (i, e) {
-                debugger;
+                //debugger;
                 var position = $(e).data('position');
                 var condition = $(e).data('condition');
                 var value = $(e).data('amount');
@@ -100,7 +100,12 @@
             url: '/Home/SolvePuzzle',
             data: PuzzleVM,
         }).always(function (result) {
+            debugger;
             $('.solved-puzzle-wrapper').html(result.responseText);
+
+            for (var i = 1; i < 9; i++) {
+                $('#inner-' + i).append($('#solved-' + i));
+            }
         });
 
     });
@@ -280,6 +285,33 @@
         $(loopElement).find('.inner-puzzle-field').css('margin-' + oppositeSide, '0');
     }
 
+    function addPixelsRightToElement(element, amount) {
+        //debugger;
+        var pixels = parseInt($(element).css('right'));
+        pixels += amount;
+        $(element).css({
+            right: pixels + 'px'
+        });
+    }
+
+    function addPixelsLeftToElement(element, amount) {
+        //debugger;
+        var pixels = parseInt($(element).css('left'));
+        pixels += amount;
+        $(element).css({
+            left: pixels + 'px'
+        });
+    }
+
+    function addPixelsTopToElement(element, amount) {
+        //debugger;
+        var pixels = parseInt($(element).css('top'));
+        pixels += amount;
+        $(element).css({
+            top: pixels + 'px'
+        });
+    }
+
     function removeRoadsBasedOnLastUpdate(clickedId) {
         var clickedElement = $('#' + clickedId);
         var clickedRow = $(clickedElement).data('row');
@@ -288,56 +320,56 @@
         if (clickedId == 1) {
             if ($.inArray(4, allShownIds) !== -1) {
                 RemoveRoadsSideFromClickedElement(clickedElement, $('#4'), "bottom");
-                $('#4').css({
-                    top: '200px'
-                });
-            }
-            if ($.inArray(5, allShownIds) !== -1) {
-                $('#5').css({
-                    top: '200px'
-                });
             }
 
-            if ($.inArray(6, allShownIds) !== -1) {
-                $('#6').css({
-                    top: '200px'
-                });
-            }
             if ($.inArray(2, allShownIds) !== -1) {
                 RemoveRoadsSideFromClickedElement(clickedElement, $('#2'), "right");
-                $('#2').css({
-                    left: '200px'
-                });
             }
-            if ($.inArray(3, allShownIds) !== -1) {
-                $('#3').css({
-                    left: '380px'
-                });
+            
+            addPixelsLeftToElement(clickedElement, 20);
+
+            if ($.inArray(2, allShownIds) !== -1 && $.inArray(4, allShownIds) !== -1) {
+                addPixelsTopToElement($('#4'), 20);
+            }
+
+            if ($.inArray(2, allShownIds) !== -1 && $.inArray(5, allShownIds) !== -1) {
+                addPixelsLeftToElement($('#5'), -20);
             }
         }
 
         if (clickedId == 2) {
             if ($.inArray(1, allShownIds) !== -1) {
                 RemoveRoadsSideFromClickedElement(clickedElement, $('#1'), "left");
-                $(clickedElement).css({
-                    left: '200px'
-                });
-
+                //$(clickedElement).css({
+                //    left: '200px'
+                //});
             }
             if ($.inArray(3, allShownIds) !== -1) {
                 RemoveRoadsSideFromClickedElement(clickedElement, $('#3'), "right");
-
             }
             if ($.inArray(5, allShownIds) !== -1) {
                 RemoveRoadsSideFromClickedElement(clickedElement, $('#5'), "bottom");
-                $('#5').css({
-                    top: '200px'
-                });
+                //addPixelsTopToElement($('#5'), 0);
             }
             if ($.inArray(3, allShownIds) !== -1) {
-                $('#3').css({
-                    left: '420px'
-                });
+                //$('#3').css({
+                //    left: '420px'
+                //});
+                addPixelsLeftToElement($('#3'), 20);
+            }
+            if ($.inArray(1, allShownIds) !== -1 && $.inArray(4, allShownIds) !== -1) {
+                //$('#3').css({
+                //    left: '420px'
+                //});
+                addPixelsTopToElement($('#5'), 20);
+            }
+
+            if ($.inArray(1, allShownIds) == -1 && $.inArray(4, allShownIds) !== -1) {
+                addPixelsLeftToElement(clickedElement, -20);
+            }
+
+            if ($.inArray(4, allShownIds) !== -1 && $.inArray(1, allShownIds) == -1) {
+                addPixelsTopToElement($('#4'), -20);
             }
         }
 
@@ -348,110 +380,149 @@
             }
             if ($.inArray(6, allShownIds) !== -1) {
                 RemoveRoadsSideFromClickedElement(clickedElement, $('#6'), "bottom");
+                addPixelsTopToElement($('#6'), -20);
             }
             if ($.inArray(5, allShownIds) !== -1 || $.inArray(2, allShownIds) !== -1) {
-                $(clickedElement).css({
-                    left: parseInt($(clickedElement).css('left')) - 20 + 'px'
-                });
+                //$(clickedElement).css({
+                //    left: parseInt($(clickedElement).css('left')) - 20 + 'px'
+                //});
             }
 
-            if ($.inArray(6, allShownIds) !== -1) {
-                $('#6').css({
-                    top: '200px'
-                });
+            //var leftPixels = parseInt($(clickedElement).css('left'));
+            //debugger;
+            //if ($.inArray(6, allShownIds) !== -1) {
+                //$('#6').css({
+                    //top: '200px'
+                //});
+            //}
+            //if ($.inArray(2, allShownIds) !== -1) {
+            addPixelsLeftToElement(clickedElement, -20);
+            
+            //}
+            if ($.inArray(2, allShownIds) !== -1 && $.inArray(1, allShownIds) !== -1) {
+                addPixelsLeftToElement(clickedElement, -20);
+                //leftPixels -= 20;
             }
 
-            if ($.inArray(1, allShownIds) !== -1) {
-                $(clickedElement).css({
-                    left: parseInt($(clickedElement).css('left')) - 20 + 'px'
-                });
+            if ($.inArray(5, allShownIds) !== -1) {
+                //addPixelsTopToElement($('#5'), 20);
             }
-            if ($.inArray(2, allShownIds) !== -1) {
-                $(clickedElement).css({
-                    //left: parseInt($(clickedElement).css('left')) - 20 + 'px'
-                });
+
+            if ($.inArray(1, allShownIds) !== -1 && $.inArray(2, allShownIds) !== -1) {
+                //leftPixels -= 40;
             }
+            else if ($.inArray(1, allShownIds) !== -1) {
+                //leftPixels -= 20;
+            }
+            else if ($.inArray(2, allShownIds) !== -1) {
+                //leftPixels -= 20;
+            }
+
+            //$(clickedElement).css({
+                //left: leftPixels + 'px'
+            //});
         }
 
         if (clickedId == 4) {
             if ($.inArray(1, allShownIds) !== -1) {
                 RemoveRoadsSideFromClickedElement(clickedElement, $('#1'), "top");
-                $(clickedElement).css({
-                    top: '200px'
-                });
+                //$(clickedElement).css({
+                //    top: '200px'
+                //});
             }
             if ($.inArray(5, allShownIds) !== -1) {
                 RemoveRoadsSideFromClickedElement(clickedElement, $('#5'), "right");
             }
+
+            addPixelsLeftToElement(clickedElement, 20);
+            addPixelsTopToElement(clickedElement, -20);
+
+            if ($.inArray(1, allShownIds) == -1 && $.inArray(2, allShownIds) !== -1) {
+                addPixelsTopToElement(clickedElement, -20);
+            }
+
+            if ($.inArray(2, allShownIds) !== -1) {
+                addPixelsLeftToElement($('#5'), 20);
+            }
+
             if ($.inArray(5, allShownIds) !== -1) {
-                $('#5').css({
-                    left: '200px',
-                });
+                //addPixelsLeftToElement(clickedElement, 20);
             }
         }
         if (clickedId == 5) {
 
             if ($.inArray(4, allShownIds) !== -1) {
                 RemoveRoadsSideFromClickedElement(clickedElement, $('#4'), "left");
-                $(clickedElement).css({
-                    left: '200px'
-                });
             }
             if ($.inArray(6, allShownIds) !== -1) {
                 RemoveRoadsSideFromClickedElement(clickedElement, $('#6'), "right");
-                $('#6').css({
-                    left: '420px'
-                });
-            }
-            if ($.inArray(2, allShownIds) !== -1) {
-                RemoveRoadsSideFromClickedElement(clickedElement, $('#2'), "top");
-                $(clickedElement).css({
-                    top: '200px'
-                });
-            }
-            if ($.inArray(2, allShownIds) !== -1 && $.inArray(4, allShownIds) == -1) {
-                $(clickedElement).css({
-                    left: '180px'
-                });
             }
 
-            if ($.inArray(4, allShownIds) !== -1 && $.inArray(2, allShownIds) == -1) {
-                $(clickedElement).css({
-                    top: '180px'
-                });
+            if ($.inArray(2, allShownIds) !== -1) {
+                RemoveRoadsSideFromClickedElement(clickedElement, $('#2'), "top");
+            }
+
+            addPixelsTopToElement(clickedElement, -20);
+
+            if ($.inArray(3, allShownIds) !== -1) {
+                addPixelsLeftToElement($('#3'), -20);
+            }
+
+            if ($.inArray(1, allShownIds) !== -1 && $.inArray(2, allShownIds) !== -1) {
+                addPixelsLeftToElement(clickedElement, -20);
+            }
+            if ($.inArray(1, allShownIds) !== -1 && $.inArray(4, allShownIds) !== -1 && $.inArray(2, allShownIds) == -1) {
+                addPixelsTopToElement(clickedElement, -20);
             }
         }
 
         if (clickedId == 6) {
             if ($.inArray(3, allShownIds) !== -1) {
                 RemoveRoadsSideFromClickedElement(clickedElement, $('#3'), "top");
-                $(clickedElement).css({
-                    top: '200px'
-                });
+                addPixelsTopToElement(clickedElement, -20);
             }
             if ($.inArray(5, allShownIds) !== -1) {
                 RemoveRoadsSideFromClickedElement(clickedElement, $('#5'), "left");
-                $(clickedElement).css({
-                    left: '420px'
-                });
+                addPixelsLeftToElement(clickedElement, -20);
             }
-            if ($.inArray(2, allShownIds) !== -1 && $.inArray(5, allShownIds) !== -1) {
-                $(clickedElement).css({
-                    top: '180px'
-                });
+
+            addPixelsTopToElement(clickedElement, -20);
+
+            if ($.inArray(2, allShownIds) !== -1 && $.inArray(1, allShownIds) !== -1) {
+                addPixelsLeftToElement(clickedElement, -60);
+            }
+            else if ($.inArray(1, allShownIds) !== -1) {
+                addPixelsLeftToElement(clickedElement, -20);
+            }
+            else if ($.inArray(2, allShownIds) !== -1) {
+                addPixelsLeftToElement(clickedElement, -20);
             }
 
             if ($.inArray(5, allShownIds) == -1) {
-                $(clickedElement).css({
-                    left: '400px'
-                });
+                leftPixels -= 20;
             }
 
-            if ($.inArray(1, allShownIds) !== -1 && $.inArray(2, allShownIds) !== -1) {
-                $(clickedElement).css({
-                    left: '360px'
-                });
-            }
+            //$(clickedElement).css({
+            //    left: leftPixels + 'px'
+            //});
+
+            //if ($.inArray(2, allShownIds) !== -1 && $.inArray(5, allShownIds) !== -1) {
+            //    $(clickedElement).css({
+            //        top: '200px'
+            //    });
+            //}
+
+            //if ($.inArray(5, allShownIds) == -1) {
+            //    $(clickedElement).css({
+            //        left: '420px'
+            //    });
+            //}
+
+            //if ($.inArray(1, allShownIds) !== -1 && $.inArray(2, allShownIds) !== -1) {
+            //    $(clickedElement).css({
+            //        left: '380px'
+            //    });
+            //}
         }
     }
 

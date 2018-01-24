@@ -25,10 +25,17 @@ namespace JapanseTuinen.Services
             OpenPuzzleRoads = OpenPuzzleRoads.OrderBy(s => s.RoadStartsOrEndsAtPuzzleEdge == false).ToList();
             while (OpenPuzzleRoads.Any() && endWhileCount <= 30)
             {
-                if (!FindRoadEndingOnCurrentStart(OpenPuzzleRoads[0]))
+                if (FindRoadEndingOnCurrentStart(OpenPuzzleRoads[0]))
                 {
-                    if (OpenPuzzleRoads.Count > 1)
-                        FindRoadEndingOnCurrentStart(OpenPuzzleRoads[1]);
+                    if (OpenPuzzleRoads.Count == 1)
+                    {
+                        //Maybe check if this road connects to itself?
+                        //Clear it for now, see what happens.
+                        OpenPuzzleRoads.Clear();
+                    }
+
+                    //if (OpenPuzzleRoads.Count > 1)
+                        //FindRoadEndingOnCurrentStart(OpenPuzzleRoads[1]);
                 };
                 endWhileCount++;
                 if (endWhileCount >= 29)
@@ -49,7 +56,7 @@ namespace JapanseTuinen.Services
             if (amountOfOpenRoadEnds == 0)
             {
                 newPuzzleRoad.EndPuzzleIndex = newPuzzleRoad.StartPuzzleIndex;
-                newPuzzleRoad.SpecialConditions.Add(new SpecialCondition(newPuzzleRoad.RoadAttribute));
+                //newPuzzleRoad.SpecialConditions.Add(newPuzzleRoad.RoadAttribute, 1);
                 DefinitivePuzzleRoads.Add(newPuzzleRoad);
             }
             else
@@ -57,6 +64,7 @@ namespace JapanseTuinen.Services
                 newPuzzleRoad.RoadStartsOrEndsAtPuzzleEdge = amountOfOpenRoadEnds <= 1;
                 OpenPuzzleRoads.Add(newPuzzleRoad);
             }
+            newPuzzleRoad.SpecialConditions.Add(newPuzzleRoad.RoadAttribute, 1);
 
             return newPuzzleRoad;
         }
@@ -65,12 +73,12 @@ namespace JapanseTuinen.Services
         {
             var newPuzzleIndex = road.EndPuzzleIndex.HasValue ? road.EndPuzzleIndex.Value : road.StartPuzzleIndex;
 
-            //var tileString = String.Join(" + ", UsedTileList.OrderBy(s => s.PuzzleIndex).Select(s => s.ToString()));
+            var tileString = String.Join(" + ", UsedTileList.OrderBy(s => s.PuzzleIndex).Select(s => s.ToString()));
             //var test = UsedTileList;
-            //if (tileString == "1 - 1 - 0° + 2 - 2 - 0° + 3 - 3 - 0° + 4 - 4 - 0° + 5 - 5 - 0°")
-            //{
+            if (tileString == "2 - 2 - 0° + 4 - 3 - 0° + 5 - 7 - 270°")
+            {
 
-            //}
+            }
             if (road.StartsOrEndsAt(1))
             {
                 var findRoad = Enumerable.Empty<PuzzleRoad>();
@@ -279,13 +287,6 @@ namespace JapanseTuinen.Services
                     }
                     return true;
                 }
-            }
-
-            if (OpenPuzzleRoads.Count == 1)
-            {
-                //Maybe check if this road connects to itself?
-                //Clear it for now, see what happens.
-                OpenPuzzleRoads.Clear();
             }
 
             //Het gaat hier HELEMAAL niet goed. Er is geen weg gevonden!?

@@ -155,7 +155,7 @@ namespace JapanseTuinen.Services
                             {
                                 var newList = new List<Tile>();
                                 //solvedPuzzleVM.Solved = true;
-                                if (solvedPuzzleVM.TileSet.Count == 0)
+                                if (solvedPuzzleVM.TileSet.Count <= 2)
                                 {
                                     foreach (var ut in UsedTileList)
                                     {
@@ -190,10 +190,10 @@ namespace JapanseTuinen.Services
                                     usedTileDictionary[key.TileNumber] = false;
 
                                     //We should only += the DynamicDepthCounter in the above layers.
-                                    var aboveLayer = OriginalDepthCounter.FirstOrDefault(s => s.Key > relevantTile.PuzzleIndex);
+                                    var aboveLayer = OriginalDepthCounter.FirstOrDefault(s => s.Key > relevantTile.PuzzleDepthCounter);
                                     if (aboveLayer.Key != 0)
                                     {
-                                        var usedTileNumbersAboveThisLayer = allKeys.Where(s => s.PuzzleIndex < aboveLayer.Key).Select(a => a.TileNumber).ToList();
+                                        var usedTileNumbersAboveThisLayer = allKeys.Where(s => s.PuzzleIndex < DepthToIndex[aboveLayer.Key]).Select(a => a.TileNumber).ToList();
                                         var relevantIndex = DepthToIndex[aboveLayer.Key];
                                         var everyKeyExceptUsedOnes = DynamicCheckedTileDictionary.Where(s =>
                                         s.Key.PuzzleIndex == relevantIndex &&
@@ -291,11 +291,12 @@ namespace JapanseTuinen.Services
 
             if (!conditionsToSolve.Any()) return true;
 
+
             foreach (var toSolve in conditionsToSolve)
             {
                 var findRoad = DefinitivePuzzleRoads.FirstOrDefault(s =>
                                 s.StartsOrEndsAt(toSolve.PuzzleIndex, toSolve.Position) &&
-                                s.SpecialConditions.Any(sc => sc.Condition == condition));
+                                s.SpecialConditions.Any(sc => sc.Key == condition));
 
                 returnValues.Add(findRoad != null);
             }

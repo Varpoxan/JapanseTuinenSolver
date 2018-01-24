@@ -29,27 +29,16 @@ else
         <div class="solved-solution-wrapper">
             @foreach (var tile in solution)
             {
-                <div class="puzzle-field-wrapper">
+                @*<div class="puzzle-field-wrapper">
                     <div id="@tile.PuzzleIndex" class="outer-puzzle-field @Model.GetRowClass(tile.PuzzleIndex) @Model.GetColumnClass(tile.PuzzleIndex)" data-row="@Model.GetRowNumberByIndex(tile.PuzzleIndex)" data-column="@Model.GetColumnNumberByIndex(tile.PuzzleIndex)">
-                        <div class="inner-puzzle-field">
-                            <img class="tile" src="@String.Format("/Images/tile{0}-{1}.jpg", tile.TileNumber, tile.Degrees)" />
-                        </div>
-
+                        <div class="inner-puzzle-field">*@
+                            <img id="solved-@tile.PuzzleIndex" class="solved-tile" src="@String.Format("/Images/tile{0}-{1}.jpg", tile.TileNumber, tile.Degrees)" />
+                        @*</div>
                     </div>
-                </div>
+                </div>*@
             }
         </div>
     }
 
     <h2>Geprobeerde combinaties (Totaal: @Model.TriedSolutions.Count):</h2>
-    int counter = 0;
-    @*foreach (var tried in Model.TriedSolutions)
-    {
-        counter++;
-        <p>@tried</p>
-        if (counter % 480 == 0 || counter % 20 == 0)
-        {
-            <p class="road-border-top"></p>
-        }
-    }*@
 }

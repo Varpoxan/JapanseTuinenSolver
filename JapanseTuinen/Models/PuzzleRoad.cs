@@ -13,14 +13,14 @@ namespace JapanseTuinen.Models
         public List<int> PuzzleIndexArray { get; set; }
         public bool RoadStartsOrEndsAtPuzzleEdge { get; set; }
 
-        public List<SpecialCondition> SpecialConditions { get; set; }
+        public Dictionary<Condition, int> SpecialConditions { get; set; }
 
         public PuzzleRoad(int startPuzzleIndex, int endPuzzleIndex, Road road)
             : base(road)
         {
             this.StartPuzzleIndex = startPuzzleIndex;
             this.EndPuzzleIndex = endPuzzleIndex;
-            this.SpecialConditions = new List<SpecialCondition>();
+            this.SpecialConditions = new Dictionary<Condition, int>();
             this.PuzzleIndexArray = new List<int>();
             this.PuzzleIndexArray = new List<int>();
         }
@@ -29,7 +29,7 @@ namespace JapanseTuinen.Models
             : base(road)
         {
             this.StartPuzzleIndex = startPuzzleIndex;
-            this.SpecialConditions = new List<SpecialCondition>();
+            this.SpecialConditions = new Dictionary<Condition, int>();
             this.PuzzleIndexArray = new List<int>() { startPuzzleIndex };
         }
 
@@ -50,19 +50,18 @@ namespace JapanseTuinen.Models
         {
             if (!this.SpecialConditions.Any() && puzzleRoad.RoadAttribute != Condition.None)
             {
-                this.SpecialConditions.Add(new SpecialCondition(puzzleRoad.RoadAttribute, 1));
+                this.SpecialConditions.Add(puzzleRoad.RoadAttribute, 1);
             }
 
             foreach (var spCon in puzzleRoad.SpecialConditions)
             {
-                var knownSpCon = this.SpecialConditions.FirstOrDefault(s => s.Condition == spCon.Condition);
-                if (knownSpCon != null)
+                if (this.SpecialConditions.ContainsKey(spCon.Key))
                 {
-                    knownSpCon.Amount += spCon.Amount;
+                    this.SpecialConditions[spCon.Key] += spCon.Value;
                 }
                 else
                 {
-                    this.SpecialConditions.Add(spCon);
+                    this.SpecialConditions.Add(spCon.Key, 1);
                 }
             }
             var roadHasUpdated = false;

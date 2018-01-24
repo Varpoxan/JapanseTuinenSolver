@@ -420,4 +420,9 @@ textarea {
     position: relative;
 }
 
+.solved-tile {
+    height: 178px;
+    width: 178px;
+}
+
 /* endregion Solved Puzzle*/
