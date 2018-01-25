@@ -38,20 +38,20 @@ namespace JapanseTuinen.Models
             return String.Format("PI: {0} - {1} to {2}", EndPuzzleIndex.HasValue ? EndPuzzleIndex.Value : StartPuzzleIndex, StartPosition, EndPosition);
         }
 
-        public void CombineRoad(IEnumerable<PuzzleRoad> puzzleRoads)
+        public void CombineRoad(IEnumerable<PuzzleRoad> puzzleRoads, bool switchStartToEnd)
         {
             foreach (var pr in puzzleRoads)
             {
-                CombineRoad(pr);
+                CombineRoad(pr, switchStartToEnd);
             }
         }
 
-        public void CombineRoad(PuzzleRoad puzzleRoad)
+        public void CombineRoad(PuzzleRoad puzzleRoad, bool switchStartToEnd)
         {
-            if (!this.SpecialConditions.Any() && puzzleRoad.RoadAttribute != Condition.None)
-            {
-                this.SpecialConditions.Add(puzzleRoad.RoadAttribute, 1);
-            }
+            //if (!this.SpecialConditions.Any() && puzzleRoad.RoadAttribute != Condition.None)
+            //{
+            //    this.SpecialConditions.Add(puzzleRoad.RoadAttribute, 1);
+            //}
 
             foreach (var spCon in puzzleRoad.SpecialConditions)
             {
@@ -66,7 +66,11 @@ namespace JapanseTuinen.Models
             }
             var roadHasUpdated = false;
 
-            if ((this.EndPosition + puzzleRoad.EndPosition != 7 && this.EndPosition + puzzleRoad.EndPosition != 11 &&
+            if (switchStartToEnd)
+            {
+                this.SwitchStartToEnd();
+            }
+            else if ((this.EndPosition + puzzleRoad.EndPosition != 7 && this.EndPosition + puzzleRoad.EndPosition != 11 &&
                 this.EndPosition + puzzleRoad.StartPosition != 7 && this.EndPosition + puzzleRoad.StartPosition != 11) &&
                 (this.StartPosition + puzzleRoad.StartPosition == 7 || this.StartPosition + puzzleRoad.StartPosition == 11 ||
                 this.StartPosition + puzzleRoad.EndPosition == 7 || this.StartPosition + puzzleRoad.EndPosition == 11))

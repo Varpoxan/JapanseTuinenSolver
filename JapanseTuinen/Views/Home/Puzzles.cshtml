@@ -184,21 +184,28 @@
     var allShownIds = [];
     $(document).off('click', '.hoverable').on('click', '.hoverable', function () {
         var clickedElement = $(this);
-        var clickedId = $(clickedElement).attr('id')
+        var clickedId = parseInt($(clickedElement).attr('id'));
 
-        if ($.inArray(clickedId, allShownIds) == -1) {
-            allShownIds.push(parseInt(clickedId));
-        }
-
-        console.log(allShownIds);
         var continueClick = false;
+        debugger;
+
+        if (allShownIds.length === 0) {
+            allShownIds.push(parseInt(clickedId));
+            continueClick = true;
+        }
+        
         $(allShownIds).each(function (i, e) {
-            if (parseInt(clickedId) - 1 == parseInt(e) || parseInt(clickedId) - 3 == parseInt(e) || parseInt(clickedId) + 3 == parseInt(e) || parseInt(clickedId) + 1 == parseInt(e)) {
+            if (clickedId - 1 == parseInt(e) || clickedId - 3 == parseInt(e) || clickedId + 3 == parseInt(e) || clickedId + 1 == parseInt(e)) {
+                
                 continueClick = true;
             }
         });
+        
+        if (continueClick) {
+            if ($.inArray(clickedId, allShownIds) == -1) {
+                allShownIds.push(clickedId);
+            }
 
-        if (continueClick || allShownIds.length == 1) {
             $(clickedElement).removeClass('hidden');
             $(clickedElement).removeClass('hoverable');
             $(clickedElement).addClass('shown-puzzle-field');
@@ -208,6 +215,7 @@
             addRoadsToElement(clickedElement);
             removeRoadsBasedOnLastUpdate(clickedId);
         }
+        console.log(allShownIds);
     });
 
     function addRoadsToElement(puzzleField) {
@@ -283,73 +291,6 @@
         $(loopElement).css('width', calcLoopWidth);
         $(loopElement).css('height', calcLoopHeight);
         $(loopElement).find('.inner-puzzle-field').css('margin-' + oppositeSide, '0');
-    }
-
-    function addPixelsLeftToElement(element, amount) {
-        //debugger;
-        var pixels = parseInt($(element).css('left'));
-        var col = $(element).data('column');
-        var roadsLeft = $(element).find('.road-left-top').length === 2;
-        var roadsRight = $(element).find('.road-left-top').length === 2;
-
-        if (col == 3 && pixels + amount <= 400) {
-            //debugger;
-            if (roadsLeft) {
-                $(element).css({
-                    left: '380px'
-                });
-            }
-            else {
-                $(element).css({
-                    left: '400px'
-                });
-            }
-        }
-        else {
-            pixels += amount;
-            $(element).css({
-                left: pixels + 'px'
-            });
-        }
-
-        if (col == 1 && pixels + amount >= 20) {
-            if (roadsRight) {
-                $(element).css({
-                    left: '40px'
-                });
-            }
-            else {
-                $(element).css({
-                    left: '20px'
-                });
-            }
-        }
-    }
-
-    function addPixelsTopToElement(element, amount) {
-        //debugger;
-        var pixels = parseInt($(element).css('top'));
-        var row = $(element).data('row');
-        var roadsTop = $(element).find('.road-end-top').length === 2;
-        //debugger;
-        if (row == 2 && pixels + amount <= 200) {
-            if (roadsTop) {
-                $(element).css({
-                    top: '180px'
-                });
-            }
-            else {
-                $(element).css({
-                    top: '200px'
-                });
-            }
-        }
-        else {
-            pixels += amount;
-            $(element).css({
-                top: pixels + 'px'
-            });
-        }
     }
 
     function removeRoadsBasedOnLastUpdate(clickedId) {
@@ -433,25 +374,45 @@
 
             if (column === 1) {
                 if (roadsRight) {
-                    $(e).css('left', '40px');
+                    if ($('.shown-puzzle-field.row-one').length >= 2) {
+                        $(e).css('left', '40px');
+                    }
+                    else {
+                        $(e).css('left', '20px');
+                    }
                 }
                 else {
-                    $(e).css('left', '20px');
+                    $(e).css('left', '40px');
+                }
+            }
+
+            if (column === 2) {
+                if (roadsLeft) {
+                    if ($('.shown-puzzle-field.row-one').length === 3 || $('.shown-puzzle-field.row-two').length === 3) {
+                        $(e).css('left', '220px');
+                    }
+                }
+                else if (!roadsLeft) {
+                    $(e).css('left', '240px');
                 }
             }
 
             if (column === 3) {
                 if (roadsLeft) {
-                    $(e).css('left', '400px');
-                }
-                else {
                     if ($('.shown-puzzle-field.row-one').length === 3 || $('.shown-puzzle-field.row-two').length === 3) {
-                        $(e).css('left', '400px');
+                        $(e).css('left', '380px');
                     }
                     else {
                         $(e).css('left', '420px');
                     }
-                    
+                }
+                else {
+                    if ($('.shown-puzzle-field.row-one').length === 3 || $('.shown-puzzle-field.row-two').length === 3) {
+                        $(e).css('left', '420px');
+                    }
+                    else {
+                        $(e).css('left', '420px');
+                    }
                 }   
             }
 

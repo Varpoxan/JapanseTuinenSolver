@@ -62,11 +62,11 @@ namespace JapanseTuinen.Services
                 }
             }
 
-            if (totalPuzzleConditions.Count(t =>
-                t.SpecialCondition.Condition == Condition.YinYang) > 1)
-            {
-                returnValue.Add(String.Format("Één van de volgende symbolen komt meer dan één keer voor: YinYang"));
-            }
+            //if (totalPuzzleConditions.Count(t =>
+            //    t.SpecialCondition.Condition == Condition.YinYang) > 1)
+            //{
+            //    returnValue.Add(String.Format("Één van de volgende symbolen komt meer dan één keer voor: YinYang"));
+            //}
 
             return returnValue;
         }
@@ -229,10 +229,19 @@ namespace JapanseTuinen.Services
         public bool DoesDefinitiveRoadListSolvePuzzle(List<SimpleTileIndex> simpleConditionsList)
         {
             var icons = DoesDefinitiveRoadListSolveIcons(simpleConditionsList);
+            if (!icons) return false;
+
             var pagoda = DoesDefinitiveRoadListSolveGivenCondition(simpleConditionsList, Condition.Pagoda);
+            if (!pagoda) return false;
+
             var yinYang = DoesDefinitiveRoadListSolveGivenCondition(simpleConditionsList, Condition.YinYang);
-            var bridge = DoesDefinitiveRoadListSolveGivenCondition(simpleConditionsList, Condition.Bridge);
+            if (!yinYang) return false;
+
+            var bridge = DoesDefinitiveRoadListSolveBridge(simpleConditionsList, Condition.Bridge);
+            if (!bridge) return false;
+
             var tile = DoesDefinitiveRoadListSolveTile(simpleConditionsList, Condition.Tile);
+            if (!tile) return false;
 
             return icons && pagoda && yinYang && bridge && tile;
         }
@@ -251,11 +260,11 @@ namespace JapanseTuinen.Services
                 var conditionOne = toSolve.First();
                 var conditionTwo = toSolve.Last();
 
-                var findRoad = DefinitivePuzzleRoads.FirstOrDefault(s =>
+                var findRoad = DefinitivePuzzleRoads.Any(s =>
                                 s.StartsOrEndsAt(conditionOne.PuzzleIndex, conditionOne.Position) &&
                                 s.StartsOrEndsAt(conditionTwo.PuzzleIndex, conditionTwo.Position));
 
-                returnValues.Add(findRoad != null);
+                returnValues.Add(findRoad);
             }
 
             return returnValues.All(s => s);
@@ -272,11 +281,33 @@ namespace JapanseTuinen.Services
 
             foreach (var toSolve in conditionsToSolve)
             {
-                var findRoad = DefinitivePuzzleRoads.FirstOrDefault(s =>
+                var findRoad = DefinitivePuzzleRoads.Any(s =>
                                 s.StartsOrEndsAt(toSolve.PuzzleIndex, toSolve.Position) &&
                                 s.PuzzleIndexArray.Count == toSolve.SpecialCondition.Amount);
 
-                returnValues.Add(findRoad != null);
+                returnValues.Add(findRoad);
+            }
+
+            return returnValues.All(s => s);
+        }
+
+        public bool DoesDefinitiveRoadListSolveBridge(List<SimpleTileIndex> simpleConditionsList, Condition condition)
+        {
+            var returnValues = new HashSet<bool>();
+
+            var conditionsToSolve = simpleConditionsList.Where(s =>
+                    s.SpecialCondition.Condition == condition);
+
+            if (!conditionsToSolve.Any()) return true;
+
+            foreach (var toSolve in conditionsToSolve)
+            {
+                var findRoad = DefinitivePuzzleRoads.Any(s =>
+                                s.StartsOrEndsAt(toSolve.PuzzleIndex, toSolve.Position) &&
+                                s.SpecialConditions.Any(sc => sc.Value == toSolve.SpecialCondition.Amount && 
+                                    sc.Key == toSolve.SpecialCondition.Condition));
+
+                returnValues.Add(findRoad);
             }
 
             return returnValues.All(s => s);
@@ -290,15 +321,14 @@ namespace JapanseTuinen.Services
                     s.SpecialCondition.Condition == condition);
 
             if (!conditionsToSolve.Any()) return true;
-
-
+            
             foreach (var toSolve in conditionsToSolve)
             {
-                var findRoad = DefinitivePuzzleRoads.FirstOrDefault(s =>
+                var findRoad = DefinitivePuzzleRoads.Any(s =>
                                 s.StartsOrEndsAt(toSolve.PuzzleIndex, toSolve.Position) &&
                                 s.SpecialConditions.Any(sc => sc.Key == condition));
 
-                returnValues.Add(findRoad != null);
+                returnValues.Add(findRoad);
             }
 
             return returnValues.All(s => s);
