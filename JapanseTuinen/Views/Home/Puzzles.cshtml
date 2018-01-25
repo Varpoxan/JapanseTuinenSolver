@@ -445,8 +445,14 @@
                     $(e).css('left', '400px');
                 }
                 else {
-                    $(e).css('left', '420px');
-                }
+                    if ($('.shown-puzzle-field.row-one').length === 3 || $('.shown-puzzle-field.row-two').length === 3) {
+                        $(e).css('left', '400px');
+                    }
+                    else {
+                        $(e).css('left', '420px');
+                    }
+                    
+                }   
             }
 
         });
