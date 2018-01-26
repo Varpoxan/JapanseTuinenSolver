@@ -25,21 +25,18 @@ namespace JapanseTuinen.Services
             OpenPuzzleRoads = OpenPuzzleRoads.OrderBy(s => s.RoadStartsOrEndsAtPuzzleEdge == false).ToList();
             while (OpenPuzzleRoads.Any() && endWhileCount <= 30)
             {
-                if (FindRoadEndingOnCurrentStart(OpenPuzzleRoads[0]))
+                if (!FindRoadEndingOnCurrentStart(OpenPuzzleRoads[0]))
                 {
                     if (OpenPuzzleRoads.Count == 1)
                     {
                         //Maybe check if this road connects to itself?
                         //Clear it for now, see what happens.
                         OpenPuzzleRoads.Clear();
+                        break;
                     }
-
+                    FindRoadEndingOnCurrentStart(OpenPuzzleRoads[1]);
                     //if (OpenPuzzleRoads.Count > 1)
                     //FindRoadEndingOnCurrentStart(OpenPuzzleRoads[1]);
-                }
-                else
-                {
-                    FindRoadEndingOnCurrentStart(OpenPuzzleRoads[1]);
                 }
                 endWhileCount++;
                 if (endWhileCount >= 29)
@@ -78,12 +75,12 @@ namespace JapanseTuinen.Services
         public bool FindRoadEndingOnCurrentStart(PuzzleRoad road)
         {
             var newPuzzleIndex = road.EndPuzzleIndex.HasValue ? road.EndPuzzleIndex.Value : road.StartPuzzleIndex;
-            var tileString = String.Join(" + ", UsedTileList.OrderBy(s => s.PuzzleIndex).Select(s => s.ToString()));
+            //var tileString = String.Join(" + ", UsedTileList.OrderBy(s => s.PuzzleIndex).Select(s => s.ToString()));
             //var test = UsedTileList;
-            if (tileString == "1 - 1 - 0° + 2 - 2 - 0° + 3 - 3 - 0° + 4 - 7 - 0° + 5 - 4 - 0° + 6 - 5 - 90°")
-            {
+            //if (tileString == "1 - 1 - 0° + 2 - 2 - 0° + 3 - 3 - 0° + 4 - 7 - 0° + 5 - 4 - 0° + 6 - 5 - 90°")
+            //{
 
-            }
+            //}
             var switchStartToEnd = false;
             if (road.StartsOrEndsAt(1))
             {

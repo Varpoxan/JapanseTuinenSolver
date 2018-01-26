@@ -100,7 +100,7 @@
             url: '/Home/SolvePuzzle',
             data: PuzzleVM,
         }).always(function (result) {
-            debugger;
+            //debugger;
             $('.solved-puzzle-wrapper').html(result.responseText);
 
             for (var i = 1; i < 9; i++) {
@@ -187,7 +187,7 @@
         var clickedId = parseInt($(clickedElement).attr('id'));
 
         var continueClick = false;
-        debugger;
+        //debugger;
 
         if (allShownIds.length === 0) {
             allShownIds.push(parseInt(clickedId));
@@ -196,7 +196,6 @@
         
         $(allShownIds).each(function (i, e) {
             if (clickedId - 1 == parseInt(e) || clickedId - 3 == parseInt(e) || clickedId + 3 == parseInt(e) || clickedId + 1 == parseInt(e)) {
-                
                 continueClick = true;
             }
         });
