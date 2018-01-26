@@ -142,43 +142,43 @@ textarea {
 }
 
 .road-end-1 {
-    left: 20%;
+    left: 29%;
     top: 0;
 }
 
 .road-end-2 {
-    right: 20%;
+    right: 29%;
     top: 0;
 }
 
 .road-end-3 {
-    top: 20%;
+    top: 29%;
     right: 0;
 }
 
 .road-end-4 {
     right: 0;
-    bottom: 20%;
+    bottom: 29%;
 }
 
 .road-end-5 {
-    right: 20%;
+    right: 29%;
     bottom: 0;
 }
 
 .road-end-6 {
-    left: 20%;
+    left: 29%;
     bottom: 0;
 }
 
 .road-end-7 {
     left: 0;
-    bottom: 20%;
+    bottom: 29%;
 }
 
 .road-end-8 {
     left: 0;
-    top: 20%;
+    top: 29%;
 }
 
 /* endregion Puzzle */
