@@ -60,7 +60,6 @@
             }
 
             $(currentItem).children('.confirmed-condition').each(function (i, e) {
-                //debugger;
                 var position = $(e).data('position');
                 var condition = $(e).data('condition');
                 var value = $(e).data('amount');
@@ -100,7 +99,6 @@
             url: '/Home/SolvePuzzle',
             data: PuzzleVM,
         }).always(function (result) {
-            //debugger;
             $('.solved-puzzle-wrapper').html(result.responseText);
 
             for (var i = 1; i < 9; i++) {
@@ -185,9 +183,7 @@
     $(document).off('click', '.hoverable').on('click', '.hoverable', function () {
         var clickedElement = $(this);
         var clickedId = parseInt($(clickedElement).attr('id'));
-
         var continueClick = false;
-        //debugger;
 
         if (allShownIds.length === 0) {
             allShownIds.push(parseInt(clickedId));

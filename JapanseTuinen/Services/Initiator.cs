@@ -24,6 +24,11 @@ namespace JapanseTuinen.Services
         public Dictionary<int, int> OriginalDepthCounter { get; set; }
         public List<SimpleTileIndex> SimpleConditionsList { get; set; }
 
+        public Initiator()
+        {
+            TileList = GetTiles();
+        }
+
         public void Initialize(PuzzleViewModel puzzleVM)
         {
             this.PuzzleVM = puzzleVM;

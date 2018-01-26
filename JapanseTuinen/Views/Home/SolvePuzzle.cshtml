@@ -32,7 +32,7 @@ else
                 @*<div class="puzzle-field-wrapper">
                     <div id="@tile.PuzzleIndex" class="outer-puzzle-field @Model.GetRowClass(tile.PuzzleIndex) @Model.GetColumnClass(tile.PuzzleIndex)" data-row="@Model.GetRowNumberByIndex(tile.PuzzleIndex)" data-column="@Model.GetColumnNumberByIndex(tile.PuzzleIndex)">
                         <div class="inner-puzzle-field">*@
-                            <img id="solved-@tile.PuzzleIndex" class="solved-tile" src="@String.Format("/Images/tile{0}-{1}.jpg", tile.TileNumber, tile.Degrees)" />
+                            <img id="solved-@tile.PuzzleIndex" class="solved-tile tile-@tile.Degrees" src="@String.Format("/Images/tile_{0}.png", tile.TileNumber)" />
                         @*</div>
                     </div>
                 </div>*@

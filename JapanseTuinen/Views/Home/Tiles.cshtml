@@ -10,11 +10,10 @@
     {
         <h3>Tegel @tile.TileNumber</h3>
 
-        @*<img class="tile" src="@String.Format("/Images/Tile{0}-{1}.jpg", tile.TileNumber, tile.Degrees)"/>*@
-        
         foreach (var rotated in tile.TotalTileRotationList)
         {
-            <img class="tile" src="@String.Format("/Images/Tile{0}-{1}.jpg", tile.TileNumber, rotated.Degrees)" />
+            @*<h4>@rotated.Degrees</h4>*@
+            <img class="tile tile-@rotated.Degrees" src="@String.Format("/Images/tile_{0}.png", tile.TileNumber)" />
         }
     }
 </div>
