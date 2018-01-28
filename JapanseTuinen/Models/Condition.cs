@@ -33,5 +33,21 @@ namespace JapanseTuinen.Models
                     return false;
             }
         }
+
+        public static bool IsSvgIcon(this Condition condition)
+        {
+            switch(condition)
+            {
+                case Condition.Tree:
+                case Condition.Flower:
+                case Condition.Gate:
+                case Condition.Butterfly:
+                case Condition.Pagoda:
+                case Condition.YinYang:
+                    return true;
+                default:
+                    return false;
+            }
+        }
     }
 }

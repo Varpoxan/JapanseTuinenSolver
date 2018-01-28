@@ -1,6 +1,8 @@
 ﻿using JapanseTuinen.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -43,8 +45,23 @@ namespace JapanseTuinen.Controllers
             var init = new Services.PuzzleService();
 
             var puzzleVM = init.GetPuzzleVM();
+            var path = AppDomain.CurrentDomain.BaseDirectory;
+            string str = (new StreamReader(String.Format("{0}/Content/Puzzles/puzzles.json", path))).ReadToEnd();
+            var modelsDeserialized = JsonConvert.DeserializeObject<PuzzleViewModel>(str);
+            puzzleVM.KnownPuzzles = new HashSet<string>(modelsDeserialized.PuzzleTileList.Select(s => s.Name));
 
             return View(puzzleVM);
+        }
+
+        public PartialViewResult LoadPuzzle(string puzzleName)
+        {
+            var path = AppDomain.CurrentDomain.BaseDirectory;
+            string str = (new StreamReader(String.Format("{0}/Content/Puzzles/puzzles.json", path))).ReadToEnd();
+            var modelsDeserialized = JsonConvert.DeserializeObject<PuzzleViewModel>(str);
+            var modelsDeserialized2 = JsonConvert.DeserializeObject<PuzzleTile>(str);
+            var relevantPuzzle = modelsDeserialized.PuzzleTileList.FirstOrDefault(s => s.Name == puzzleName);
+
+            return PartialView(relevantPuzzle);
         }
 
         public PartialViewResult SolvePuzzle(PuzzleViewModel puzzleVM)

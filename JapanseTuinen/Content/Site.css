@@ -55,7 +55,28 @@ textarea {
 
 /* region Puzzle */
 
-.total-puzzle {
+#save-puzzle {
+    width: 30px;
+}
+
+.known-puzzles {
+    display: flex;
+}
+
+.known-puzzle {
+    padding: 7px 5px;
+    border: 1px solid grey;
+    cursor: pointer;
+    margin: 0 5px;
+    font-weight: bold;
+}
+
+.known-puzzle:hover {
+    background-color: goldenrod;
+    
+}
+
+.total-puzzle, .loaded-puzzle {
     position: relative;
     height: 400px;
     width: 700px;

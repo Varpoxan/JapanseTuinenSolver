@@ -147,6 +147,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Condition.cs" />
+    <Compile Include="Models\JSON\puzzle.cs" />
     <Compile Include="Models\Orientation.cs" />
     <Compile Include="Models\Playfield.cs" />
     <Compile Include="Models\PuzzleRoad.cs" />
@@ -196,6 +197,7 @@
     <Content Include="fonts\fontawesome-webfont.ttf" />
     <Content Include="fonts\fontawesome-webfont.eot" />
     <Content Include="Content\Site.less" />
+    <Content Include="Content\Puzzles\puzzles.json" />
     <None Include="Scripts\jquery-3.2.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.2.1.js" />
     <Content Include="Scripts\jquery-3.2.1.min.js" />
@@ -228,6 +230,7 @@
     <Content Include="Views\Home\Tiles.cshtml" />
     <Content Include="Views\Home\Puzzles.cshtml" />
     <Content Include="Views\Home\SolvePuzzle.cshtml" />
+    <Content Include="Views\Home\LoadPuzzle.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

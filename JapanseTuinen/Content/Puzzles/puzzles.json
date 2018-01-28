@@ -1,0 +1,77 @@
+﻿{
+  "PuzzleTileList": [
+    {
+      "Name": "Puzzle 1",
+      "TileIndexList": [
+        {
+          "Index": 1,
+          "TileInfoList": [
+            {
+              "Position": 2,
+              "Condition": "Flower"
+            },
+            {
+              "Position": 5,
+              "Condition": "Flower"
+            },
+            {
+              "Position": 8,
+              "Condition": "Bridge",
+              "Amount": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 2",
+      "TileIndexList": [
+        {
+          "Index": 1,
+          "TileInfoList": [
+            {
+              "Position": 2,
+              "Condition": "Flower"
+            },
+            {
+              "Position": 3,
+              "Condition": "Pagoda"
+            },
+            {
+              "Position": 8,
+              "Condition": "Flower"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 3",
+      "TileIndexList": [
+        {
+          "Index": 1,
+          "TileInfoList": [
+            {
+              "Position": 4,
+              "Condition": "Tile",
+              "Amount": 2
+            },
+            {
+              "Position": 8,
+              "Condition": "Pagoda"
+            }
+          ]
+        },
+        {
+          "Index": 4,
+          "TileInfoList": [
+            {
+              "Position": 4,
+              "Condition": "Pagoda"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

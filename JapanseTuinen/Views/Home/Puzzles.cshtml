@@ -6,8 +6,14 @@
 <h2>Nieuwe Puzzel</h2>
 
 <div class="solve-wrapper">
+    Save as:
+    <input type="text" id="save-puzzle" />
+    <br />
     <div class="solve-button btn btn-default">Solve!</div>
 </div>
+
+<div class="loaded-puzzle hidden"></div>
+
 <div class="total-puzzle">
 
     @for (int i = 1; i <= 6; i++)
@@ -36,11 +42,44 @@
     }
 </div>
 
+<div class="known-puzzles">
+    @if (Model.KnownPuzzles.Any())
+    {
+        foreach (var p in Model.KnownPuzzles)
+        {
+            <div class="known-puzzle" id="@p">@p</div>
+        }
+    }
+    else
+    {
+        <span class="alert alert-info">No known puzzles!</span>
+    }
+</div>
+
 <div class="solved-puzzle-wrapper">
 
 </div>
 
 <script type="text/javascript">
+
+    $(document).off('click', '.known-puzzle').on('click', '.known-puzzle', function () {
+
+        var puzzleName = $(this).attr('id');
+
+        $.ajax({
+            type: 'POST',
+            //dataType: 'json',
+            url: '/Home/LoadPuzzle',
+            data: {
+                puzzleName: puzzleName
+            },
+        }).always(function (result) {
+            //$('.solved-puzzle-wrapper').html(result.responseText);
+            $('.total-puzzle').addClass('hidden');
+            $('.loaded-puzzle').html(result);
+            $('.loaded-puzzle').removeClass('hidden');
+        });
+    });
 
     $(document).off('click', '.solve-button').on('click', '.solve-button', function () {
 
@@ -58,7 +97,7 @@
                 Index: (currentId),
                 TileIndexList: {}
             }
-
+            debugger;
             $(currentItem).children('.confirmed-condition').each(function (i, e) {
                 var position = $(e).data('position');
                 var condition = $(e).data('condition');
@@ -69,28 +108,26 @@
                     amount = parseInt(value);
                 }
 
-                var dingen = {
-                    Position: position,
-                    TileInfoList: {
-                        SpecialCondition: {
-                            Amount: 0,
-                            Condition: condition
-                        }
-                    }
-                }
+                //var dingen = {
+                //    Position: position,
+                //    SpecialCondition: {
+                //        Amount: amount,
+                //        Condition: condition
+                //    }
+                //}
                 var tileInfo = {
-                    SpecialCondition: {
-                        Amount: amount,
-                        Condition: condition
-                    }
+                    Position: position,
+                    Amount: amount,
+                    Condition: condition
                 }
-                dingen.TileInfoList[0] = tileInfo;
-                newTile.TileIndexList[i] = dingen;
+                //dingen.TileInfoList[0] = tileInfo;
+                newTile.TileIndexList[i] = tileInfo;
             });
 
             PuzzleVM.PuzzleTileList[i] = newTile;
         });
 
+        PuzzleVM.PuzzleNumber = $('#save-puzzle').val();
         console.log(PuzzleVM);
 
         $.ajax({
@@ -145,9 +182,9 @@
                         '" data-position="' + position +
                         '" data-condition=bridge />');
 
-                    $('.input-' + innerPuzzleField.attr('id')).removeClass('hidden');
-                    $('.road-text-input').data('position', position);
-                    $('.road-text-input').focus();
+                    //$('.input-' + innerPuzzleField.attr('id')).removeClass('hidden');
+                    //$('.road-text-input').data('position', position);
+                    //$('.road-text-input').focus();
                 }
                 if (choice.hasClass('tile-icon')) {
                     $(e).replaceWith('<div class="' + addedClass +
@@ -155,6 +192,11 @@
                         '" data-position="' + position +
                         '" data-condition=tile />');
 
+                    //$('.input-' + innerPuzzleField.attr('id')).removeClass('hidden');
+                    //$('.road-text-input').data('position', position);
+                    //$('.road-text-input').focus();
+                }
+                if (choice.hasClass('tile-icon') || choice.hasClass('bridge-icon')) {
                     $('.input-' + innerPuzzleField.attr('id')).removeClass('hidden');
                     $('.road-text-input').data('position', position);
                     $('.road-text-input').focus();
@@ -189,13 +231,13 @@
             allShownIds.push(parseInt(clickedId));
             continueClick = true;
         }
-        
+
         $(allShownIds).each(function (i, e) {
             if (clickedId - 1 == parseInt(e) || clickedId - 3 == parseInt(e) || clickedId + 3 == parseInt(e) || clickedId + 1 == parseInt(e)) {
                 continueClick = true;
             }
         });
-        
+
         if (continueClick) {
             if ($.inArray(clickedId, allShownIds) == -1) {
                 allShownIds.push(clickedId);
@@ -408,7 +450,7 @@
                     else {
                         $(e).css('left', '420px');
                     }
-                }   
+                }
             }
 
         });

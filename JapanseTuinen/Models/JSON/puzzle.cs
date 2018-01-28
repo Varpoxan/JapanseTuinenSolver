@@ -1,0 +1,112 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace JapanseTuinen.Models.JSON
+{
+    public class RoadCondition
+    {
+        public int roadindex { get; set; }
+        public Condition condition { get; set; }
+        public int? amount { get; set; }
+
+        //public bool IsIconCondition
+        //{
+        //    get
+        //    {
+        //        return condition.IsIconCondition();
+        //    }
+        //}
+
+        public bool IsSvgCondition
+        {
+            get
+            {
+                return condition.IsSvgIcon();
+            }
+        }
+
+        public bool IsTileOrBridge
+        {
+            get
+            {
+                return condition == Condition.Tile || condition == Condition.Bridge;
+            }
+        }
+
+        public string GetClass()
+        {
+            if (condition.IsIconCondition())
+            {
+                return String.Format("condition-choice svg-icon {0}-icon", GetCondition());
+            }
+            else
+            {
+                return String.Format("condition-choice {0}-road-end", GetCondition());
+            }
+            /*
+             condition-choice svg-icon ' +
+                        iconClass +
+                        '-icon" src="/Content/Icons/' + iconClass +
+                        '.svg" data-position="' + position +
+                        '" data-condition="' + iconClass + '" />');
+             */
+        }
+
+        public string GetSrc()
+        {
+            return String.Format("/Content/Icons/{0}.svg", GetCondition());
+        }
+
+        public string GetCondition()
+        {
+            return condition.ToString().ToLower();
+        }
+    }
+
+    public class Puzzletile
+    {
+        public int number { get; set; }
+        public List<RoadCondition> conditions { get; set; }
+    }
+
+    public class Puzzle : PuzzleViewModel
+    {
+        public string name { get; set; }
+        public List<Puzzletile> puzzletile { get; set; }
+
+        public string GetRoadOrientation(int roadIndex)
+        {
+            return roadIndex == 1 || roadIndex == 2 || roadIndex == 5 || roadIndex == 6 ? "road-end-vertical" : "road-end-horizontal";
+        }
+        public string GetRoadEndSide(int roadIndex)
+        {
+            var init = "road-end-";
+            if (roadIndex == 1 || roadIndex == 2)
+            {
+                init += "top";
+            }
+            else if (roadIndex == 3 || roadIndex == 4)
+            {
+                init += "right";
+            }
+            else if (roadIndex == 5 || roadIndex == 6)
+            {
+                init += "bottom";
+            }
+            else if (roadIndex == 7 || roadIndex == 8)
+            {
+                init += "left";
+            }
+            return init;
+        }
+    }
+
+    public class PuzzleSet
+    {
+        public string name { get; set; }
+        public string version { get; set; }
+        public List<Puzzle> puzzles { get; set; }
+    }
+}

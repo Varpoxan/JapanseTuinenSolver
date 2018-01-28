@@ -1,10 +1,9 @@
 ﻿using JapanseTuinen.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using System.Web;
-//using static JapanseTuinen.Models.PuzzleViewModel;
 
 namespace JapanseTuinen.Services
 {
@@ -223,6 +222,29 @@ namespace JapanseTuinen.Services
             solvedPuzzleVM.TriedSolutions = tries;
             var nonMax = Initiator.CheckedTileDictionary.Where(s => s.Value < AmountOfMaximumTriesPerTile).ToList();
             var nonCheckedAmount = nonMax.Sum(s => AmountOfMaximumTriesPerTile - s.Value);
+
+            if (solvedPuzzleVM.AmountOfFoundSolutions == 1)
+            {
+                //Valid puzzle, lets write to JSON
+                if (puzzleVM.PuzzleNumber > 0)
+                {
+                    var path = AppDomain.CurrentDomain.BaseDirectory;
+                    string str = (new StreamReader(String.Format("{0}/Content/Puzzles/puzzles.json", path))).ReadToEnd();
+
+                    // deserializes string into object
+                    var modelsDeserialized = JsonConvert.DeserializeObject<Models.JSON.PuzzleSet>(str);
+                    var modelsDeserialized2 = JsonConvert.DeserializeObject<PuzzleViewModel>(str);
+                    if (modelsDeserialized.puzzles.Any(s => s.name == "Puzzle " + puzzleVM.PuzzleNumber))
+                    {
+                        solvedPuzzleVM.ErrorList.Add("Puzzle is already saved as: Puzzle" + puzzleVM.PuzzleNumber + " !");
+                    }
+                    else
+                    {
+
+                    }
+                }
+            }
+
             return solvedPuzzleVM;
         }
 

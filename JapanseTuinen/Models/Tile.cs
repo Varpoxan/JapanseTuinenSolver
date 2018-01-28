@@ -62,17 +62,60 @@ namespace JapanseTuinen.Models
 
     public class TileIndex
     {
-        public int Position { get; set; }
+        public int Index { get; set; }
         public List<TileInfo> TileInfoList { get; set; }
 
         public TileIndex()
         {
-            this.TileInfoList = new List<TileInfo>(2);
+            //this.TileInfoList = new List<SpecialCondition>();
         }
 
-        public class TileInfo
+        
+    }
+
+    public class TileInfo
+    {
+        public int Position { get; set; }
+        //public SpecialCondition TileInfoList { get; set; }
+        public Condition Condition { get; set; }
+        public int? Amount { get; set; }
+
+        public bool IsSvgCondition
         {
-            public SpecialCondition SpecialCondition { get; set; }
+            get
+            {
+                return Condition.IsSvgIcon();
+            }
+        }
+
+        public bool IsTileOrBridge
+        {
+            get
+            {
+                return Condition == Condition.Tile || Condition == Condition.Bridge;
+            }
+        }
+
+        public string GetClass()
+        {
+            if (Condition.IsIconCondition())
+            {
+                return String.Format("condition-choice svg-icon {0}-icon", GetCondition());
+            }
+            else
+            {
+                return String.Format("condition-choice {0}-road-end", GetCondition());
+            }
+        }
+
+        public string GetSrc()
+        {
+            return String.Format("/Content/Icons/{0}.svg", GetCondition());
+        }
+
+        public string GetCondition()
+        {
+            return Condition.ToString().ToLower();
         }
     }
 }

@@ -1,0 +1,37 @@
+﻿@model JapanseTuinen.Models.PuzzleTile
+@{
+    ViewBag.Title = "LoadedPuzzle";
+}
+
+<div class="puzzle-field-wrapper">
+    @for (int i = 1; i <= 6; i++)
+    {
+        var p = Model.TileIndexList.FirstOrDefault(s => s.Index == i);
+
+        <div id="@i" class="outer-puzzle-field @if (p != null) { <text>shown-puzzle-field</text> } else {<text>hidden</text>} @Model.GetRowClass(i) @Model.GetColumnClass(i)" data-row="@Model.GetRowNumberByIndex(i)" data-column="@Model.GetColumnNumberByIndex(i)">
+            <div id="inner-@i" class="inner-puzzle-field"></div>
+                @for (int j = 1; j <= 8; j++)
+                {
+                    if (p != null)
+                    {
+                        var r = p.TileInfoList.FirstOrDefault(s => s.Position == j);
+                        if (r != null && r.IsSvgCondition)
+                        {
+                            <img class="@Model.GetRoadEndSide(j) road-end-@j @if (r != null) {<text>confirmed-condition @r.GetClass()</text>}"
+                                 data-position="@j" src="@r.GetSrc()" data-condition="@r.GetCondition()" />
+                        }
+                        else
+                        {
+                            <div class="road-end @Model.GetRoadEndSide(j) @Model.GetRoadOrientation(j) road-end-@j @if (r != null) {<text>confirmed-condition @r.GetClass()</text>}"
+                                 data-position="@j" @if (r != null) { <text>data-condition="@r.GetCondition()"</text> } @if (r != null && r.IsTileOrBridge) { <text>data-amount="@r.Amount"</text> } >@if (r != null) { @r.Amount } </div>
+                        }
+                    }
+                }
+
+                @*<div class="add-puzzle-field fa fa-plus fa-4x"></div>*@
+            
+
+        </div>
+    }
+</div>
+
