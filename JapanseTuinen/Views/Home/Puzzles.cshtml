@@ -133,9 +133,15 @@
         }).always(function (result) {
             $('.solved-puzzle-wrapper').html(result.responseText);
 
+            //console.log(result);
+            //console.log(result.responseText);
+            //console.log(result.IsPuzzleSaved);
+            //console.log(result.responseText.IsPuzzleSaved);
+
             for (var i = 1; i < 9; i++) {
                 $('#inner-' + i).append($('#solved-' + i));
             }
+
         });
 
     });
@@ -251,14 +257,14 @@
     });
 
     function addRoadsToElement(puzzleField) {
-        $(puzzleField).append('<div class="road-end road-end-top road-end-vertical road-end-1" data-position="1"></div>');
-        $(puzzleField).append('<div class="road-end road-end-top road-end-vertical road-end-2" data-position="2"></div>');
-        $(puzzleField).append('<div class="road-end road-end-right road-end-horizontal road-end-3" data-position="3"></div>');
-        $(puzzleField).append('<div class="road-end road-end-right road-end-horizontal road-end-4" data-position="4""></div>');
-        $(puzzleField).append('<div class="road-end road-end-bottom road-end-vertical road-end-5" data-position="5"></div>');
-        $(puzzleField).append('<div class="road-end road-end-bottom road-end-vertical road-end-6" data-position="6"></div>');
-        $(puzzleField).append('<div class="road-end road-end-left road-end-horizontal road-end-7" data-position="7"></div>');
-        $(puzzleField).append('<div class="road-end road-end-left road-end-horizontal road-end-8" data-position="8"></div>');
+        $(puzzleField).append('<div class="road-end road-end-top road-end-vertical road-end-1 road-end-all-sides" data-position="1"></div>');
+        $(puzzleField).append('<div class="road-end road-end-top road-end-vertical road-end-2 road-end-all-sides" data-position="2"></div>');
+        $(puzzleField).append('<div class="road-end road-end-right road-end-horizontal road-end-3 road-end-all-sides" data-position="3"></div>');
+        $(puzzleField).append('<div class="road-end road-end-right road-end-horizontal road-end-4 road-end-all-sides" data-position="4""></div>');
+        $(puzzleField).append('<div class="road-end road-end-bottom road-end-vertical road-end-5 road-end-all-sides" data-position="5"></div>');
+        $(puzzleField).append('<div class="road-end road-end-bottom road-end-vertical road-end-6 road-end-all-sides" data-position="6"></div>');
+        $(puzzleField).append('<div class="road-end road-end-left road-end-horizontal road-end-7 road-end-all-sides" data-position="7"></div>');
+        $(puzzleField).append('<div class="road-end road-end-left road-end-horizontal road-end-8 road-end-all-sides" data-position="8"></div>');
     };
 
     function RemoveRoadsSideFromClickedElement(clickedElement, loopElement, side) {
@@ -277,12 +283,84 @@
             oppositeSide = "top";
         }
 
-        $(clickedElement).children('.road-end-' + side).each(function (i, e) {
-            $(e).remove();
+        $(clickedElement).children('.road-end').each(function (i, e) {
+            if ($(e).hasClass('road-end-' + side)) {
+                $(e).remove();
+            }
+            if ($(e).hasClass('road-end-' + oppositeSide)) {
+                //var pos = $(e).data('position');
+                //$(e).removeClass('road-end-all-sides');
+                //$(e).addClass('road-end-no-' + side + '-side');
+            }
         });
 
-        $(loopElement).children('.road-end-' + oppositeSide).each(function (i, e) {
-            $(e).remove();
+        if (side == "left" || side == "right") {
+            $(clickedElement).children('.road-end').each(function (i, e) {
+                if ($(e).hasClass('road-end-top') || $(e).hasClass('road-end-bottom')) {
+
+                    if ($(e).hasClass('road-end-all-sides')) {
+                        $(e).removeClass('road-end-all-sides');
+                        $(e).addClass('road-end-no-' + side + '-side');
+                    }
+                    else if ($(e).hasClass('road-end-no-' + oppositeSide + '-side')) {
+                        $(e).removeClass('road-end-no-' + oppositeSide + '-side');
+                        $(e).addClass('road-end-no-sides');
+                    }
+                }
+            });
+
+            $(loopElement).children('.road-end').each(function (i, e) {
+                if ($(e).hasClass('road-end-top') || $(e).hasClass('road-end-bottom')) {
+
+                    if ($(e).hasClass('road-end-all-sides')) {
+                        $(e).removeClass('road-end-all-sides');
+                        $(e).addClass('road-end-no-' + oppositeSide + '-side');
+                    }
+                    else if ($(e).hasClass('road-end-no-' + side + '-side')) {
+                        $(e).removeClass('road-end-no-' + side + '-side');
+                        $(e).addClass('road-end-no-sides');
+                    }
+                }
+            });
+        }
+
+        if (side == "top" || side == "bottom") {
+            $(clickedElement).children('.road-end').each(function (i, e) {
+                if ($(e).hasClass('road-end-left') || $(e).hasClass('road-end-right')) {
+//                    debugger;
+                    if ($(e).hasClass('road-end-all-sides')) {
+                        $(e).removeClass('road-end-all-sides');
+                        $(e).addClass('road-end-no-' + side + '-side');
+                    }
+                    else if ($(e).hasClass('road-end-no-' + oppositeSide + '-side')) {
+                        $(e).removeClass('road-end-no-' + oppositeSide + '-side');
+                        $(e).addClass('road-end-no-sides');
+                    }
+                }
+            });
+
+            $(loopElement).children('.road-end').each(function (i, e) {
+                if ($(e).hasClass('road-end-left') || $(e).hasClass('road-end-right')) {
+
+                    if ($(e).hasClass('road-end-all-sides')) {
+                        $(e).removeClass('road-end-all-sides');
+                        $(e).addClass('road-end-no-' + oppositeSide + '-side');
+                    }
+                    else if ($(e).hasClass('road-end-no-' + side + '-side')) {
+                        $(e).removeClass('road-end-no-' + side + '-side');
+                        $(e).addClass('road-end-no-sides');
+                    }
+                }
+            });
+
+        }
+
+        $(loopElement).children('.road-end').each(function (i, e) {
+            if ($(e).hasClass('road-end-' + oppositeSide)) {
+                $(e).remove();
+            }
+            //$(e).removeClass('road-end-all-sides');
+            //$(e).addClass('road-end-no-' + oppositeSide + '-side');
         });
         var calcWidth = 220;
         if ($(clickedElement).find('.road-end-left').length !== 2) {
@@ -406,7 +484,7 @@
 
             if (column === 1) {
                 if (roadsRight) {
-                    if ($('.shown-puzzle-field.row-one').length >= 2) {
+                    if ($('.shown-puzzle-field.row-one').length >= 2 || $('.shown-puzzle-field.row-two').length >= 2) {
                         $(e).css('left', '40px');
                     }
                     else {
@@ -431,8 +509,8 @@
 
             if (column === 3) {
                 if (roadsLeft) {
-                    if ($('.shown-puzzle-field.row-one').length === 3 || $('.shown-puzzle-field.row-two').length === 3) {
-                        $(e).css('left', '380px');
+                    if ($('.shown-puzzle-field.row-one').length >= 2 || $('.shown-puzzle-field.row-two').length >= 2) {
+                        $(e).css('left', '400px');
                     }
                     else {
                         $(e).css('left', '420px');

@@ -278,6 +278,7 @@ namespace JapanseTuinen.Services
                             //serialize object directly into file stream
                             serializer.Serialize(file, jsonPuzzles);
                             solvedPuzzleVM.ErrorList.Add("Puzzle saved as: " + puzzleVM.Name + " !");
+                            solvedPuzzleVM.SavedPuzzleName = puzzleVM.Name;
                         }
                     }
                 }

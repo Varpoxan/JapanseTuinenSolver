@@ -61,14 +61,16 @@ textarea {
 
 .known-puzzles {
     display: flex;
+    flex-wrap: wrap;
 }
 
 .known-puzzle {
     padding: 7px 5px;
     border: 1px solid grey;
     cursor: pointer;
-    margin: 0 5px;
+    margin: 5px;
     font-weight: bold;
+    flex-basis: 8%;
 }
 
 .known-puzzle:hover {
@@ -162,43 +164,128 @@ textarea {
     border-left: 1px dashed black;
 }
 
-.road-end-1 {
+.road-end-top {
+    top: 0;
+}
+.road-end-right {
+    right: 0;
+}
+.road-end-bottom {
+    bottom: 0;
+}
+.road-end-left {
+    left: 0;
+}
+
+/* Road 1 */
+.road-end-1.road-end-all-sides {
     left: 29%;
-    top: 0;
+}
+.road-end-1.road-end-no-left-side {
+    left: 17.5%;
+}
+.road-end-1.road-end-no-right-side {
+    left: 32.5%;
+}
+.road-end-1.road-end-no-sides {
+    left: 19.5%;
 }
 
-.road-end-2 {
+/* Road 2 */
+.road-end-2.road-end-all-sides {
     right: 29%;
-    top: 0;
+}
+.road-end-2.road-end-no-left-side {
+    right: 32.5%;
+}
+.road-end-2.road-end-no-right-side {
+    right: 22%;
+}
+.road-end-2.road-end-no-sides {
+    right: 22%;
 }
 
-.road-end-3 {
+/* Road 3 */
+.road-end-3.road-end-all-sides {
     top: 29%;
-    right: 0;
+}
+.road-end-3.road-end-no-top-side {
+    top: 29%;
+}
+.road-end-3.road-end-no-bottom-side {
+    top: 29%;
+}
+.road-end-3.road-end-no-sides {
+    top: 29%;
 }
 
-.road-end-4 {
-    right: 0;
+/* Road 4 */
+.road-end-4.road-end-all-sides {
     bottom: 29%;
 }
+.road-end-4.road-end-no-top-side {
+    bottom: 29%;
+}
+.road-end-4.road-end-no-bottom-side {
+    bottom: 18%;
+}
+.road-end-4.road-end-no-sides {
+    bottom: 18%;
+}
 
-.road-end-5 {
+/* Road 5 */
+.road-end-5.road-end-all-sides {
     right: 29%;
-    bottom: 0;
+}
+.road-end-5.road-end-no-left-side {
+    right: 32.5%;
+}
+.road-end-5.road-end-no-right-side {
+    right: 22.5%;
+}
+.road-end-5.road-end-no-sides {
+    right: 22.5%;
 }
 
-.road-end-6 {
+/* Road 6 */
+.road-end-6.road-end-all-sides {
     left: 29%;
-    bottom: 0;
+}
+.road-end-6.road-end-no-left-side {
+    left: 22.5%;
+}
+.road-end-6.road-end-no-right-side {
+    left: 32.5%;
+}
+.road-end-6.road-end-no-sides {
+    left: 19.5%;
 }
 
-.road-end-7 {
-    left: 0;
+/* Road 7 */
+.road-end-7.road-end-all-sides {
+    bottom: 29%;
+}
+.road-end-7.road-end-no-top-side {
+    bottom: 28%;
+}
+.road-end-7.road-end-no-bottom-side {
+    bottom: 22%;
+}
+.road-end-7.road-end-no-sides {
     bottom: 29%;
 }
 
-.road-end-8 {
-    left: 0;
+/* Road 8 */
+.road-end-8.road-end-all-sides {
+    top: 29%;
+}
+.road-end-8.road-end-no-top-side {
+    top: 22%;
+}
+.road-end-8.road-end-no-bottom-side {
+    top: 32%;
+}
+.road-end-8.road-end-no-sides {
     top: 29%;
 }
 

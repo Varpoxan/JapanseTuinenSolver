@@ -60,15 +60,17 @@ namespace JapanseTuinen.Controllers
             return PartialView(relevantPuzzle);
         }
 
-        public PartialViewResult SolvePuzzle(PuzzleViewModel puzzleVM)
+        public /*JsonResult*/ PartialViewResult SolvePuzzle(PuzzleViewModel puzzleVM)
         {
             if (puzzleVM.TileIndexList.Any())
             {
                 var puzzleService = new Services.PuzzleService();
                 var solvedPuzzle = puzzleService.SolvePuzzle(puzzleVM);
+                //return new JsonResult() { Data = solvedPuzzle };
                 return PartialView(solvedPuzzle);
             }
 
+            //return new JsonResult(); 
             return PartialView();
         }
     }
