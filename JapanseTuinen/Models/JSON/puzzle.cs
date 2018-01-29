@@ -75,32 +75,6 @@ namespace JapanseTuinen.Models.JSON
     {
         public string name { get; set; }
         public List<Puzzletile> puzzletile { get; set; }
-
-        public string GetRoadOrientation(int roadIndex)
-        {
-            return roadIndex == 1 || roadIndex == 2 || roadIndex == 5 || roadIndex == 6 ? "road-end-vertical" : "road-end-horizontal";
-        }
-        public string GetRoadEndSide(int roadIndex)
-        {
-            var init = "road-end-";
-            if (roadIndex == 1 || roadIndex == 2)
-            {
-                init += "top";
-            }
-            else if (roadIndex == 3 || roadIndex == 4)
-            {
-                init += "right";
-            }
-            else if (roadIndex == 5 || roadIndex == 6)
-            {
-                init += "bottom";
-            }
-            else if (roadIndex == 7 || roadIndex == 8)
-            {
-                init += "left";
-            }
-            return init;
-        }
     }
 
     public class PuzzleSet

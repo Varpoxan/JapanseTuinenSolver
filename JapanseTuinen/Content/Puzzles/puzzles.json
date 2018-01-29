@@ -1,5 +1,5 @@
-﻿{
-  "PuzzleTileList": [
+{
+  "PuzzleList": [
     {
       "Name": "Puzzle 1",
       "TileIndexList": [
@@ -8,15 +8,15 @@
           "TileInfoList": [
             {
               "Position": 2,
-              "Condition": "Flower"
+              "Condition": 5
             },
             {
               "Position": 5,
-              "Condition": "Flower"
+              "Condition": 5
             },
             {
               "Position": 8,
-              "Condition": "Bridge",
+              "Condition": 1,
               "Amount": 1
             }
           ]
@@ -31,15 +31,15 @@
           "TileInfoList": [
             {
               "Position": 2,
-              "Condition": "Flower"
+              "Condition": 5
             },
             {
               "Position": 3,
-              "Condition": "Pagoda"
+              "Condition": 2
             },
             {
               "Position": 8,
-              "Condition": "Flower"
+              "Condition": 5
             }
           ]
         }
@@ -53,12 +53,12 @@
           "TileInfoList": [
             {
               "Position": 4,
-              "Condition": "Tile",
+              "Condition": 0,
               "Amount": 2
             },
             {
               "Position": 8,
-              "Condition": "Pagoda"
+              "Condition": 2
             }
           ]
         },
@@ -67,7 +67,845 @@
           "TileInfoList": [
             {
               "Position": 4,
-              "Condition": "Pagoda"
+              "Condition": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 4",
+      "TileIndexList": [
+        {
+          "Index": 2,
+          "TileInfoList": [
+            {
+              "Position": 2,
+              "Condition": 0,
+              "Amount": 3
+            },
+            {
+              "Position": 4,
+              "Condition": 0,
+              "Amount": 3
+            }
+          ]
+        },
+        {
+          "Index": 5,
+          "TileInfoList": [
+            {
+              "Position": 3,
+              "Condition": 0,
+              "Amount": 1
+            },
+            {
+              "Position": 7,
+              "Condition": 3,
+              "Amount": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 5",
+      "TileIndexList": [
+        {
+          "Index": 2,
+          "TileInfoList": [
+            {
+              "Position": 4,
+              "Condition": 1,
+              "Amount": 1
+            },
+            {
+              "Position": 7,
+              "Condition": 0,
+              "Amount": 2
+            }
+          ]
+        },
+        {
+          "Index": 5,
+          "TileInfoList": [
+            {
+              "Position": 3,
+              "Condition": 1,
+              "Amount": 1
+            },
+            {
+              "Position": 5,
+              "Condition": 0,
+              "Amount": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 6",
+      "TileIndexList": [
+        {
+          "Index": 2,
+          "TileInfoList": [
+            {
+              "Position": 1,
+              "Condition": 5,
+              "Amount": 0
+            },
+            {
+              "Position": 4,
+              "Condition": 1,
+              "Amount": 1
+            },
+            {
+              "Position": 7,
+              "Condition": 5,
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 5,
+          "TileInfoList": [
+            {
+              "Position": 3,
+              "Condition": 2,
+              "Amount": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 7",
+      "TileIndexList": [
+        {
+          "Index": 2,
+          "TileInfoList": [
+            {
+              "Position": 2,
+              "Condition": 6,
+              "Amount": 0
+            },
+            {
+              "Position": 3,
+              "Condition": 7,
+              "Amount": 0
+            },
+            {
+              "Position": 4,
+              "Condition": 6,
+              "Amount": 0
+            },
+            {
+              "Position": 8,
+              "Condition": 5,
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 5,
+          "TileInfoList": [
+            {
+              "Position": 3,
+              "Condition": 5,
+              "Amount": 0
+            },
+            {
+              "Position": 4,
+              "Condition": 7,
+              "Amount": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 8",
+      "TileIndexList": [
+        {
+          "Index": 2,
+          "TileInfoList": [
+            {
+              "Position": 1,
+              "Condition": 0,
+              "Amount": 2
+            },
+            {
+              "Position": 7,
+              "Condition": 0,
+              "Amount": 2
+            }
+          ]
+        },
+        {
+          "Index": 5,
+          "TileInfoList": [
+            {
+              "Position": 3,
+              "Condition": 0,
+              "Amount": 2
+            },
+            {
+              "Position": 7,
+              "Condition": 0,
+              "Amount": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 9",
+      "TileIndexList": [
+        {
+          "Index": 2,
+          "TileInfoList": [
+            {
+              "Position": 1,
+              "Condition": 0,
+              "Amount": 3
+            },
+            {
+              "Position": 3,
+              "Condition": 5,
+              "Amount": 0
+            },
+            {
+              "Position": 4,
+              "Condition": 5,
+              "Amount": 0
+            },
+            {
+              "Position": 8,
+              "Condition": 1,
+              "Amount": 1
+            }
+          ]
+        },
+        {
+          "Index": 5,
+          "TileInfoList": [
+            {
+              "Position": 7,
+              "Condition": 1,
+              "Amount": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 10",
+      "TileIndexList": [
+        {
+          "Index": 2,
+          "TileInfoList": [
+            {
+              "Position": 3,
+              "Condition": 5,
+              "Amount": 0
+            },
+            {
+              "Position": 7,
+              "Condition": 1,
+              "Amount": 1
+            },
+            {
+              "Position": 8,
+              "Condition": 1,
+              "Amount": 1
+            }
+          ]
+        },
+        {
+          "Index": 5,
+          "TileInfoList": [
+            {
+              "Position": 4,
+              "Condition": 5,
+              "Amount": 0
+            },
+            {
+              "Position": 8,
+              "Condition": 1,
+              "Amount": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 11",
+      "TileIndexList": [
+        {
+          "Index": 2,
+          "TileInfoList": [
+            {
+              "Position": 3,
+              "Condition": 2,
+              "Amount": 0
+            },
+            {
+              "Position": 4,
+              "Condition": 2,
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 4,
+          "TileInfoList": [
+            {
+              "Position": 5,
+              "Condition": 7,
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 5,
+          "TileInfoList": [
+            {
+              "Position": 4,
+              "Condition": 7,
+              "Amount": 0
+            },
+            {
+              "Position": 5,
+              "Condition": 3,
+              "Amount": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 12",
+      "TileIndexList": [
+        {
+          "Index": 1,
+          "TileInfoList": [
+            {
+              "Position": 5,
+              "Condition": 5,
+              "Amount": 0
+            },
+            {
+              "Position": 8,
+              "Condition": 5,
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 2,
+          "TileInfoList": [
+            {
+              "Position": 1,
+              "Condition": 0,
+              "Amount": 5
+            },
+            {
+              "Position": 6,
+              "Condition": 0,
+              "Amount": 1
+            }
+          ]
+        },
+        {
+          "Index": 3,
+          "TileInfoList": [
+            {
+              "Position": 1,
+              "Condition": 1,
+              "Amount": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 13",
+      "TileIndexList": [
+        {
+          "Index": 2,
+          "TileInfoList": [
+            {
+              "Position": 2,
+              "Condition": 6,
+              "Amount": 0
+            },
+            {
+              "Position": 4,
+              "Condition": 5,
+              "Amount": 0
+            },
+            {
+              "Position": 7,
+              "Condition": 5,
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 4,
+          "TileInfoList": [
+            {
+              "Position": 1,
+              "Condition": 4,
+              "Amount": 0
+            },
+            {
+              "Position": 5,
+              "Condition": 7,
+              "Amount": 0
+            },
+            {
+              "Position": 6,
+              "Condition": 6,
+              "Amount": 0
+            },
+            {
+              "Position": 8,
+              "Condition": 7,
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 5,
+          "TileInfoList": [
+            {
+              "Position": 3,
+              "Condition": 4,
+              "Amount": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 14",
+      "TileIndexList": [
+        {
+          "Index": 1,
+          "TileInfoList": [
+            {
+              "Position": 5,
+              "Condition": 2,
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 2,
+          "TileInfoList": [
+            {
+              "Position": 1,
+              "Condition": 1,
+              "Amount": 1
+            },
+            {
+              "Position": 2,
+              "Condition": 1,
+              "Amount": 1
+            }
+          ]
+        },
+        {
+          "Index": 3,
+          "TileInfoList": [
+            {
+              "Position": 5,
+              "Condition": 2,
+              "Amount": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 15",
+      "TileIndexList": [
+        {
+          "Index": 2,
+          "TileInfoList": [
+            {
+              "Position": 2,
+              "Condition": 1,
+              "Amount": 2
+            },
+            {
+              "Position": 3,
+              "Condition": 5,
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 5,
+          "TileInfoList": [
+            {
+              "Position": 8,
+              "Condition": 1,
+              "Amount": 2
+            }
+          ]
+        },
+        {
+          "Index": 6,
+          "TileInfoList": [
+            {
+              "Position": 1,
+              "Condition": 5,
+              "Amount": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 16",
+      "TileIndexList": [
+        {
+          "Index": 1,
+          "TileInfoList": [
+            {
+              "Position": 2,
+              "Condition": 3,
+              "Amount": 0
+            },
+            {
+              "Position": 8,
+              "Condition": 5,
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 2,
+          "TileInfoList": [
+            {
+              "Position": 1,
+              "Condition": 5,
+              "Amount": 0
+            },
+            {
+              "Position": 6,
+              "Condition": 4,
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 3,
+          "TileInfoList": [
+            {
+              "Position": 1,
+              "Condition": 4,
+              "Amount": 0
+            },
+            {
+              "Position": 3,
+              "Condition": 3,
+              "Amount": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 17",
+      "TileIndexList": [
+        {
+          "Index": 1,
+          "TileInfoList": [
+            {
+              "Position": 1,
+              "Condition": 5,
+              "Amount": 0
+            },
+            {
+              "Position": 6,
+              "Condition": 4,
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 2,
+          "TileInfoList": [
+            {
+              "Position": 1,
+              "Condition": 6,
+              "Amount": 0
+            },
+            {
+              "Position": 2,
+              "Condition": 4,
+              "Amount": 0
+            },
+            {
+              "Position": 5,
+              "Condition": 7,
+              "Amount": 0
+            },
+            {
+              "Position": 6,
+              "Condition": 5,
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 3,
+          "TileInfoList": [
+            {
+              "Position": 2,
+              "Condition": 6,
+              "Amount": 0
+            },
+            {
+              "Position": 5,
+              "Condition": 7,
+              "Amount": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 18",
+      "TileIndexList": [
+        {
+          "Index": 2,
+          "TileInfoList": [
+            {
+              "Position": 8,
+              "Condition": 0,
+              "Amount": 2
+            }
+          ]
+        },
+        {
+          "Index": 3,
+          "TileInfoList": [
+            {
+              "Position": 6,
+              "Condition": 0,
+              "Amount": 2
+            }
+          ]
+        },
+        {
+          "Index": 5,
+          "TileInfoList": [
+            {
+              "Position": 3,
+              "Condition": 2,
+              "Amount": 0
+            },
+            {
+              "Position": 7,
+              "Condition": 3,
+              "Amount": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 19",
+      "TileIndexList": [
+        {
+          "Index": 1,
+          "TileInfoList": [
+            {
+              "Position": 2,
+              "Condition": 6,
+              "Amount": 0
+            },
+            {
+              "Position": 7,
+              "Condition": 6,
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 2,
+          "TileInfoList": [
+            {
+              "Position": 2,
+              "Condition": 5,
+              "Amount": 0
+            },
+            {
+              "Position": 6,
+              "Condition": 5,
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 3,
+          "TileInfoList": [
+            {
+              "Position": 2,
+              "Condition": 4,
+              "Amount": 0
+            },
+            {
+              "Position": 6,
+              "Condition": 4,
+              "Amount": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 20",
+      "TileIndexList": [
+        {
+          "Index": 2,
+          "TileInfoList": [
+            {
+              "Position": 4,
+              "Condition": 1,
+              "Amount": 1
+            }
+          ]
+        },
+        {
+          "Index": 4,
+          "TileInfoList": [
+            {
+              "Position": 5,
+              "Condition": 1,
+              "Amount": 1
+            }
+          ]
+        },
+        {
+          "Index": 5,
+          "TileInfoList": [
+            {
+              "Position": 4,
+              "Condition": 1,
+              "Amount": 2
+            },
+            {
+              "Position": 5,
+              "Condition": 0,
+              "Amount": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 21",
+      "TileIndexList": [
+        {
+          "Index": 1,
+          "TileInfoList": [
+            {
+              "Position": 2,
+              "Condition": 1,
+              "Amount": 2
+            },
+            {
+              "Position": 3,
+              "Condition": 1,
+              "Amount": 2
+            }
+          ]
+        },
+        {
+          "Index": 4,
+          "TileInfoList": [
+            {
+              "Position": 8,
+              "Condition": 1,
+              "Amount": 1
+            }
+          ]
+        },
+        {
+          "Index": 5,
+          "TileInfoList": [
+            {
+              "Position": 1,
+              "Condition": 0,
+              "Amount": 2
+            },
+            {
+              "Position": 2,
+              "Condition": 0,
+              "Amount": 2
+            }
+          ]
+        },
+        {
+          "Index": 6,
+          "TileInfoList": []
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 22",
+      "TileIndexList": [
+        {
+          "Index": 2,
+          "TileInfoList": [
+            {
+              "Position": 4,
+              "Condition": 4,
+              "Amount": 0
+            },
+            {
+              "Position": 7,
+              "Condition": 5,
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 4,
+          "TileInfoList": [
+            {
+              "Position": 1,
+              "Condition": 6,
+              "Amount": 0
+            },
+            {
+              "Position": 6,
+              "Condition": 5,
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 5,
+          "TileInfoList": []
+        },
+        {
+          "Index": 6,
+          "TileInfoList": [
+            {
+              "Position": 2,
+              "Condition": 4,
+              "Amount": 0
+            },
+            {
+              "Position": 5,
+              "Condition": 6,
+              "Amount": 0
             }
           ]
         }

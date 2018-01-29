@@ -31,6 +31,33 @@ namespace JapanseTuinen.Services
             return puzzleVM;
         }
 
+        public string BasePath
+        {
+            get
+            {
+                return AppDomain.CurrentDomain.BaseDirectory;
+            }
+        }
+
+        public string JsonPuzzlesPath
+        {
+            get
+            {
+                return String.Format("{0}/Content/Puzzles/puzzles.json", BasePath);
+            }
+        }
+
+        public Puzzle GetJsonPuzzles()
+        {
+            string str = String.Empty;
+            using (StreamReader sr = new StreamReader(JsonPuzzlesPath))
+            {
+                str = sr.ReadToEnd();
+            }
+            var modelsDeserialized = JsonConvert.DeserializeObject<Puzzle>(str);
+            return modelsDeserialized;
+        }
+
         private int AmountOfCheckedSolutions { get { return Initiator.AmountOfCheckedSolutions; } set { Initiator.AmountOfCheckedSolutions = value; } }
         private int AmountOfTotalSolutions { get { return Initiator.AmountOfTotalSolutions; } }
         private int AmountOfMaximumTriesPerTile { get { return Initiator.AmountOfMaximumTriesPerTile; } }
@@ -51,21 +78,27 @@ namespace JapanseTuinen.Services
 
             foreach (var icon in IconConditions)
             {
-                if (totalPuzzleConditions.Count(s => s.SpecialCondition.Condition == icon) >= 3)
+                if (totalPuzzleConditions.Count(s => s.Condition == icon) >= 3)
                 {
                     returnValue.Add(String.Format("Het volgende symbool komt een te vaak voor: {0}", icon));
                 }
-                else if (totalPuzzleConditions.Count(s => s.SpecialCondition.Condition == icon) % 2 != 0)
+                else if (totalPuzzleConditions.Count(s => s.Condition == icon) % 2 != 0)
                 {
                     returnValue.Add(String.Format("Het volgende symbool komt een oneven aantal voor: {0}", icon));
                 }
             }
 
-            //if (totalPuzzleConditions.Count(t =>
-            //    t.SpecialCondition.Condition == Condition.YinYang) > 1)
-            //{
-            //    returnValue.Add(String.Format("Één van de volgende symbolen komt meer dan één keer voor: YinYang"));
-            //}
+            if (totalPuzzleConditions.Count(t =>
+                t.Condition == Condition.YinYang) > 2)
+            {
+                returnValue.Add(String.Format("Één van de volgende symbolen komt meer dan twee keer voor: YinYang"));
+            }
+
+            if (totalPuzzleConditions.Count(t =>
+                t.Condition == Condition.Pagoda) > 2)
+            {
+                returnValue.Add(String.Format("Één van de volgende symbolen komt meer dan twee keer voor: Pagode"));
+            }
 
             return returnValue;
         }
@@ -226,21 +259,26 @@ namespace JapanseTuinen.Services
             if (solvedPuzzleVM.AmountOfFoundSolutions == 1)
             {
                 //Valid puzzle, lets write to JSON
-                if (puzzleVM.PuzzleNumber > 0)
+                if (puzzleVM.Name != "Puzzle ")
                 {
-                    var path = AppDomain.CurrentDomain.BaseDirectory;
-                    string str = (new StreamReader(String.Format("{0}/Content/Puzzles/puzzles.json", path))).ReadToEnd();
-
-                    // deserializes string into object
-                    var modelsDeserialized = JsonConvert.DeserializeObject<Models.JSON.PuzzleSet>(str);
-                    var modelsDeserialized2 = JsonConvert.DeserializeObject<PuzzleViewModel>(str);
-                    if (modelsDeserialized.puzzles.Any(s => s.name == "Puzzle " + puzzleVM.PuzzleNumber))
+                    var jsonPuzzles = GetJsonPuzzles();
+                    if (jsonPuzzles.PuzzleList.Any(s => s.Name == puzzleVM.Name))
                     {
-                        solvedPuzzleVM.ErrorList.Add("Puzzle is already saved as: Puzzle" + puzzleVM.PuzzleNumber + " !");
+                        solvedPuzzleVM.ErrorList.Add("Puzzle is already saved as: " + puzzleVM.Name + " !");
                     }
                     else
                     {
+                        jsonPuzzles.PuzzleList.Add(puzzleVM);
 
+                        //open file stream
+                        using (StreamWriter file = File.CreateText(JsonPuzzlesPath))
+                        {
+                            string json = JsonConvert.SerializeObject(jsonPuzzles);
+                            JsonSerializer serializer = new JsonSerializer();
+                            //serialize object directly into file stream
+                            serializer.Serialize(file, jsonPuzzles);
+                            solvedPuzzleVM.ErrorList.Add("Puzzle saved as: " + puzzleVM.Name + " !");
+                        }
                     }
                 }
             }
@@ -272,8 +310,8 @@ namespace JapanseTuinen.Services
         {
             var returnValues = new HashSet<bool>();
             var iconConditionsToSolve = simpleConditionsList.Where(s =>
-                    s.SpecialCondition.Condition.IsIconCondition())
-                    .GroupBy(s => s.SpecialCondition.Condition);
+                    s.Condition.IsIconCondition())
+                    .GroupBy(s => s.Condition);
 
             if (!iconConditionsToSolve.Any()) return true;
 
@@ -297,7 +335,7 @@ namespace JapanseTuinen.Services
             var returnValues = new HashSet<bool>();
 
             var conditionsToSolve = simpleConditionsList.Where(s =>
-                    s.SpecialCondition.Condition == condition);
+                    s.Condition == condition);
 
             if (!conditionsToSolve.Any()) return true;
 
@@ -305,7 +343,7 @@ namespace JapanseTuinen.Services
             {
                 var findRoad = DefinitivePuzzleRoads.Any(s =>
                                 s.StartsOrEndsAt(toSolve.PuzzleIndex, toSolve.Position) &&
-                                s.PuzzleIndexArray.Count == toSolve.SpecialCondition.Amount);
+                                s.PuzzleIndexArray.Count == toSolve.Amount);
 
                 returnValues.Add(findRoad);
             }
@@ -318,7 +356,7 @@ namespace JapanseTuinen.Services
             var returnValues = new HashSet<bool>();
 
             var conditionsToSolve = simpleConditionsList.Where(s =>
-                    s.SpecialCondition.Condition == condition);
+                    s.Condition == condition);
 
             if (!conditionsToSolve.Any()) return true;
 
@@ -326,8 +364,8 @@ namespace JapanseTuinen.Services
             {
                 var findRoad = DefinitivePuzzleRoads.Any(s =>
                                 s.StartsOrEndsAt(toSolve.PuzzleIndex, toSolve.Position) &&
-                                s.SpecialConditions.Any(sc => sc.Value == toSolve.SpecialCondition.Amount && 
-                                    sc.Key == toSolve.SpecialCondition.Condition));
+                                s.SpecialConditions.Any(sc => sc.Value == toSolve.Amount && 
+                                    sc.Key == toSolve.Condition));
 
                 returnValues.Add(findRoad);
             }
@@ -340,7 +378,7 @@ namespace JapanseTuinen.Services
             var returnValues = new HashSet<bool>();
 
             var conditionsToSolve = simpleConditionsList.Where(s =>
-                    s.SpecialCondition.Condition == condition);
+                    s.Condition == condition);
 
             if (!conditionsToSolve.Any()) return true;
             

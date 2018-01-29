@@ -45,21 +45,17 @@ namespace JapanseTuinen.Controllers
             var init = new Services.PuzzleService();
 
             var puzzleVM = init.GetPuzzleVM();
-            var path = AppDomain.CurrentDomain.BaseDirectory;
-            string str = (new StreamReader(String.Format("{0}/Content/Puzzles/puzzles.json", path))).ReadToEnd();
-            var modelsDeserialized = JsonConvert.DeserializeObject<PuzzleViewModel>(str);
-            puzzleVM.KnownPuzzles = new HashSet<string>(modelsDeserialized.TileIndexList.Select(s => s.Name));
+            var jsonModels = init.GetJsonPuzzles();
+            puzzleVM.KnownPuzzles = new HashSet<string>(jsonModels.PuzzleList.Select(s => s.Name));
 
             return View(puzzleVM);
         }
 
         public PartialViewResult LoadPuzzle(string puzzleName)
         {
-            var path = AppDomain.CurrentDomain.BaseDirectory;
-            string str = (new StreamReader(String.Format("{0}/Content/Puzzles/puzzles.json", path))).ReadToEnd();
-            var modelsDeserialized = JsonConvert.DeserializeObject<PuzzleViewModel>(str);
-            var modelsDeserialized2 = JsonConvert.DeserializeObject<PuzzleTile>(str);
-            var relevantPuzzle = modelsDeserialized.TileIndexList.FirstOrDefault(s => s.Name == puzzleName);
+            var init = new Services.PuzzleService();
+            var jsonModels = init.GetJsonPuzzles();
+            var relevantPuzzle = jsonModels.PuzzleList.FirstOrDefault(s => s.Name == puzzleName);
 
             return PartialView(relevantPuzzle);
         }

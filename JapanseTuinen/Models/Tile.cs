@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -32,31 +33,21 @@ namespace JapanseTuinen.Models
         {
             return String.Format("{0} - {1} - {2}°", this.PuzzleIndex, this.TileNumber, this.Degrees);
         }
-
-        public string ToSimpleString()
-        {
-            var degree = "A";
-            if (this.Degrees == 90)
-                degree = "B";
-            if (this.Degrees == 180)
-                degree = "C";
-            if (this.Degrees == 270)
-                degree = "D";
-            return String.Format("{0}{1}{2}", this.PuzzleIndex, this.TileNumber, degree);
-        }
     }
 
     public class SimpleTileIndex
     {
         public int PuzzleIndex { get; set; }
         public int Position { get; set; }
-        public SpecialCondition SpecialCondition { get; set; }
+        public Condition Condition { get; set; }
+        public int? Amount { get; set; }
 
-        public SimpleTileIndex(int pIndex, int pos, SpecialCondition spCon)
+        public SimpleTileIndex(int pIndex, int pos, Condition con, int? amount)
         {
             this.PuzzleIndex = pIndex;
             this.Position = pos;
-            this.SpecialCondition = spCon;
+            this.Condition = con;
+            this.Amount = amount;
         }
     }
 
@@ -67,19 +58,18 @@ namespace JapanseTuinen.Models
 
         public TileIndex()
         {
-            //this.TileInfoList = new List<SpecialCondition>();
+            this.TileInfoList = new List<TileInfo>();
         }
-
-        
     }
 
     public class TileInfo
     {
         public int Position { get; set; }
-        //public SpecialCondition TileInfoList { get; set; }
         public Condition Condition { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public int? Amount { get; set; }
 
+        [JsonIgnore]
         public bool IsSvgCondition
         {
             get
@@ -88,6 +78,7 @@ namespace JapanseTuinen.Models
             }
         }
 
+        [JsonIgnore]
         public bool IsTileOrBridge
         {
             get
@@ -95,7 +86,6 @@ namespace JapanseTuinen.Models
                 return Condition == Condition.Tile || Condition == Condition.Bridge;
             }
         }
-
         public string GetClass()
         {
             if (Condition.IsIconCondition())
