@@ -48,7 +48,7 @@ namespace JapanseTuinen.Controllers
             var path = AppDomain.CurrentDomain.BaseDirectory;
             string str = (new StreamReader(String.Format("{0}/Content/Puzzles/puzzles.json", path))).ReadToEnd();
             var modelsDeserialized = JsonConvert.DeserializeObject<PuzzleViewModel>(str);
-            puzzleVM.KnownPuzzles = new HashSet<string>(modelsDeserialized.PuzzleTileList.Select(s => s.Name));
+            puzzleVM.KnownPuzzles = new HashSet<string>(modelsDeserialized.TileIndexList.Select(s => s.Name));
 
             return View(puzzleVM);
         }
@@ -59,14 +59,14 @@ namespace JapanseTuinen.Controllers
             string str = (new StreamReader(String.Format("{0}/Content/Puzzles/puzzles.json", path))).ReadToEnd();
             var modelsDeserialized = JsonConvert.DeserializeObject<PuzzleViewModel>(str);
             var modelsDeserialized2 = JsonConvert.DeserializeObject<PuzzleTile>(str);
-            var relevantPuzzle = modelsDeserialized.PuzzleTileList.FirstOrDefault(s => s.Name == puzzleName);
+            var relevantPuzzle = modelsDeserialized.TileIndexList.FirstOrDefault(s => s.Name == puzzleName);
 
             return PartialView(relevantPuzzle);
         }
 
         public PartialViewResult SolvePuzzle(PuzzleViewModel puzzleVM)
         {
-            if (puzzleVM.PuzzleTileList.Any())
+            if (puzzleVM.TileIndexList.Any())
             {
                 var puzzleService = new Services.PuzzleService();
                 var solvedPuzzle = puzzleService.SolvePuzzle(puzzleVM);

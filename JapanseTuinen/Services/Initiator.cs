@@ -56,7 +56,7 @@ namespace JapanseTuinen.Services
 
         private List<SimpleTileIndex> GetSimpleConditionsList()
         {
-            return PuzzleVM.PuzzleTileList.SelectMany(s => s.SimpleTileIndexList).ToList();
+            return PuzzleVM.TileIndexList.SelectMany(s => s.SimpleTileIndexList).ToList();
         }
 
         private List<Tile> GetTiles()
@@ -352,7 +352,7 @@ namespace JapanseTuinen.Services
 
         private HashSet<int> GetSubmittedPuzzleTilesIndices()
         {
-            var returnList = new HashSet<int>(PuzzleVM.PuzzleTileList.Select(s => s.Index));
+            var returnList = new HashSet<int>(PuzzleVM.TileIndexList.Select(s => s.Index));
             return returnList;
         }
     }

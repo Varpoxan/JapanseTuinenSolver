@@ -35,15 +35,21 @@ namespace JapanseTuinen.Models
         }
     }
 
+    public class Puzzle
+    {
+        public List<PuzzleViewModel> PuzzleList { get; set; }
+    }
+
     public class PuzzleViewModel
     {
         public int PuzzleNumber { get; set; }
-        public List<PuzzleTile> PuzzleTileList { get; set; }
+        public string Name { get; set; }
+        public List<PuzzleTile> TileIndexList { get; set; }
         public HashSet<string> KnownPuzzles { get; set; }
 
         public PuzzleViewModel()
         {
-            this.PuzzleTileList = new List<PuzzleTile>();
+            this.TileIndexList = new List<PuzzleTile>();
         }
 
         #region HtmlHelpers
@@ -146,12 +152,12 @@ namespace JapanseTuinen.Models
         public int Index { get; set; }
         public string Name { get; set; }
         public List<TileInfo> TileInfoList { get; set; }
-        public List<TileIndex> TileIndexList { get; set; }
+        //public List<TileIndex> TileIndexList { get; set; }
 
         public PuzzleTile()
         {
             this.TileInfoList = new List<TileInfo>();
-            this.TileIndexList = new List<TileIndex>();
+            //this.TileIndexList = new List<TileIndex>();
         }
 
         public List<SimpleTileIndex> SimpleTileIndexList

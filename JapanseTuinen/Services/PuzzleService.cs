@@ -45,7 +45,7 @@ namespace JapanseTuinen.Services
         public List<string> ValidatePuzzle(PuzzleViewModel puzzleVM)
         {
             var returnValue = new List<string>();
-            var totalPuzzleConditions = puzzleVM.PuzzleTileList.SelectMany(s => s.SimpleTileIndexList);
+            var totalPuzzleConditions = puzzleVM.TileIndexList.SelectMany(s => s.SimpleTileIndexList);
 
             var IconConditions = new HashSet<Condition>() { Condition.Butterfly, Condition.Flower, Condition.Gate, Condition.Tree };
 
@@ -115,7 +115,7 @@ namespace JapanseTuinen.Services
                     }
 
                     //var puzzleFieldCount = 0;
-                    foreach (var puzzleTile in puzzleVM.PuzzleTileList.Where(s => !UsedPuzzleTilesIndices.Contains(s.Index)))
+                    foreach (var puzzleTile in puzzleVM.TileIndexList.Where(s => !UsedPuzzleTilesIndices.Contains(s.Index)))
                     {
                         //There already is a tile on this puzzlefield
                         if (UsedPuzzleTilesIndices.Contains(puzzleTile.Index))
