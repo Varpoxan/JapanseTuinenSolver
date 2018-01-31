@@ -78,6 +78,17 @@
             $('.total-puzzle').addClass('hidden');
             $('.loaded-puzzle').html(result);
             $('.loaded-puzzle').removeClass('hidden');
+
+            allShownIds = [];
+            $('.shown-puzzle-field').each(function (i, e) {
+                var currentId = parseInt($(e).attr('id'));
+                allShownIds.push(currentId);
+            });
+            //debugger;
+            $('.shown-puzzle-field').each(function (i, e) {
+                var currentId = parseInt($(e).attr('id'));
+                removeRoadsBasedOnLastUpdate(currentId);
+            });
         });
     });
 
@@ -99,7 +110,6 @@
             }
             PuzzleVM.TileIndexList[i] = newTile;
 
-            console.log($(currentItem).children('.confirmed-condition').length);
             $(currentItem).children('.confirmed-condition').each(function (j, e) {
                 var position = $(e).data('position');
                 var condition = $(e).data('condition');
@@ -118,12 +128,10 @@
 
                 PuzzleVM.TileIndexList[i].TileInfoList[j] = tileInfo;
             });
-
-            
         });
 
         PuzzleVM.Name = 'Puzzle ' +  $('#save-puzzle').val();
-        console.log(PuzzleVM);
+        //console.log(PuzzleVM);
 
         $.ajax({
             type: 'POST',
@@ -133,17 +141,11 @@
         }).always(function (result) {
             $('.solved-puzzle-wrapper').html(result.responseText);
 
-            //console.log(result);
-            //console.log(result.responseText);
-            //console.log(result.IsPuzzleSaved);
-            //console.log(result.responseText.IsPuzzleSaved);
-
             for (var i = 1; i < 9; i++) {
                 $('#inner-' + i).append($('#solved-' + i));
             }
 
         });
-
     });
 
     var currentRoadEndPosition;
@@ -182,20 +184,12 @@
                         ' confirmed-condition condition-choice bridge-road-end' +
                         '" data-position="' + position +
                         '" data-condition=bridge />');
-
-                    //$('.input-' + innerPuzzleField.attr('id')).removeClass('hidden');
-                    //$('.road-text-input').data('position', position);
-                    //$('.road-text-input').focus();
                 }
                 if (choice.hasClass('tile-icon')) {
                     $(e).replaceWith('<div class="' + addedClass +
                         ' confirmed-condition condition-choice tile-road-end' +
                         '" data-position="' + position +
                         '" data-condition=tile />');
-
-                    //$('.input-' + innerPuzzleField.attr('id')).removeClass('hidden');
-                    //$('.road-text-input').data('position', position);
-                    //$('.road-text-input').focus();
                 }
                 if (choice.hasClass('tile-icon') || choice.hasClass('bridge-icon')) {
                     $('.input-' + innerPuzzleField.attr('id')).removeClass('hidden');
@@ -253,7 +247,6 @@
             addRoadsToElement(clickedElement);
             removeRoadsBasedOnLastUpdate(clickedId);
         }
-        console.log(allShownIds);
     });
 
     function addRoadsToElement(puzzleField) {
@@ -286,11 +279,6 @@
         $(clickedElement).children('.road-end').each(function (i, e) {
             if ($(e).hasClass('road-end-' + side)) {
                 $(e).remove();
-            }
-            if ($(e).hasClass('road-end-' + oppositeSide)) {
-                //var pos = $(e).data('position');
-                //$(e).removeClass('road-end-all-sides');
-                //$(e).addClass('road-end-no-' + side + '-side');
             }
         });
 
@@ -327,7 +315,6 @@
         if (side == "top" || side == "bottom") {
             $(clickedElement).children('.road-end').each(function (i, e) {
                 if ($(e).hasClass('road-end-left') || $(e).hasClass('road-end-right')) {
-//                    debugger;
                     if ($(e).hasClass('road-end-all-sides')) {
                         $(e).removeClass('road-end-all-sides');
                         $(e).addClass('road-end-no-' + side + '-side');

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,7 +66,10 @@ namespace JapanseTuinen.Models
     public class TileInfo
     {
         public int Position { get; set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
         public Condition Condition { get; set; }
+
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public int? Amount { get; set; }
 

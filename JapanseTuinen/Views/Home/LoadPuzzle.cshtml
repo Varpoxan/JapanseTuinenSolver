@@ -17,21 +17,17 @@
                         var r = p.TileInfoList.FirstOrDefault(s => s.Position == j);
                         if (r != null && r.IsSvgCondition)
                         {
-                            <img class="@Model.GetRoadEndSide(j) road-end-@j @if (r != null) {<text>confirmed-condition @r.GetClass()</text>}"
+                            <img class="@Model.GetRoadEndSide(j) road-end-@j road-end-all-sides @if (r != null){<text>confirmed-condition @r.GetClass()</text>}"
                                  data-position="@j" src="@r.GetSrc()" data-condition="@r.GetCondition()" />
                         }
                         else
                         {
-                            <div class="road-end @Model.GetRoadEndSide(j) @Model.GetRoadOrientation(j) road-end-@j @if (r != null) {<text>confirmed-condition @r.GetClass()</text>}"
-                                 data-position="@j" @if (r != null) { <text>data-condition="@r.GetCondition()"</text> } @if (r != null && r.IsTileOrBridge) { <text>data-amount="@r.Amount"</text> } >@if (r != null) { @r.Amount } </div>
+                            <div class="road-end @Model.GetRoadEndSide(j) @Model.GetRoadOrientation(j) road-end-@j road-end-all-sides @if (r != null) {<text>confirmed-condition @r.GetClass()</text>}"
+                                 data-position="@j" @if (r != null) {<text>data-condition="@r.GetCondition()"</text>} @if (r != null && r.IsTileOrBridge){ <text>data-amount="@r.Amount"</text>}>@if (r != null) { @r.Amount } </div>
                         }
                     }
                 }
-
                 @*<div class="add-puzzle-field fa fa-plus fa-4x"></div>*@
-            
-
         </div>
     }
 </div>
-
