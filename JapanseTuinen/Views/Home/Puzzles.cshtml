@@ -88,6 +88,8 @@
             $('.shown-puzzle-field').each(function (i, e) {
                 var currentId = parseInt($(e).attr('id'));
                 removeRoadsBasedOnLastUpdate(currentId);
+                $('#save-puzzle').val('');
+                $('#save-puzzle').attr('disabled', 'disabled');
             });
         });
     });
@@ -130,7 +132,7 @@
             });
         });
 
-        PuzzleVM.Name = 'Puzzle ' +  $('#save-puzzle').val();
+        PuzzleVM.Name = 'Puzzle ' + $('#save-puzzle').val();
         //console.log(PuzzleVM);
 
         $.ajax({
@@ -170,6 +172,19 @@
         outerPuzzleField.children('.road-end').each(function (i, e) {
             if ($(e).data('position') == position) {
                 var addedClass = 'road-end-' + position;
+
+                $.each($(e).attr('class').split(/\s+/), function (j, name) {
+                    if (name.indexOf('side') !== -1 || name.indexOf('-top') !== -1 || name.indexOf('-right') !== -1 || name.indexOf('-bottom') !== -1 || name.indexOf('-left') !== -1) {
+                        addedClass += ' ' + name
+                    }
+                });
+
+                //$(e).attr('class').split(/\s+/).each(function (j, name) {
+                //    if (name.indexOf('side') !== -1) {
+                //        addedClass += ' ' + name
+                //    }
+                //});
+
                 if (choice.hasClass('svg-icon')) {
                     var iconClass = choice.data('icon');
                     $(e).replaceWith('<img class="' + addedClass +

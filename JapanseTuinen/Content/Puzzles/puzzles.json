@@ -49,7 +49,7 @@
       "Name": "Puzzle 3",
       "TileIndexList": [
         {
-          "Index": 1,
+          "Index": 2,
           "TileInfoList": [
             {
               "Position": 4,
@@ -63,7 +63,7 @@
           ]
         },
         {
-          "Index": 4,
+          "Index": 5,
           "TileInfoList": [
             {
               "Position": 4,
@@ -1326,6 +1326,806 @@
         {
           "Index": 5,
           "TileInfoList": []
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 30",
+      "TileIndexList": [
+        {
+          "Index": 2,
+          "TileInfoList": [
+            {
+              "Position": 3,
+              "Condition": "Bridge",
+              "Amount": 1
+            },
+            {
+              "Position": 4,
+              "Condition": "Bridge",
+              "Amount": 1
+            }
+          ]
+        },
+        {
+          "Index": 4,
+          "TileInfoList": [
+            {
+              "Position": 5,
+              "Condition": "Bridge",
+              "Amount": 1
+            },
+            {
+              "Position": 8,
+              "Condition": "Bridge",
+              "Amount": 2
+            }
+          ]
+        },
+        {
+          "Index": 5,
+          "TileInfoList": []
+        },
+        {
+          "Index": 6,
+          "TileInfoList": [
+            {
+              "Position": 6,
+              "Condition": "Bridge",
+              "Amount": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 31",
+      "TileIndexList": [
+        {
+          "Index": 1,
+          "TileInfoList": [
+            {
+              "Position": 2,
+              "Condition": "Pagoda",
+              "Amount": 0
+            },
+            {
+              "Position": 7,
+              "Condition": "Tile",
+              "Amount": 5
+            }
+          ]
+        },
+        {
+          "Index": 2,
+          "TileInfoList": [
+            {
+              "Position": 2,
+              "Condition": "Tile",
+              "Amount": 3
+            }
+          ]
+        },
+        {
+          "Index": 4,
+          "TileInfoList": []
+        },
+        {
+          "Index": 5,
+          "TileInfoList": [
+            {
+              "Position": 5,
+              "Condition": "Tile",
+              "Amount": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 32",
+      "TileIndexList": [
+        {
+          "Index": 1,
+          "TileInfoList": [
+            {
+              "Position": 1,
+              "Condition": "YinYang",
+              "Amount": 0
+            },
+            {
+              "Position": 8,
+              "Condition": "Tile",
+              "Amount": 7
+            }
+          ]
+        },
+        {
+          "Index": 2,
+          "TileInfoList": []
+        },
+        {
+          "Index": 4,
+          "TileInfoList": [
+            {
+              "Position": 5,
+              "Condition": "Pagoda",
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 5,
+          "TileInfoList": [
+            {
+              "Position": 3,
+              "Condition": "Bridge",
+              "Amount": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 33",
+      "TileIndexList": [
+        {
+          "Index": 1,
+          "TileInfoList": [
+            {
+              "Position": 1,
+              "Condition": "Bridge",
+              "Amount": 1
+            },
+            {
+              "Position": 8,
+              "Condition": "Bridge",
+              "Amount": 1
+            }
+          ]
+        },
+        {
+          "Index": 2,
+          "TileInfoList": [
+            {
+              "Position": 2,
+              "Condition": "Bridge",
+              "Amount": 1
+            },
+            {
+              "Position": 3,
+              "Condition": "Tile",
+              "Amount": 3
+            },
+            {
+              "Position": 4,
+              "Condition": "Bridge",
+              "Amount": 1
+            }
+          ]
+        },
+        {
+          "Index": 4,
+          "TileInfoList": [
+            {
+              "Position": 6,
+              "Condition": "Bridge",
+              "Amount": 1
+            },
+            {
+              "Position": 8,
+              "Condition": "Bridge",
+              "Amount": 1
+            }
+          ]
+        },
+        {
+          "Index": 5,
+          "TileInfoList": [
+            {
+              "Position": 3,
+              "Condition": "Bridge",
+              "Amount": 1
+            },
+            {
+              "Position": 6,
+              "Condition": "Bridge",
+              "Amount": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 34",
+      "TileIndexList": [
+        {
+          "Index": 2,
+          "TileInfoList": [
+            {
+              "Position": 2,
+              "Condition": "Pagoda",
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 3,
+          "TileInfoList": [
+            {
+              "Position": 1,
+              "Condition": "YinYang",
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 4,
+          "TileInfoList": [
+            {
+              "Position": 2,
+              "Condition": "Tree",
+              "Amount": 0
+            },
+            {
+              "Position": 8,
+              "Condition": "Bridge",
+              "Amount": 2
+            }
+          ]
+        },
+        {
+          "Index": 5,
+          "TileInfoList": [
+            {
+              "Position": 5,
+              "Condition": "Butterfly",
+              "Amount": 0
+            },
+            {
+              "Position": 6,
+              "Condition": "Tree",
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 6,
+          "TileInfoList": [
+            {
+              "Position": 4,
+              "Condition": "Bridge",
+              "Amount": 2
+            },
+            {
+              "Position": 5,
+              "Condition": "Butterfly",
+              "Amount": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 35",
+      "TileIndexList": [
+        {
+          "Index": 1,
+          "TileInfoList": [
+            {
+              "Position": 7,
+              "Condition": "Pagoda",
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 3,
+          "TileInfoList": [
+            {
+              "Position": 4,
+              "Condition": "Pagoda",
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 4,
+          "TileInfoList": []
+        },
+        {
+          "Index": 5,
+          "TileInfoList": [
+            {
+              "Position": 5,
+              "Condition": "Bridge",
+              "Amount": 1
+            },
+            {
+              "Position": 6,
+              "Condition": "YinYang",
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 6,
+          "TileInfoList": [
+            {
+              "Position": 6,
+              "Condition": "Bridge",
+              "Amount": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 36",
+      "TileIndexList": [
+        {
+          "Index": 1,
+          "TileInfoList": [
+            {
+              "Position": 1,
+              "Condition": "Tile",
+              "Amount": 4
+            }
+          ]
+        },
+        {
+          "Index": 2,
+          "TileInfoList": [
+            {
+              "Position": 2,
+              "Condition": "Pagoda",
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 4,
+          "TileInfoList": [
+            {
+              "Position": 8,
+              "Condition": "Pagoda",
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 5,
+          "TileInfoList": [
+            {
+              "Position": 5,
+              "Condition": "Tile",
+              "Amount": 1
+            }
+          ]
+        },
+        {
+          "Index": 6,
+          "TileInfoList": [
+            {
+              "Position": 1,
+              "Condition": "Tile",
+              "Amount": 3
+            },
+            {
+              "Position": 6,
+              "Condition": "Tile",
+              "Amount": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 37",
+      "TileIndexList": [
+        {
+          "Index": 1,
+          "TileInfoList": [
+            {
+              "Position": 1,
+              "Condition": "Tree",
+              "Amount": 0
+            },
+            {
+              "Position": 4,
+              "Condition": "Tree",
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 3,
+          "TileInfoList": [
+            {
+              "Position": 4,
+              "Condition": "Flower",
+              "Amount": 0
+            },
+            {
+              "Position": 7,
+              "Condition": "Tile",
+              "Amount": 6
+            }
+          ]
+        },
+        {
+          "Index": 4,
+          "TileInfoList": [
+            {
+              "Position": 5,
+              "Condition": "YinYang",
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 5,
+          "TileInfoList": [
+            {
+              "Position": 1,
+              "Condition": "Flower",
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 6,
+          "TileInfoList": []
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 38",
+      "TileIndexList": [
+        {
+          "Index": 1,
+          "TileInfoList": [
+            {
+              "Position": 2,
+              "Condition": "YinYang",
+              "Amount": 0
+            },
+            {
+              "Position": 6,
+              "Condition": "YinYang",
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 2,
+          "TileInfoList": []
+        },
+        {
+          "Index": 3,
+          "TileInfoList": [
+            {
+              "Position": 2,
+              "Condition": "Pagoda",
+              "Amount": 0
+            },
+            {
+              "Position": 4,
+              "Condition": "Flower",
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 5,
+          "TileInfoList": [
+            {
+              "Position": 5,
+              "Condition": "Pagoda",
+              "Amount": 0
+            },
+            {
+              "Position": 8,
+              "Condition": "Flower",
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 6,
+          "TileInfoList": []
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 39",
+      "TileIndexList": [
+        {
+          "Index": 1,
+          "TileInfoList": []
+        },
+        {
+          "Index": 2,
+          "TileInfoList": [
+            {
+              "Position": 1,
+              "Condition": "Pagoda",
+              "Amount": 0
+            },
+            {
+              "Position": 2,
+              "Condition": "Bridge",
+              "Amount": 1
+            }
+          ]
+        },
+        {
+          "Index": 4,
+          "TileInfoList": [
+            {
+              "Position": 5,
+              "Condition": "YinYang",
+              "Amount": 0
+            },
+            {
+              "Position": 6,
+              "Condition": "Bridge",
+              "Amount": 1
+            }
+          ]
+        },
+        {
+          "Index": 5,
+          "TileInfoList": [
+            {
+              "Position": 6,
+              "Condition": "Bridge",
+              "Amount": 3
+            }
+          ]
+        },
+        {
+          "Index": 6,
+          "TileInfoList": [
+            {
+              "Position": 2,
+              "Condition": "Tile",
+              "Amount": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 40",
+      "TileIndexList": [
+        {
+          "Index": 1,
+          "TileInfoList": [
+            {
+              "Position": 8,
+              "Condition": "Pagoda",
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 2,
+          "TileInfoList": [
+            {
+              "Position": 2,
+              "Condition": "Tile",
+              "Amount": 3
+            }
+          ]
+        },
+        {
+          "Index": 3,
+          "TileInfoList": []
+        },
+        {
+          "Index": 4,
+          "TileInfoList": [
+            {
+              "Position": 6,
+              "Condition": "Bridge",
+              "Amount": 2
+            },
+            {
+              "Position": 7,
+              "Condition": "Tile",
+              "Amount": 3
+            }
+          ]
+        },
+        {
+          "Index": 6,
+          "TileInfoList": [
+            {
+              "Position": 4,
+              "Condition": "Tile",
+              "Amount": 3
+            },
+            {
+              "Position": 7,
+              "Condition": "Bridge",
+              "Amount": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 41",
+      "TileIndexList": [
+        {
+          "Index": 1,
+          "TileInfoList": [
+            {
+              "Position": 1,
+              "Condition": "Tile",
+              "Amount": 4
+            }
+          ]
+        },
+        {
+          "Index": 2,
+          "TileInfoList": []
+        },
+        {
+          "Index": 3,
+          "TileInfoList": [
+            {
+              "Position": 1,
+              "Condition": "Tile",
+              "Amount": 3
+            },
+            {
+              "Position": 2,
+              "Condition": "Flower",
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 4,
+          "TileInfoList": [
+            {
+              "Position": 6,
+              "Condition": "Tile",
+              "Amount": 4
+            },
+            {
+              "Position": 7,
+              "Condition": "Tree",
+              "Amount": 0
+            }
+          ]
+        },
+        {
+          "Index": 5,
+          "TileInfoList": [
+            {
+              "Position": 3,
+              "Condition": "Tree",
+              "Amount": 0
+            },
+            {
+              "Position": 5,
+              "Condition": "Flower",
+              "Amount": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Puzzle 42",
+      "TileIndexList": [
+        {
+          "Index": 1,
+          "TileInfoList": [
+            {
+              "Position": 4,
+              "Condition": "Tile",
+              "Amount": 2
+            },
+            {
+              "Position": 8,
+              "Condition": "Tile",
+              "Amount": 2
+            }
+          ]
+        },
+        {
+          "Index": 3,
+          "TileInfoList": [
+            {
+              "Position": 2,
+              "Condition": "Tile",
+              "Amount": 2
+            },
+            {
+              "Position": 3,
+              "Condition": "Tile",
+              "Amount": 2
+            }
+          ]
+        },
+        {
+          "Index": 4,
+          "TileInfoList": [
+            {
+              "Position": 5,
+              "Condition": "Tile",
+              "Amount": 2
+            },
+            {
+              "Position": 6,
+              "Condition": "Tile",
+              "Amount": 2
+            },
+            {
+              "Position": 7,
+              "Condition": "Tile",
+              "Amount": 2
+            },
+            {
+              "Position": 8,
+              "Condition": "Tile",
+              "Amount": 2
+            }
+          ]
+        },
+        {
+          "Index": 5,
+          "TileInfoList": [
+            {
+              "Position": 1,
+              "Condition": "Pagoda",
+              "Amount": 0
+            },
+            {
+              "Position": 2,
+              "Condition": "Bridge",
+              "Amount": 1
+            },
+            {
+              "Position": 5,
+              "Condition": "Tile",
+              "Amount": 2
+            },
+            {
+              "Position": 6,
+              "Condition": "Tile",
+              "Amount": 2
+            }
+          ]
+        },
+        {
+          "Index": 6,
+          "TileInfoList": [
+            {
+              "Position": 3,
+              "Condition": "Tile",
+              "Amount": 2
+            },
+            {
+              "Position": 4,
+              "Condition": "Tile",
+              "Amount": 2
+            },
+            {
+              "Position": 5,
+              "Condition": "Tile",
+              "Amount": 2
+            },
+            {
+              "Position": 6,
+              "Condition": "Tile",
+              "Amount": 2
+            }
+          ]
         }
       ]
     }
