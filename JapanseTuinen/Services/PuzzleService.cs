@@ -271,23 +271,26 @@ namespace JapanseTuinen.Services
                 if (puzzleVM.Name != "Puzzle ")
                 {
                     var jsonPuzzles = GetJsonPuzzles();
-                    if (jsonPuzzles.PuzzleList.Any(s => s.Name == puzzleVM.Name))
+                    var relevantPuzzle = jsonPuzzles.PuzzleList.FirstOrDefault(s => s.Name == puzzleVM.Name);
+                    if (relevantPuzzle != null)
                     {
-                        solvedPuzzleVM.ErrorList.Add("Puzzle is already saved as: " + puzzleVM.Name + " !");
-                    }
-                    else
-                    {
-                        jsonPuzzles.PuzzleList.Add(puzzleVM);
-
-                        //open file stream
-                        using (StreamWriter file = File.CreateText(JsonPuzzlesPath))
+                        if (relevantPuzzle.BestSolveTime.TotalMilliseconds == 0 || solvedPuzzleVM.SolveDuration < relevantPuzzle.BestSolveTime)
                         {
-                            string json = JsonConvert.SerializeObject(jsonPuzzles);
-                            JsonSerializer serializer = new JsonSerializer();
-                            //serialize object directly into file stream
-                            serializer.Serialize(file, jsonPuzzles);
-                            solvedPuzzleVM.ErrorList.Add("Puzzle saved as: " + puzzleVM.Name + " !");
-                            solvedPuzzleVM.SavedPuzzleName = puzzleVM.Name;
+                            solvedPuzzleVM.ErrorList.Add("New solve record!");
+                            relevantPuzzle.BestSolveTime = solvedPuzzleVM.SolveDuration;
+                            //open file stream
+                            using (StreamWriter file = File.CreateText(JsonPuzzlesPath))
+                            {
+                                string json = JsonConvert.SerializeObject(jsonPuzzles);
+                                JsonSerializer serializer = new JsonSerializer();
+                                //serialize object directly into file stream
+                                serializer.Serialize(file, jsonPuzzles);
+                                solvedPuzzleVM.SavedPuzzleName = puzzleVM.Name;
+                            }
+                        }
+                        else
+                        {
+                            solvedPuzzleVM.ErrorList.Add("Puzzle is already saved as: " + puzzleVM.Name + " !");
                         }
                     }
                 }
@@ -299,7 +302,6 @@ namespace JapanseTuinen.Services
         public bool EarlyBailOut(List<Tile> usedTileList, List<SimpleTileIndex> simpleConditionsList)
         {
             FillPuzzleRoads(UsedTileList);
-
             
 
             return false;
@@ -307,34 +309,31 @@ namespace JapanseTuinen.Services
 
         public bool DoesDefinitiveRoadListSolvePuzzle(List<SimpleTileIndex> simpleConditionsList)
         {
-            var icons = DoesDefinitiveRoadListSolveIcons(simpleConditionsList);
+            var icons = DoesDefinitiveRoadListSolveIcons();
             if (!icons) return false;
 
-            var pagoda = DoesDefinitiveRoadListSolveGivenCondition(simpleConditionsList, Condition.Pagoda);
+            var pagoda = DoesDefinitiveRoadListSolvePagoda();
             if (!pagoda) return false;
 
-            var yinYang = DoesDefinitiveRoadListSolveGivenCondition(simpleConditionsList, Condition.YinYang);
+            var yinYang = DoesDefinitiveRoadListSolveYinYang();
             if (!yinYang) return false;
 
-            var bridge = DoesDefinitiveRoadListSolveBridge(simpleConditionsList, Condition.Bridge);
+            var bridge = DoesDefinitiveRoadListSolveBridge();
             if (!bridge) return false;
 
-            var tile = DoesDefinitiveRoadListSolveTile(simpleConditionsList, Condition.Tile);
+            var tile = DoesDefinitiveRoadListSolveTile();
             if (!tile) return false;
 
             return icons && pagoda && yinYang && bridge && tile;
         }
 
-        public bool DoesDefinitiveRoadListSolveIcons(List<SimpleTileIndex> simpleConditionsList)
+        public bool DoesDefinitiveRoadListSolveIcons()
         {
             var returnValues = new HashSet<bool>();
-            var iconConditionsToSolve = simpleConditionsList.Where(s =>
-                    s.Condition.IsIconCondition())
-                    .GroupBy(s => s.Condition);
 
-            if (!iconConditionsToSolve.Any()) return true;
+            if (Initiator.IconConditionsToSolve.Count == 0) return true;
 
-            foreach (var toSolve in iconConditionsToSolve)
+            foreach (var toSolve in Initiator.IconConditionsToSolve)
             {
                 var conditionOne = toSolve.First();
                 var conditionTwo = toSolve.Last();
@@ -349,16 +348,51 @@ namespace JapanseTuinen.Services
             return returnValues.All(s => s);
         }
 
-        public bool DoesDefinitiveRoadListSolveTile(List<SimpleTileIndex> simpleConditionsList, Condition condition)
+        public bool DoesDefinitiveRoadListSolvePagoda()
+        {
+            var returnValues = new HashSet<bool>();
+            
+            if (Initiator.PagodaConditionsToSolve.Count == 0) return true;
+
+            foreach (var toSolve in Initiator.PagodaConditionsToSolve)
+            {
+                var findRoad = DefinitivePuzzleRoads.Any(s =>
+                                s.StartsOrEndsAt(toSolve.PuzzleIndex, toSolve.Position) &&
+                                s.SpecialConditions.Any(sc => sc.Value == toSolve.Amount &&
+                                    sc.Key == toSolve.Condition));
+
+                returnValues.Add(findRoad);
+            }
+
+            return returnValues.All(s => s);
+        }
+
+        public bool DoesDefinitiveRoadListSolveYinYang()
         {
             var returnValues = new HashSet<bool>();
 
-            var conditionsToSolve = simpleConditionsList.Where(s =>
-                    s.Condition == condition);
+            if (Initiator.YinYangConditionsToSolve.Count == 0) return true;
 
-            if (!conditionsToSolve.Any()) return true;
+            foreach (var toSolve in Initiator.PagodaConditionsToSolve)
+            {
+                var findRoad = DefinitivePuzzleRoads.Any(s =>
+                                s.StartsOrEndsAt(toSolve.PuzzleIndex, toSolve.Position) &&
+                                s.SpecialConditions.Any(sc => sc.Value == toSolve.Amount &&
+                                    sc.Key == toSolve.Condition));
 
-            foreach (var toSolve in conditionsToSolve)
+                returnValues.Add(findRoad);
+            }
+
+            return returnValues.All(s => s);
+        }
+
+        public bool DoesDefinitiveRoadListSolveTile()
+        {
+            var returnValues = new HashSet<bool>();
+
+            if (Initiator.TileConditionsToSolve.Count == 0) return true;
+
+            foreach (var toSolve in Initiator.TileConditionsToSolve)
             {
                 var findRoad = DefinitivePuzzleRoads.Any(s =>
                                 s.StartsOrEndsAt(toSolve.PuzzleIndex, toSolve.Position) &&
@@ -370,42 +404,18 @@ namespace JapanseTuinen.Services
             return returnValues.All(s => s);
         }
 
-        public bool DoesDefinitiveRoadListSolveBridge(List<SimpleTileIndex> simpleConditionsList, Condition condition)
+        public bool DoesDefinitiveRoadListSolveBridge()
         {
             var returnValues = new HashSet<bool>();
+            
+            if (Initiator.BridgeConditionsToSolve.Count == 0) return true;
 
-            var conditionsToSolve = simpleConditionsList.Where(s =>
-                    s.Condition == condition);
-
-            if (!conditionsToSolve.Any()) return true;
-
-            foreach (var toSolve in conditionsToSolve)
+            foreach (var toSolve in Initiator.BridgeConditionsToSolve)
             {
                 var findRoad = DefinitivePuzzleRoads.Any(s =>
                                 s.StartsOrEndsAt(toSolve.PuzzleIndex, toSolve.Position) &&
                                 s.SpecialConditions.Any(sc => sc.Value == toSolve.Amount && 
                                     sc.Key == toSolve.Condition));
-
-                returnValues.Add(findRoad);
-            }
-
-            return returnValues.All(s => s);
-        }
-
-        public bool DoesDefinitiveRoadListSolveGivenCondition(List<SimpleTileIndex> simpleConditionsList, Condition condition)
-        {
-            var returnValues = new HashSet<bool>();
-
-            var conditionsToSolve = simpleConditionsList.Where(s =>
-                    s.Condition == condition);
-
-            if (!conditionsToSolve.Any()) return true;
-            
-            foreach (var toSolve in conditionsToSolve)
-            {
-                var findRoad = DefinitivePuzzleRoads.Any(s =>
-                                s.StartsOrEndsAt(toSolve.PuzzleIndex, toSolve.Position) &&
-                                s.SpecialConditions.Any(sc => sc.Key == condition));
 
                 returnValues.Add(findRoad);
             }

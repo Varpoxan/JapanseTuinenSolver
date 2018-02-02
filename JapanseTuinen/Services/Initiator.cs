@@ -23,6 +23,11 @@ namespace JapanseTuinen.Services
         public Dictionary<int, int> DepthToIndex { get; set; }
         public Dictionary<int, int> OriginalDepthCounter { get; set; }
         public List<SimpleTileIndex> SimpleConditionsList { get; set; }
+        public List<IGrouping<Condition, SimpleTileIndex>> IconConditionsToSolve { get; set; }
+        public List<SimpleTileIndex> PagodaConditionsToSolve { get; set; }
+        public List<SimpleTileIndex> YinYangConditionsToSolve { get; set; }
+        public List<SimpleTileIndex> TileConditionsToSolve { get; set; }
+        public List<SimpleTileIndex> BridgeConditionsToSolve { get; set; }
 
         public Initiator()
         {
@@ -56,7 +61,24 @@ namespace JapanseTuinen.Services
 
         private List<SimpleTileIndex> GetSimpleConditionsList()
         {
-            return PuzzleVM.TileIndexList.SelectMany(s => s.SimpleTileIndexList).ToList();
+            var simpleTileIndexList = PuzzleVM.TileIndexList.SelectMany(s => s.SimpleTileIndexList).ToList();
+            IconConditionsToSolve = simpleTileIndexList.Where(s =>
+                    s.Condition.IsIconCondition())
+                    .GroupBy(s => s.Condition).ToList();
+
+            PagodaConditionsToSolve = simpleTileIndexList.Where(s => s.Condition == Condition.Pagoda).ToList();
+            YinYangConditionsToSolve = simpleTileIndexList.Where(s => s.Condition == Condition.YinYang).ToList();
+            TileConditionsToSolve = simpleTileIndexList.Where(s => s.Condition == Condition.Tile).ToList();
+            BridgeConditionsToSolve = simpleTileIndexList.Where(s => s.Condition == Condition.Bridge).ToList();
+
+            return simpleTileIndexList;
+        }
+
+        private List<IGrouping<Condition, SimpleTileIndex>> GetIconConditionsToSolve()
+        {
+            return SimpleConditionsList.Where(s =>
+                    s.Condition.IsIconCondition())
+                    .GroupBy(s => s.Condition).ToList();
         }
 
         private List<Tile> GetTiles()

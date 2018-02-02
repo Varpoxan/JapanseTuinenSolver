@@ -44,6 +44,7 @@ namespace JapanseTuinen.Models
     public class PuzzleViewModel : HtmlPuzzleHelper
     {
         public string Name { get; set; }
+        public TimeSpan BestSolveTime { get; set; }
         public List<PuzzleTile> TileIndexList { get; set; }
 
         [JsonIgnore]

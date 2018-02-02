@@ -75,6 +75,7 @@
             },
         }).always(function (result) {
             //$('.solved-puzzle-wrapper').html(result.responseText);
+            //debugger;
             $('.total-puzzle').addClass('hidden');
             $('.loaded-puzzle').html(result);
             $('.loaded-puzzle').removeClass('hidden');
@@ -88,7 +89,7 @@
             $('.shown-puzzle-field').each(function (i, e) {
                 var currentId = parseInt($(e).attr('id'));
                 removeRoadsBasedOnLastUpdate(currentId);
-                $('#save-puzzle').val('');
+                $('#save-puzzle').val(puzzleName.replace('Puzzle ', ''));
                 $('#save-puzzle').attr('disabled', 'disabled');
             });
         });
