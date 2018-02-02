@@ -176,6 +176,15 @@ namespace JapanseTuinen.Services
                         tile.PuzzleIndex = puzzleTile.Index;
                         UsedPuzzleTilesIndices.Add(puzzleTile.Index);
 
+                        if (UsedTileList.Count > 1)
+                        {
+                            FillPuzzleRoads(UsedTileList);
+                            if (EarlyBailOut(UsedTileList, Initiator.SimpleConditionsList))
+                            {
+                                //Upvote all tiles in current and deeper layers with corresponding amounts?
+                            }
+                        }
+
                         if (UsedTileList.Count == SubmittedPuzzleTileCount)
                         {
                             AmountOfCheckedSolutions++;
@@ -285,6 +294,15 @@ namespace JapanseTuinen.Services
             }
 
             return solvedPuzzleVM;
+        }
+
+        public bool EarlyBailOut(List<Tile> usedTileList, List<SimpleTileIndex> simpleConditionsList)
+        {
+            FillPuzzleRoads(UsedTileList);
+
+            
+
+            return false;
         }
 
         public bool DoesDefinitiveRoadListSolvePuzzle(List<SimpleTileIndex> simpleConditionsList)
