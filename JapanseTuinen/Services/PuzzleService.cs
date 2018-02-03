@@ -299,10 +299,14 @@ namespace JapanseTuinen.Services
             return solvedPuzzleVM;
         }
 
-        public bool EarlyBailOut(List<Tile> usedTileList, List<SimpleTileIndex> simpleConditionsList)
+        public bool EarlyBailOut()
         {
             FillPuzzleRoads(UsedTileList);
             
+            if (DefinitivePuzzleRoads.Count > 0)
+            {
+
+            }
 
             return false;
         }
@@ -416,6 +420,24 @@ namespace JapanseTuinen.Services
                                 s.StartsOrEndsAt(toSolve.PuzzleIndex, toSolve.Position) &&
                                 s.SpecialConditions.Any(sc => sc.Value == toSolve.Amount && 
                                     sc.Key == toSolve.Condition));
+
+                returnValues.Add(findRoad);
+            }
+
+            return returnValues.All(s => s);
+        }
+
+        public bool IsDefinitiveRoadListPossibleForTile()
+        {
+            var returnValues = new HashSet<bool>();
+
+            if (Initiator.TileConditionsToSolve.Count == 0) return true;
+
+            foreach (var toSolve in Initiator.TileConditionsToSolve)
+            {
+                var findRoad = DefinitivePuzzleRoads.Any(s =>
+                                s.StartsOrEndsAt(toSolve.PuzzleIndex, toSolve.Position) &&
+                                s.PuzzleIndexArray.Count > toSolve.Amount);
 
                 returnValues.Add(findRoad);
             }
