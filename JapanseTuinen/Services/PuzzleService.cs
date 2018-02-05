@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -106,6 +107,8 @@ namespace JapanseTuinen.Services
         List<PuzzleRoad> DefinitivePuzzleRoads = new List<PuzzleRoad>();
         List<PuzzleRoad> OpenPuzzleRoads = new List<PuzzleRoad>();
         List<Tile> UsedTileList = new List<Tile>();
+        Dictionary<int, bool> UsedTileDictionary { get; set; }
+        HashSet<int> UsedPuzzleTilesIndices = new HashSet<int>();
 
         public SolvedPuzzleViewModel SolvePuzzle(PuzzleViewModel puzzleVM)
         {
@@ -118,8 +121,7 @@ namespace JapanseTuinen.Services
             }
             Initiator.Initialize(puzzleVM);
             UsedTileList.Clear();
-            var usedTileDictionary = TileList.ToDictionary(s => s.TileNumber, s => false);
-            var UsedPuzzleTilesIndices = new HashSet<int>();
+            UsedTileDictionary = TileList.ToDictionary(s => s.TileNumber, s => false);
 
             var breakCount = 0;
             var tries = new List<String>();
@@ -136,15 +138,15 @@ namespace JapanseTuinen.Services
                     {
                         break;
                     }
-                    if (usedTileDictionary[tile.TileNumber])
+                    if (UsedTileDictionary[tile.TileNumber])
                     {
                         continue;
                     }
 
-                    if (!usedTileDictionary[tile.TileNumber])
+                    if (!UsedTileDictionary[tile.TileNumber])
                     {
                         UsedTileList.Add(tile);
-                        usedTileDictionary[tile.TileNumber] = true;
+                        UsedTileDictionary[tile.TileNumber] = true;
                     }
 
                     //var puzzleFieldCount = 0;
@@ -165,23 +167,25 @@ namespace JapanseTuinen.Services
 
                         if (CheckedTileDictionary[tileKey] >= DynamicCheckedTileDictionary[tileKey])
                         {
-                            UsedPuzzleTilesIndices.Remove(tile.PuzzleIndex);
-                            UsedTileList.Remove(tile);
-                            usedTileDictionary[tile.TileNumber] = false;
-                            tile.PuzzleIndex = -1;
-                            tile.PuzzleDepthCounter = 0;
+                            RemoveAndResetPuzzleTile(tile);
+                            //UsedPuzzleTilesIndices.Remove(tile.PuzzleIndex);
+                            //UsedTileList.Remove(tile);
+                            //UsedTileDictionary[tile.TileNumber] = false;
+                            //tile.PuzzleIndex = -1;
+                            //tile.PuzzleDepthCounter = 0;
                             break;
                         }
 
                         tile.PuzzleIndex = puzzleTile.Index;
                         UsedPuzzleTilesIndices.Add(puzzleTile.Index);
 
-                        if (UsedTileList.Count > 1)
+                        if (UsedTileList.Count >= 1 && UsedTileList.Count < SubmittedPuzzleTileCount)
                         {
-                            FillPuzzleRoads(UsedTileList);
-                            if (EarlyBailOut(UsedTileList, Initiator.SimpleConditionsList))
+                            if (DoEarlyBailOut())
                             {
-                                //Upvote all tiles in current and deeper layers with corresponding amounts?
+
+
+                                break;
                             }
                         }
 
@@ -226,9 +230,9 @@ namespace JapanseTuinen.Services
                                 //See if one of the used keys (starting at the end) has been used too much
                                 if (Initiator.CheckedTileDictionary[key] >= DynamicCheckedTileDictionary[key])
                                 {
-                                    UsedPuzzleTilesIndices.Remove(key.PuzzleIndex);
-                                    UsedTileList.Remove(relevantTile);
-                                    usedTileDictionary[key.TileNumber] = false;
+                                    //UsedPuzzleTilesIndices.Remove(key.PuzzleIndex);
+                                    //UsedTileList.Remove(relevantTile);
+                                    //UsedTileDictionary[key.TileNumber] = false;
 
                                     //We should only += the DynamicDepthCounter in the above layers.
                                     var aboveLayer = OriginalDepthCounter.FirstOrDefault(s => s.Key > relevantTile.PuzzleDepthCounter);
@@ -247,8 +251,10 @@ namespace JapanseTuinen.Services
                                         }
                                     }
 
-                                    relevantTile.PuzzleDepthCounter = 0;
-                                    relevantTile.PuzzleIndex = -1;
+                                    RemoveAndResetPuzzleTile(relevantTile);
+
+                                    //relevantTile.PuzzleDepthCounter = 0;
+                                    //relevantTile.PuzzleIndex = -1;
                                 }
                             }
                         }
@@ -301,14 +307,121 @@ namespace JapanseTuinen.Services
 
         public bool EarlyBailOut()
         {
+            var tile = IsDefinitiveRoadListPossibleForTile();
+            if (!tile) return true;
+
+            var bridge = IsDefinitiveRoadListPossibleForBridge();
+            if (!bridge) return true;
+
+            var icons = IsDefinitiveRoadListPossibleForIcons();
+            if (!icons) return true;
+
+            var pagoda = IsDefinitiveRoadListPossibleForPagoda();
+            if (!pagoda) return true;
+
+            var yinYang = IsDefinitiveRoadListPossibleForYinYang();
+            if (!yinYang) return true;
+
+            return false;
+        }
+
+        public bool DoEarlyBailOut()
+        {
+            var bailOut = false;
+
             FillPuzzleRoads(UsedTileList);
-            
+
             if (DefinitivePuzzleRoads.Count > 0)
             {
+                bailOut = EarlyBailOut();
+            }
 
+            if (bailOut)
+            {
+                var bailOutString = String.Format("Bailing out at: {0}", String.Join(" AND ", UsedTileList.Select(s => s.ToString())));
+                Debug.WriteLine(bailOutString);
+                //Upvote all tiles in current and deeper layers with corresponding amounts?
+                var allKeys = UsedTileList/*.Where(s => s.PuzzleDepthCounter >= UsedTileList.Count)*/
+                    .Select(s => new UsedTileDictionaryKey(s.PuzzleIndex, s.TileNumber, s.Degrees)).ToList();
+
+                foreach (var key in allKeys.OrderByDescending(s => s.PuzzleIndex))
+                {
+                    var relevantTile = UsedTileList.FirstOrDefault(s =>
+                        s.TileNumber == key.TileNumber && s.Degrees == key.Degrees);
+                    var relevantLayer = PuzzleIndexCounter[key.PuzzleIndex];
+
+                    if (Initiator.CheckedTileDictionary[key] >= OriginalDepthCounter[relevantLayer])
+                    {
+                        return false;
+                    }
+
+                    if (relevantTile.PuzzleDepthCounter >= allKeys.Count)
+                    {
+                        Initiator.CheckedTileDictionary[key] += OriginalDepthCounter[relevantLayer];
+                        DynamicCheckedTileDictionary[key] += OriginalDepthCounter[relevantLayer];
+
+                        //var aboveLayer = OriginalDepthCounter.FirstOrDefault(s => s.Key > relevantTile.PuzzleDepthCounter);
+                        var usedTileNumbersAboveThisLayer = allKeys.Where(s => s.PuzzleIndex <= DepthToIndex[relevantLayer]).Select(a => a.TileNumber).ToList();
+                        var relevantIndex = DepthToIndex[relevantLayer];
+                        var everyKeyExceptUsedOnes = DynamicCheckedTileDictionary.Where(s =>
+                            s.Key.PuzzleIndex > relevantIndex &&
+                            !usedTileNumbersAboveThisLayer.Contains(s.Key.TileNumber)).ToList();
+
+                        foreach (var keyEx in everyKeyExceptUsedOnes)
+                        {
+                            //Update the count for the next round
+                            var layer = PuzzleIndexCounter[keyEx.Key.PuzzleIndex];
+                            Initiator.CheckedTileDictionary[keyEx.Key] += OriginalDepthCounter[layer];
+                            DynamicCheckedTileDictionary[keyEx.Key] += OriginalDepthCounter[layer];
+                        }
+
+                        RemoveAndResetPuzzleTile(relevantTile);
+                        //UsedTileList.Remove(relevantTile);
+                        //UsedPuzzleTilesIndices.Remove(key.PuzzleIndex);
+                        //relevantTile.PuzzleDepthCounter = 0;
+                        //relevantTile.PuzzleIndex = -1;
+                        //UsedTileDictionary[key.TileNumber] = false;
+                    }
+                    else
+                    {
+                        //var layer = PuzzleIndexCounter[key.PuzzleIndex];
+                        Initiator.CheckedTileDictionary[key] += OriginalDepthCounter[relevantLayer + 1];
+
+                        if (Initiator.CheckedTileDictionary[key] >= DynamicCheckedTileDictionary[key])
+                        {
+                            //var relevantTile = UsedTileList.FirstOrDefault(s =>
+                            //s.TileNumber == notKey.TileNumber && s.Degrees == notKey.Degrees);
+                            RemoveAndResetPuzzleTile(relevantTile);
+                            //UsedTileList.Remove(relevantTile);
+                            //UsedPuzzleTilesIndices.Remove(key.PuzzleIndex);
+                            //relevantTile.PuzzleDepthCounter = 0;
+                            //relevantTile.PuzzleIndex = -1;
+                            //UsedTileDictionary[key.TileNumber] = false;
+                        }
+                    }
+                }
+
+                //We bailed out, clear list and break
+                //var allNotKeys = UsedTileList.Where(s => s.PuzzleDepthCounter <= UsedTileList.Count)
+                    //.Select(s => new UsedTileDictionaryKey(s.PuzzleIndex, s.TileNumber, s.Degrees)).ToList();
+                //foreach (var notKey in allNotKeys)
+                //{
+
+                //}
+
+                return true;
             }
 
             return false;
+        }
+
+        private void RemoveAndResetPuzzleTile(Tile puzzleTile)
+        {
+            UsedTileList.Remove(puzzleTile);
+            UsedPuzzleTilesIndices.Remove(puzzleTile.PuzzleIndex);
+            puzzleTile.PuzzleDepthCounter = 0;
+            puzzleTile.PuzzleIndex = -1;
+            UsedTileDictionary[puzzleTile.TileNumber] = false;
         }
 
         public bool DoesDefinitiveRoadListSolvePuzzle(List<SimpleTileIndex> simpleConditionsList)
@@ -355,15 +468,14 @@ namespace JapanseTuinen.Services
         public bool DoesDefinitiveRoadListSolvePagoda()
         {
             var returnValues = new HashSet<bool>();
-            
+
             if (Initiator.PagodaConditionsToSolve.Count == 0) return true;
 
             foreach (var toSolve in Initiator.PagodaConditionsToSolve)
             {
                 var findRoad = DefinitivePuzzleRoads.Any(s =>
                                 s.StartsOrEndsAt(toSolve.PuzzleIndex, toSolve.Position) &&
-                                s.SpecialConditions.Any(sc => sc.Value == toSolve.Amount &&
-                                    sc.Key == toSolve.Condition));
+                                s.SpecialConditions.Any(sc => sc.Key == toSolve.Condition));
 
                 returnValues.Add(findRoad);
             }
@@ -377,12 +489,11 @@ namespace JapanseTuinen.Services
 
             if (Initiator.YinYangConditionsToSolve.Count == 0) return true;
 
-            foreach (var toSolve in Initiator.PagodaConditionsToSolve)
+            foreach (var toSolve in Initiator.YinYangConditionsToSolve)
             {
                 var findRoad = DefinitivePuzzleRoads.Any(s =>
                                 s.StartsOrEndsAt(toSolve.PuzzleIndex, toSolve.Position) &&
-                                s.SpecialConditions.Any(sc => sc.Value == toSolve.Amount &&
-                                    sc.Key == toSolve.Condition));
+                                s.SpecialConditions.Any(sc => sc.Key == toSolve.Condition));
 
                 returnValues.Add(findRoad);
             }
@@ -411,14 +522,14 @@ namespace JapanseTuinen.Services
         public bool DoesDefinitiveRoadListSolveBridge()
         {
             var returnValues = new HashSet<bool>();
-            
+
             if (Initiator.BridgeConditionsToSolve.Count == 0) return true;
 
             foreach (var toSolve in Initiator.BridgeConditionsToSolve)
             {
                 var findRoad = DefinitivePuzzleRoads.Any(s =>
                                 s.StartsOrEndsAt(toSolve.PuzzleIndex, toSolve.Position) &&
-                                s.SpecialConditions.Any(sc => sc.Value == toSolve.Amount && 
+                                s.SpecialConditions.Any(sc => sc.Value == toSolve.Amount &&
                                     sc.Key == toSolve.Condition));
 
                 returnValues.Add(findRoad);
@@ -427,6 +538,7 @@ namespace JapanseTuinen.Services
             return returnValues.All(s => s);
         }
 
+        #region Possibilities
         public bool IsDefinitiveRoadListPossibleForTile()
         {
             var returnValues = new HashSet<bool>();
@@ -437,12 +549,119 @@ namespace JapanseTuinen.Services
             {
                 var findRoad = DefinitivePuzzleRoads.Any(s =>
                                 s.StartsOrEndsAt(toSolve.PuzzleIndex, toSolve.Position) &&
-                                s.PuzzleIndexArray.Count > toSolve.Amount);
+                                s.PuzzleIndexArray.Count < toSolve.Amount);
 
-                returnValues.Add(findRoad);
+                if (findRoad)
+                {
+                    return false;
+                    //toSolve.SolveState = SolveState.Invalid;
+                }
+                //returnValues.Add(findRoad);
             }
 
-            return returnValues.All(s => s);
+            return true;
         }
+
+        public bool IsDefinitiveRoadListPossibleForBridge()
+        {
+            var returnValues = new HashSet<bool>();
+
+            if (Initiator.BridgeConditionsToSolve.Count == 0) return true;
+
+            foreach (var toSolve in Initiator.BridgeConditionsToSolve)
+            {
+                var findRoad = DefinitivePuzzleRoads.Any(s =>
+                                s.StartsOrEndsAt(toSolve.PuzzleIndex, toSolve.Position) &&
+                                (s.SpecialConditions.Any(sc => sc.Value < toSolve.Amount &&
+                                    sc.Key == toSolve.Condition) ||
+                                !s.SpecialConditions.Any(sc => sc.Key == toSolve.Condition)));
+
+                if (findRoad)
+                {
+                    return false;
+                    //toSolve.SolveState = SolveState.Invalid;
+                }
+                //returnValues.Add(findRoad);
+            }
+
+            return true;
+        }
+
+        public bool IsDefinitiveRoadListPossibleForIcons()
+        {
+            var returnValues = new HashSet<bool>();
+
+            if (Initiator.IconConditionsToSolve.Count == 0) return true;
+
+            foreach (var toSolve in Initiator.IconConditionsToSolve)
+            {
+                var conditionOne = toSolve.First();
+                var conditionTwo = toSolve.Last();
+
+                var findRoad = DefinitivePuzzleRoads.Any(s =>
+                                (s.StartsOrEndsAt(conditionOne.PuzzleIndex, conditionOne.Position) &&
+                                !s.StartsOrEndsAt(conditionTwo.PuzzleIndex, conditionTwo.Position)) ||
+                                (s.StartsOrEndsAt(conditionTwo.PuzzleIndex, conditionTwo.Position) &&
+                                !s.StartsOrEndsAt(conditionOne.PuzzleIndex, conditionOne.Position)));
+
+                if (findRoad)
+                {
+                    return false;
+                    //toSolve.SolveState = SolveState.Invalid;
+                }
+                //returnValues.Add(findRoad);
+            }
+
+            return true;
+        }
+
+        public bool IsDefinitiveRoadListPossibleForPagoda()
+        {
+            var returnValues = new HashSet<bool>();
+
+            if (Initiator.PagodaConditionsToSolve.Count == 0) return true;
+
+            foreach (var toSolve in Initiator.PagodaConditionsToSolve)
+            {
+                var findRoad = DefinitivePuzzleRoads.Any(s =>
+                                s.StartsOrEndsAt(toSolve.PuzzleIndex, toSolve.Position) &&
+                                !s.SpecialConditions.Any(sc => sc.Key == toSolve.Condition));
+
+                if (findRoad)
+                {
+                    return false;
+                    //toSolve.SolveState = SolveState.Invalid;
+                }
+                //returnValues.Add(findRoad);
+            }
+
+            return true;
+        }
+
+        public bool IsDefinitiveRoadListPossibleForYinYang()
+        {
+            var returnValues = new HashSet<bool>();
+
+            if (Initiator.YinYangConditionsToSolve.Count == 0) return true;
+
+            foreach (var toSolve in Initiator.YinYangConditionsToSolve)
+            {
+                var findRoad = DefinitivePuzzleRoads.Any(s =>
+                                s.StartsOrEndsAt(toSolve.PuzzleIndex, toSolve.Position) &&
+                                !s.SpecialConditions.Any(sc => sc.Key == toSolve.Condition));
+
+                if (findRoad)
+                {
+                    return false;
+                    //toSolve.SolveState = SolveState.Invalid;
+                }
+                //returnValues.Add(findRoad);
+            }
+
+            return true;
+        }
+
+
+        #endregion
     }
 }

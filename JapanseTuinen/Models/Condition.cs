@@ -50,4 +50,11 @@ namespace JapanseTuinen.Models
             }
         }
     }
+
+    public enum SolveState
+    {
+        Open,
+        Solved,
+        Invalid
+    }
 }

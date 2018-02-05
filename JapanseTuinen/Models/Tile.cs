@@ -42,6 +42,7 @@ namespace JapanseTuinen.Models
         public int Position { get; set; }
         public Condition Condition { get; set; }
         public int? Amount { get; set; }
+        public SolveState SolveState { get; set; }
 
         public SimpleTileIndex(int pIndex, int pos, Condition con, int? amount)
         {
