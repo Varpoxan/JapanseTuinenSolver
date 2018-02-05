@@ -165,7 +165,11 @@ namespace JapanseTuinen.Services
                         tile.PuzzleDepthCounter = PuzzleIndexCounter[puzzleTile.Index];
                         var tileKey = new UsedTileDictionaryKey(puzzleTile.Index, tile.TileNumber, tile.Degrees);
 
-                        if (CheckedTileDictionary[tileKey] >= DynamicCheckedTileDictionary[tileKey])
+                        //var usedTileNumbers = new HashSet<int>(UsedTileList.Select(a => a.TileNumber));
+                        //var tilesInSameLayer = CheckedTileDictionary.Keys.Where(s => s.PuzzleIndex == tileKey.PuzzleIndex && !usedTileNumbers.Contains(s.TileNumber));
+                        //var lessAmount = tilesInSameLayer.Any(a => CheckedTileDictionary[a] < DynamicCheckedTileDictionary[tileKey]);
+
+                        if (CheckedTileDictionary[tileKey] >= DynamicCheckedTileDictionary[tileKey]/* && lessAmount*/)
                         {
                             RemoveAndResetPuzzleTile(tile);
                             //UsedPuzzleTilesIndices.Remove(tile.PuzzleIndex);
@@ -344,6 +348,10 @@ namespace JapanseTuinen.Services
                 var allKeys = UsedTileList/*.Where(s => s.PuzzleDepthCounter >= UsedTileList.Count)*/
                     .Select(s => new UsedTileDictionaryKey(s.PuzzleIndex, s.TileNumber, s.Degrees)).ToList();
 
+                var x = "bla";
+
+                //There is still a problem when the first bailOut is the second tile, we add += original layer.
+                //The next time the 2nd tile is checked again, the amount is upped by += layer, and it will check again
                 foreach (var key in allKeys.OrderByDescending(s => s.PuzzleIndex))
                 {
                     var relevantTile = UsedTileList.FirstOrDefault(s =>
@@ -358,7 +366,10 @@ namespace JapanseTuinen.Services
                     if (relevantTile.PuzzleDepthCounter >= allKeys.Count)
                     {
                         Initiator.CheckedTileDictionary[key] += OriginalDepthCounter[relevantLayer];
-                        DynamicCheckedTileDictionary[key] += OriginalDepthCounter[relevantLayer];
+                        if (DynamicCheckedTileDictionary[key] < AmountOfMaximumTriesPerTile)
+                        {
+                            DynamicCheckedTileDictionary[key] += OriginalDepthCounter[relevantLayer];
+                        }
 
                         //var aboveLayer = OriginalDepthCounter.FirstOrDefault(s => s.Key > relevantTile.PuzzleDepthCounter);
                         var usedTileNumbersAboveThisLayer = allKeys.Where(s => s.PuzzleIndex <= DepthToIndex[relevantLayer]).Select(a => a.TileNumber).ToList();
