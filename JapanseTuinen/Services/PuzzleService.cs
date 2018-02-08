@@ -129,6 +129,7 @@ namespace JapanseTuinen.Services
             var start = DateTime.Now;
 
             //After the first run, the DepthCounter dictionary should probably be updated to be * 2?
+            //while (!solvedPuzzleVM.Solved && CheckedTileDictionary.Values.All(s => s == AmountOfMaximumTriesPerTile))
             while (!solvedPuzzleVM.Solved && AmountOfCheckedSolutions < AmountOfTotalSolutions && breakCount <= AmountOfTotalSolutions)
             {
                 breakCount++;
@@ -169,16 +170,16 @@ namespace JapanseTuinen.Services
                         //var tilesInSameLayer = CheckedTileDictionary.Keys.Where(s => s.PuzzleIndex == tileKey.PuzzleIndex && !usedTileNumbers.Contains(s.TileNumber));
                         //var lessAmount = tilesInSameLayer.Any(a => CheckedTileDictionary[a] < DynamicCheckedTileDictionary[tileKey]);
 
-                        //if (CheckedTileDictionary[tileKey] >= DynamicCheckedTileDictionary[tileKey])
-                        //{
-                        //RemoveAndResetPuzzleTile(tile);
-                        //UsedPuzzleTilesIndices.Remove(tile.PuzzleIndex);
-                        //UsedTileList.Remove(tile);
-                        //UsedTileDictionary[tile.TileNumber] = false;
-                        //tile.PuzzleIndex = -1;
-                        //tile.PuzzleDepthCounter = 0;
-                        //break;
-                        //}
+                        if (CheckedTileDictionary[tileKey] >= DynamicCheckedTileDictionary[tileKey])
+                        {
+                            RemoveAndResetPuzzleTile(tile);
+                            //UsedPuzzleTilesIndices.Remove(tile.PuzzleIndex);
+                            //UsedTileList.Remove(tile);
+                            //UsedTileDictionary[tile.TileNumber] = false;
+                            //tile.PuzzleIndex = -1;
+                            //tile.PuzzleDepthCounter = 0;
+                            break;
+                        }
 
                         tile.PuzzleIndex = puzzleTile.Index;
                         UsedPuzzleTilesIndices.Add(puzzleTile.Index);
@@ -332,10 +333,11 @@ namespace JapanseTuinen.Services
                 var tilesInSameLayer = CheckedTileDictionary.Keys.Where(s => s.PuzzleIndex == key.PuzzleIndex && !usedTileNumbers.Contains(s.TileNumber));
                 var oriDepthAmount = OriginalDepthCounter[relevantLayer];
                 var lessAmount = tilesInSameLayer.Any(a => CheckedTileDictionary[a] < DynamicCheckedTileDictionary[key]);
+                var dynamicKeyCount = DynamicCheckedTileDictionary[key];
 
                 if (!lessAmount)
                 {
-                    if (DynamicCheckedTileDictionary[key] + oriDepthAmount <= oriDepthAmount)
+                    if (DynamicCheckedTileDictionary[key] + oriDepthAmount <= AmountOfMaximumTriesPerTile)
                     {
                         foreach (var otKey in otherTileKeys)
                         {
@@ -348,14 +350,14 @@ namespace JapanseTuinen.Services
                 {
                     if (relevantTile.PuzzleDepthCounter < allKeys.Count)
                     {
-                        if (CheckedTileDictionary[key] + oriDepthAmount <= DynamicCheckedTileDictionary[key])
+                        if (CheckedTileDictionary[key] + OriginalDepthCounter[relevantLayer + 1] <= dynamicKeyCount)
                         {
                             Initiator.CheckedTileDictionary[key] += OriginalDepthCounter[relevantLayer + 1];
                         }
                     }
                     else
                     {
-                        CheckedTileDictionary[key] += OriginalDepthCounter[relevantLayer];
+                        CheckedTileDictionary[key] += oriDepthAmount;
                     }
 
                     //var usedTileKeysBelowThisLayer = CheckedTileDictionary.Keys.Where(s => s.PuzzleIndex > key.PuzzleIndex && !usedTileNumbers.Contains(s.TileNumber));
@@ -364,20 +366,32 @@ namespace JapanseTuinen.Services
                             !usedTileNumbers.Contains(s.TileNumber)).ToList();
                     foreach (var otKey in usedTileKeysBelowThisLayer)
                     {
-                        DynamicCheckedTileDictionary[otKey] += OriginalDepthCounter[relevantLayer + 1];
-                        CheckedTileDictionary[otKey] += OriginalDepthCounter[relevantLayer + 1];
+                        var otKeyLayer = PuzzleIndexCounter[otKey.PuzzleIndex];
+                        if (DynamicCheckedTileDictionary[otKey] + OriginalDepthCounter[otKeyLayer] <= AmountOfMaximumTriesPerTile)
+                        {
+                            DynamicCheckedTileDictionary[otKey] += OriginalDepthCounter[otKeyLayer];
+                        }
+                        CheckedTileDictionary[otKey] += OriginalDepthCounter[otKeyLayer];
                     }
                 }
                 else
                 {
-                    if (CheckedTileDictionary[key] + 1 <= DynamicCheckedTileDictionary[key])
+                    //Only up if there is an actual checked solution
+                    if (allKeys.Count == SubmittedPuzzleTileCount)
                     {
-                        CheckedTileDictionary[key]++;
+                        if (CheckedTileDictionary[key] + 1 <= dynamicKeyCount)
+                        {
+                            CheckedTileDictionary[key]++;
+                        }
+                        //if (DynamicCheckedTileDictionary[key] + 1 == AmountOfMaximumTriesPerTile)
+                        //{
+                            //DynamicCheckedTileDictionary[key]++;
+                        //}
                     }
                 }
 
                 //See if one of the used keys (starting at the end) has been used too much
-                if (Initiator.CheckedTileDictionary[key] >= DynamicCheckedTileDictionary[key])
+                if (Initiator.CheckedTileDictionary[key] >= dynamicKeyCount)
                 {
                     RemoveAndResetPuzzleTile(relevantTile);
                 }
