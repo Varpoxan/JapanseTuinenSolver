@@ -319,6 +319,11 @@ namespace JapanseTuinen.Services
             var allKeys = UsedTileList.Select(s => new UsedTileDictionaryKey(s.PuzzleIndex, s.TileNumber, s.Degrees)).ToList();
             var otherTileKeys = Initiator.TotalRotationTileList.Where(s => !usedTileNumbers.Contains(s.TileNumber));
 
+            if (!didBailOut)
+            {
+
+            }
+
             foreach (var key in allKeys.OrderByDescending(s => s.PuzzleIndex))
             {
                 var relevantTile = UsedTileList.FirstOrDefault(s =>
@@ -334,26 +339,38 @@ namespace JapanseTuinen.Services
                     {
                         foreach (var otKey in otherTileKeys)
                         {
-                            DynamicCheckedTileDictionary[new UsedTileDictionaryKey(otKey.PuzzleIndex, otKey.TileNumber, otKey.Degrees)] += oriDepthAmount;
+                            DynamicCheckedTileDictionary[new UsedTileDictionaryKey(key.PuzzleIndex, otKey.TileNumber, otKey.Degrees)] += oriDepthAmount;
                         }
                     }
                 }
 
                 if (didBailOut)
                 {
-                    CheckedTileDictionary[key] += OriginalDepthCounter[relevantLayer];
-
                     if (relevantTile.PuzzleDepthCounter < allKeys.Count)
                     {
-                        if (CheckedTileDictionary[key] + oriDepthAmount <= AmountOfMaximumTriesPerTile)
+                        if (CheckedTileDictionary[key] + oriDepthAmount <= DynamicCheckedTileDictionary[key])
                         {
                             Initiator.CheckedTileDictionary[key] += OriginalDepthCounter[relevantLayer + 1];
                         }
-                    }   
+                    }
+                    else
+                    {
+                        CheckedTileDictionary[key] += OriginalDepthCounter[relevantLayer];
+                    }
+
+                    //var usedTileKeysBelowThisLayer = CheckedTileDictionary.Keys.Where(s => s.PuzzleIndex > key.PuzzleIndex && !usedTileNumbers.Contains(s.TileNumber));
+                    var usedTileKeysBelowThisLayer = DynamicCheckedTileDictionary.Keys.Where(s =>
+                            s.PuzzleIndex > key.PuzzleIndex &&
+                            !usedTileNumbers.Contains(s.TileNumber)).ToList();
+                    foreach (var otKey in usedTileKeysBelowThisLayer)
+                    {
+                        DynamicCheckedTileDictionary[otKey] += OriginalDepthCounter[relevantLayer + 1];
+                        CheckedTileDictionary[otKey] += OriginalDepthCounter[relevantLayer + 1];
+                    }
                 }
                 else
                 {
-                    if (CheckedTileDictionary[key] + 1 <= AmountOfMaximumTriesPerTile)
+                    if (CheckedTileDictionary[key] + 1 <= DynamicCheckedTileDictionary[key])
                     {
                         CheckedTileDictionary[key]++;
                     }
