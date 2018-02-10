@@ -319,6 +319,7 @@ namespace JapanseTuinen.Services
             var usedTileNumbers = UsedTileList.Select(s => s.TileNumber);
             var allKeys = UsedTileList.Select(s => new UsedTileDictionaryKey(s.PuzzleIndex, s.TileNumber, s.Degrees)).ToList();
             var otherTileKeys = Initiator.TotalRotationTileList.Where(s => !usedTileNumbers.Contains(s.TileNumber));
+            var uppedAboveTiles = false;
 
             if (!didBailOut)
             {
@@ -348,16 +349,31 @@ namespace JapanseTuinen.Services
 
                 if (didBailOut)
                 {
-                    if (relevantTile.PuzzleDepthCounter < allKeys.Count)
+                    if (!uppedAboveTiles)
                     {
-                        if (CheckedTileDictionary[key] + OriginalDepthCounter[relevantLayer + 1] <= dynamicKeyCount)
+                        var keysAboveCurrent = allKeys.Where(s => PuzzleIndexCounter[s.PuzzleIndex] <= relevantTile.PuzzleDepthCounter);
+                        if (keysAboveCurrent.Any())
                         {
-                            Initiator.CheckedTileDictionary[key] += OriginalDepthCounter[relevantLayer + 1];
+                            foreach (var keyAbove in keysAboveCurrent)
+                            {
+                                if (CheckedTileDictionary[keyAbove] + oriDepthAmount <= AmountOfMaximumTriesPerTile)
+                                {
+                                    CheckedTileDictionary[keyAbove] += oriDepthAmount;
+                                }
+                            }
+                            uppedAboveTiles = true;
                         }
+                        //if (relevantTile.PuzzleDepthCounter < allKeys.Count)
+                        //{
+                        //    if (CheckedTileDictionary[key] + OriginalDepthCounter[relevantLayer + 1] <= dynamicKeyCount)
+                        //    {
+                        //        Initiator.CheckedTileDictionary[key] += OriginalDepthCounter[relevantLayer + 1];
+                        //    }
+                        //}
                     }
                     else
                     {
-                        CheckedTileDictionary[key] += oriDepthAmount;
+                        //CheckedTileDictionary[key] += oriDepthAmount;
                     }
 
                     //var usedTileKeysBelowThisLayer = CheckedTileDictionary.Keys.Where(s => s.PuzzleIndex > key.PuzzleIndex && !usedTileNumbers.Contains(s.TileNumber));
@@ -385,7 +401,7 @@ namespace JapanseTuinen.Services
                         }
                         //if (DynamicCheckedTileDictionary[key] + 1 == AmountOfMaximumTriesPerTile)
                         //{
-                            //DynamicCheckedTileDictionary[key]++;
+                        //DynamicCheckedTileDictionary[key]++;
                         //}
                     }
                 }
