@@ -184,13 +184,14 @@ namespace JapanseTuinen.Services
                         tile.PuzzleIndex = puzzleTile.Index;
                         UsedPuzzleTilesIndices.Add(puzzleTile.Index);
 
-                        if (UsedTileList.Count >= 1 && UsedTileList.Count < SubmittedPuzzleTileCount)
+                        if (puzzleVM.UseBailout)
                         {
-                            if (DoEarlyBailOut())
+                            if (UsedTileList.Count >= 1 && UsedTileList.Count < SubmittedPuzzleTileCount)
                             {
-
-
-                                break;
+                                if (DoEarlyBailOut())
+                                {
+                                    break;
+                                }
                             }
                         }
 
@@ -318,12 +319,91 @@ namespace JapanseTuinen.Services
         {
             var usedTileNumbers = UsedTileList.Select(s => s.TileNumber);
             var allKeys = UsedTileList.Select(s => new UsedTileDictionaryKey(s.PuzzleIndex, s.TileNumber, s.Degrees)).ToList();
-            var otherTileKeys = Initiator.TotalRotationTileList.Where(s => !usedTileNumbers.Contains(s.TileNumber));
+            //var otherTileKeys = Initiator.TotalRotationTileList.Where(s => !usedTileNumbers.Contains(s.TileNumber));
             var uppedAboveTiles = false;
+
+            if (AmountOfCheckedSolutions % 480 == 0)
+            {
+
+            }
 
             if (!didBailOut)
             {
 
+            }
+
+            if (didBailOut)
+            {
+                //if (!uppedAboveTiles)
+                {
+                    var lastTile = UsedTileList.OrderBy(s => s.PuzzleIndex).LastOrDefault();
+                    var keysAboveCurrent = allKeys.Where(s => PuzzleIndexCounter[s.PuzzleIndex] <= lastTile.PuzzleDepthCounter);
+                    var relevantLayer = PuzzleIndexCounter[lastTile.PuzzleIndex];
+                    var oriDepthAmount = OriginalDepthCounter[relevantLayer];
+                    if (keysAboveCurrent.Any())
+                    {
+                        foreach (var keyAbove in keysAboveCurrent)
+                        {
+                            if (CheckedTileDictionary[keyAbove] + oriDepthAmount <= AmountOfMaximumTriesPerTile)
+                            {
+                                CheckedTileDictionary[keyAbove] += oriDepthAmount;
+                            }
+                        }
+                        uppedAboveTiles = true;
+                    }
+
+
+                    //var usedTileKeysBelowThisLayer = CheckedTileDictionary.Keys.Where(s => s.PuzzleIndex > key.PuzzleIndex && !usedTileNumbers.Contains(s.TileNumber));
+                    var usedTileKeysBelowThisLayer = DynamicCheckedTileDictionary.Keys.Where(s =>
+                            s.PuzzleIndex > lastTile.PuzzleIndex &&
+                            !usedTileNumbers.Contains(s.TileNumber)).ToList();
+                    var firstLayerAfterBailOut = relevantLayer + 1;
+                    foreach (var otKey in usedTileKeysBelowThisLayer)
+                    {
+                        var otKeyLayer = PuzzleIndexCounter[otKey.PuzzleIndex];
+                        if (DynamicCheckedTileDictionary[otKey] + OriginalDepthCounter[firstLayerAfterBailOut] <= AmountOfMaximumTriesPerTile)
+                        {
+                            DynamicCheckedTileDictionary[otKey] += OriginalDepthCounter[firstLayerAfterBailOut];
+                        }
+                        else
+                        {
+                            Debug.WriteLine(String.Format("We bailout out, but did NOT up the below layer! {0}", otKey.ToString()));
+                            //Lets fill it up towards max
+                            DynamicCheckedTileDictionary[otKey] = AmountOfMaximumTriesPerTile;
+                        }
+                        CheckedTileDictionary[otKey] += OriginalDepthCounter[firstLayerAfterBailOut];
+                    }
+
+                    var keysAboveCurrentlayer = allKeys.Where(s => PuzzleIndexCounter[s.PuzzleIndex] != lastTile.PuzzleDepthCounter);
+                    var tileNumbersAboveCurrentLayer = keysAboveCurrentlayer.Select(s => s.TileNumber);
+                    var tilesInSameLayer = CheckedTileDictionary.Keys.Where(s => s.PuzzleIndex == lastTile.PuzzleIndex && !tileNumbersAboveCurrentLayer.Contains(s.TileNumber));
+                    var key = new UsedTileDictionaryKey(lastTile.PuzzleIndex, lastTile.TileNumber, lastTile.Degrees);
+                    var allSameAmount = tilesInSameLayer.All(a => CheckedTileDictionary[a] == CheckedTileDictionary[key]);
+
+                    if (allSameAmount)
+                    {
+                        foreach (var tsl in tilesInSameLayer)
+                        {
+                            if (DynamicCheckedTileDictionary[tsl] + oriDepthAmount <= AmountOfMaximumTriesPerTile)
+                            {
+                                DynamicCheckedTileDictionary[tsl] += oriDepthAmount;
+                            }
+                        }
+                    }
+
+                    foreach (var kkey in keysAboveCurrent)
+                    {
+                        var rTile = UsedTileList.FirstOrDefault(s => s.PuzzleIndex == kkey.PuzzleIndex && s.TileNumber == kkey.TileNumber && s.Degrees == kkey.Degrees);
+                        //See if one of the used keys (starting at the end) has been used too much
+                        if (Initiator.CheckedTileDictionary[kkey] >= DynamicCheckedTileDictionary[kkey])
+                        {
+                            RemoveAndResetPuzzleTile(rTile);
+                            //break;
+                        }
+                    }
+                    //RemoveAndResetPuzzleTile(lastTile);
+                }
+                return;
             }
 
             foreach (var key in allKeys.OrderByDescending(s => s.PuzzleIndex))
@@ -331,66 +411,10 @@ namespace JapanseTuinen.Services
                 var relevantTile = UsedTileList.FirstOrDefault(s =>
                     s.TileNumber == key.TileNumber && s.Degrees == key.Degrees);
                 var relevantLayer = PuzzleIndexCounter[key.PuzzleIndex];
-                var tilesInSameLayer = CheckedTileDictionary.Keys.Where(s => s.PuzzleIndex == key.PuzzleIndex && !usedTileNumbers.Contains(s.TileNumber));
                 var oriDepthAmount = OriginalDepthCounter[relevantLayer];
-                var lessAmount = tilesInSameLayer.Any(a => CheckedTileDictionary[a] < DynamicCheckedTileDictionary[key]);
                 var dynamicKeyCount = DynamicCheckedTileDictionary[key];
-
-                if (!lessAmount)
-                {
-                    if (DynamicCheckedTileDictionary[key] + oriDepthAmount <= AmountOfMaximumTriesPerTile)
-                    {
-                        foreach (var otKey in otherTileKeys)
-                        {
-                            DynamicCheckedTileDictionary[new UsedTileDictionaryKey(key.PuzzleIndex, otKey.TileNumber, otKey.Degrees)] += oriDepthAmount;
-                        }
-                    }
-                }
-
-                if (didBailOut)
-                {
-                    if (!uppedAboveTiles)
-                    {
-                        var keysAboveCurrent = allKeys.Where(s => PuzzleIndexCounter[s.PuzzleIndex] <= relevantTile.PuzzleDepthCounter);
-                        if (keysAboveCurrent.Any())
-                        {
-                            foreach (var keyAbove in keysAboveCurrent)
-                            {
-                                if (CheckedTileDictionary[keyAbove] + oriDepthAmount <= AmountOfMaximumTriesPerTile)
-                                {
-                                    CheckedTileDictionary[keyAbove] += oriDepthAmount;
-                                }
-                            }
-                            uppedAboveTiles = true;
-                        }
-                        //if (relevantTile.PuzzleDepthCounter < allKeys.Count)
-                        //{
-                        //    if (CheckedTileDictionary[key] + OriginalDepthCounter[relevantLayer + 1] <= dynamicKeyCount)
-                        //    {
-                        //        Initiator.CheckedTileDictionary[key] += OriginalDepthCounter[relevantLayer + 1];
-                        //    }
-                        //}
-                    }
-                    else
-                    {
-                        //CheckedTileDictionary[key] += oriDepthAmount;
-                    }
-
-                    //var usedTileKeysBelowThisLayer = CheckedTileDictionary.Keys.Where(s => s.PuzzleIndex > key.PuzzleIndex && !usedTileNumbers.Contains(s.TileNumber));
-                    var usedTileKeysBelowThisLayer = DynamicCheckedTileDictionary.Keys.Where(s =>
-                            s.PuzzleIndex > key.PuzzleIndex &&
-                            !usedTileNumbers.Contains(s.TileNumber)).ToList();
-                    foreach (var otKey in usedTileKeysBelowThisLayer)
-                    {
-                        var otKeyLayer = PuzzleIndexCounter[otKey.PuzzleIndex];
-                        if (DynamicCheckedTileDictionary[otKey] + OriginalDepthCounter[otKeyLayer] <= AmountOfMaximumTriesPerTile)
-                        {
-                            DynamicCheckedTileDictionary[otKey] += OriginalDepthCounter[otKeyLayer];
-                        }
-                        CheckedTileDictionary[otKey] += OriginalDepthCounter[otKeyLayer];
-                    }
-                }
-                else
+                
+                //else
                 {
                     //Only up if there is an actual checked solution
                     if (allKeys.Count == SubmittedPuzzleTileCount)
@@ -399,17 +423,75 @@ namespace JapanseTuinen.Services
                         {
                             CheckedTileDictionary[key]++;
                         }
-                        //if (DynamicCheckedTileDictionary[key] + 1 == AmountOfMaximumTriesPerTile)
+
+                        //if (CheckedTileDictionary[key] > 0)
                         //{
-                        //DynamicCheckedTileDictionary[key]++;
+                        //    var keysAboveCurrentlayer = allKeys.Where(s => PuzzleIndexCounter[s.PuzzleIndex] != relevantTile.PuzzleDepthCounter);
+                        //    var tileNumbersAboveCurrentLayer = keysAboveCurrentlayer.Select(s => s.TileNumber);
+                        //    var tilesInSameLayer = CheckedTileDictionary.Keys.Where(s => s.PuzzleIndex == key.PuzzleIndex && !tileNumbersAboveCurrentLayer.Contains(s.TileNumber));
+                        //    var allSameAmount = tilesInSameLayer.All(a => CheckedTileDictionary[a] == CheckedTileDictionary[key]);
+
+                        //    if (allSameAmount)
+                        //    {
+                        //        if (DynamicCheckedTileDictionary[key] + oriDepthAmount <= AmountOfMaximumTriesPerTile)
+                        //        {
+                        //            foreach (var otKey in tilesInSameLayer)
+                        //            {
+                        //                DynamicCheckedTileDictionary[new UsedTileDictionaryKey(key.PuzzleIndex, otKey.TileNumber, otKey.Degrees)] += oriDepthAmount;
+                        //            }
+                        //        }
+                        //    }
+                        //}
+
+                        //foreach (var akey in allKeys.OrderByDescending(s => s.PuzzleIndex))
+                        //{
+                        //var relevantTile = UsedTileList.FirstOrDefault(s =>
+                        //s.TileNumber == akey.TileNumber && s.Degrees == akey.Degrees);
+
+                        //See if one of the used keys (starting at the end) has been used too much
+                        if (Initiator.CheckedTileDictionary[key] >= DynamicCheckedTileDictionary[key])
+                        {
+                            //UsedPuzzleTilesIndices.Remove(key.PuzzleIndex);
+                            //UsedTileList.Remove(relevantTile);
+                            //UsedTileDictionary[key.TileNumber] = false;
+
+                            //var keysAboveCurrentlayer = allKeys.Where(s => PuzzleIndexCounter[s.PuzzleIndex] != relevantTile.PuzzleDepthCounter);
+                            //var tileNumbersAboveCurrentLayer = keysAboveCurrentlayer.Select(s => s.TileNumber);
+                            //var tilesInSameLayer = CheckedTileDictionary.Keys.Where(s => s.PuzzleIndex == key.PuzzleIndex && !tileNumbersAboveCurrentLayer.Contains(s.TileNumber));
+
+                            //We should only += the DynamicDepthCounter in the above layers.
+                            var aboveLayer = OriginalDepthCounter.FirstOrDefault(s => s.Key > relevantTile.PuzzleDepthCounter);
+                            if (aboveLayer.Key != 0)
+                            {
+                                var usedTileNumbersAboveThisLayer = allKeys.Where(s => s.PuzzleIndex < DepthToIndex[aboveLayer.Key]).Select(a => a.TileNumber).ToList();
+                                var relevantIndex = DepthToIndex[aboveLayer.Key];
+                                var everyKeyExceptUsedOnes = DynamicCheckedTileDictionary.Where(s =>
+                                s.Key.PuzzleIndex == relevantIndex &&
+                                !usedTileNumbersAboveThisLayer.Contains(s.Key.TileNumber)).ToList();
+
+                                foreach (var keyEx in everyKeyExceptUsedOnes)
+                                {
+                                    //Update the count for the next round
+                                    DynamicCheckedTileDictionary[keyEx.Key] += OriginalDepthCounter[aboveLayer.Key];
+                                }
+                            }
+
+                            RemoveAndResetPuzzleTile(relevantTile);
+
+                            //relevantTile.PuzzleDepthCounter = 0;
+                            //relevantTile.PuzzleIndex = -1;
+                        }
                         //}
                     }
                 }
 
+
+
                 //See if one of the used keys (starting at the end) has been used too much
-                if (Initiator.CheckedTileDictionary[key] >= dynamicKeyCount)
+                if (Initiator.CheckedTileDictionary[key] >= dynamicKeyCount && didBailOut)
                 {
                     RemoveAndResetPuzzleTile(relevantTile);
+                    break;
                 }
             }
         }

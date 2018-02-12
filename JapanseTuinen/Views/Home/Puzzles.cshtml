@@ -9,6 +9,8 @@
     Save as:
     <input type="text" id="save-puzzle" />
     <br />
+    Use bailout system
+    <input type="checkbox" id="use-bailout"/>
     <div class="solve-button btn btn-default">Solve!</div>
 </div>
 
@@ -134,7 +136,8 @@
         });
 
         PuzzleVM.Name = 'Puzzle ' + $('#save-puzzle').val();
-        //console.log(PuzzleVM);
+        PuzzleVM.UseBailout = $('#use-bailout').prop('checked');
+        console.log(PuzzleVM);
 
         $.ajax({
             type: 'POST',

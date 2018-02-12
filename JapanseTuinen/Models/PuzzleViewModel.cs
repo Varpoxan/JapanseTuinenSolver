@@ -48,6 +48,9 @@ namespace JapanseTuinen.Models
         public List<PuzzleTile> TileIndexList { get; set; }
 
         [JsonIgnore]
+        public bool UseBailout { get; set; }
+
+        [JsonIgnore]
         public HashSet<string> KnownPuzzles { get; set; }
 
         public PuzzleViewModel()
